@@ -8,27 +8,19 @@
     
     <!-- Firebase SDK -->
     <script type="module">
-      // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyCjtfl17qW0uB-L2BZ61l7RQLByeWRoIqM",
-  authDomain: "awangard-shop.firebaseapp.com",
-  projectId: "awangard-shop",
-  storageBucket: "awangard-shop.firebasestorage.app",
-  messagingSenderId: "782791636313",
-  appId: "1:782791636313:web:82f0658de4853e31a4c848",
-  measurementId: "G-KPMXMFCTGS"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        
+        // Ваши данные Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBbr2tOvtdFEbs-wia9L86S8Vr3vvzOQPM",
+            authDomain: "awangard-hsop.firebaseapp.com",
+            projectId: "awangard-hsop",
+            storageBucket: "awangard-hsop.firebasestorage.app",
+            messagingSenderId: "482556975147",
+            appId: "1:482556975147:web:e301d8da03bf88008ef26e",
+            measurementId: "G-4KEVY4F5B7"
+        };
         
         // Инициализация Firebase
         const app = initializeApp(firebaseConfig);
@@ -42,8 +34,6 @@ const analytics = getAnalytics(app);
         const userAvatar = document.getElementById('userAvatar');
         const loginBtn = document.getElementById('loginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
-        const vkLoginBtn = document.getElementById('vkLoginBtn');
-        const telegramLoginBtn = document.getElementById('telegramLoginBtn');
         const mainContent = document.getElementById('mainContent');
         
         // Функция входа через Google
@@ -55,27 +45,6 @@ const analytics = getAnalytics(app);
                 console.error("Ошибка входа:", error);
                 alert("Ошибка входа: " + error.message);
             }
-        }
-        
-        // Функция входа через ВК (через попап)
-        function loginWithVK() {
-            // VK ID SDK нужно подключить отдельно
-            if (typeof VKID !== 'undefined') {
-                VKID.Config.set({
-                    appId: 12345678, // Замените на ваш ID приложения VK
-                    redirectUrl: window.location.href,
-                    state: 'vk_login'
-                });
-                VKID.Auth.login();
-            } else {
-                alert("Вход через ВК требует настройки. Пока используйте Google.");
-            }
-        }
-        
-        // Функция входа через Telegram
-        function loginWithTelegram() {
-            // Telegram Login Widget
-            window.open('https://oauth.telegram.org/auth?bot_id=ВАШ_BOT_ID&origin=' + window.location.origin + '&return_to=' + window.location.href, '_blank');
         }
         
         // Функция выхода
@@ -97,7 +66,7 @@ const analytics = getAnalytics(app);
                 mainContent.style.display = 'block';
                 
                 // Отображаем информацию о пользователе
-                const displayName = user.displayName || user.email || user.phoneNumber || "Пользователь";
+                const displayName = user.displayName || user.email || "Пользователь";
                 userName.textContent = displayName;
                 
                 if (user.photoURL) {
@@ -116,26 +85,10 @@ const analytics = getAnalytics(app);
         
         // Назначаем обработчики кнопок
         loginBtn.addEventListener('click', loginWithGoogle);
-        if (vkLoginBtn) vkLoginBtn.addEventListener('click', loginWithVK);
-        if (telegramLoginBtn) telegramLoginBtn.addEventListener('click', loginWithTelegram);
         logoutBtn.addEventListener('click', logout);
         
-        // Экспортируем функции в глобальную область для кнопок входа
+        // Экспортируем функцию в глобальную область
         window.loginWithGoogle = loginWithGoogle;
-        window.loginWithVK = loginWithVK;
-        window.loginWithTelegram = loginWithTelegram;
-    </script>
-    
-    <!-- VK ID SDK (подключается отдельно) -->
-    <script src="https://vk.com/js/api/openapi.js?169" type="text/javascript"></script>
-    <script type="text/javascript">
-        window.VKID = window.VKID || {};
-        // Инициализация VK ID
-        setTimeout(() => {
-            if (typeof VKID !== 'undefined') {
-                VKID.Config.init();
-            }
-        }, 100);
     </script>
 </head>
 <body class="dark-theme">
@@ -149,11 +102,9 @@ const analytics = getAnalytics(app);
         
         <!-- Блок авторизации (показывается неавторизованным) -->
         <div id="authSection" class="auth-section">
-            <h3>Войдите, чтобы продолжить</h3>
+            <h3>Войдите через Google, чтобы продолжить</h3>
             <div class="auth-buttons">
-                <button id="loginBtn" class="auth-btn google-btn">🔐 Войти через Google</button>
-                <button id="vkLoginBtn" class="auth-btn vk-btn">📱 Войти через ВК</button>
-                <button id="telegramLoginBtn" class="auth-btn telegram-btn">✈️ Войти через Telegram</button>
+                <button id="loginBtn" class="auth-btn google-btn">🔐 Войти через Google (Gmail)</button>
             </div>
         </div>
         
@@ -290,13 +241,6 @@ const analytics = getAnalytics(app);
                 });
             }
 
-            // Инициализация (карточки создадутся после авторизации)
-            window.initCards = function() {
-                if (cardsContainer && document.getElementById('mainContent').style.display === 'block') {
-                    createCards();
-                }
-            };
-            
             // Наблюдатель за появлением контента
             const observer = new MutationObserver(function() {
                 if (document.getElementById('mainContent').style.display === 'block' && cardsContainer && cardsContainer.children.length === 0) {

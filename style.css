@@ -161,45 +161,13 @@ footer a:hover {
     color: #bb9af7;
 }
 
-@media (max-width: 650px) {
-    nav a {
-        margin: 0 0.6rem;
-        font-size: 0.9rem;
-    }
-    
-    header h1 {
-        font-size: 1.6rem;
-    }
-    
-    .center-text {
-        font-size: 1.2rem;
-        padding: 1rem 1.5rem;
-    }
-    
-    .cards-container {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 150px));
-        gap: 1rem;
-    }
-    
-    .card {
-        min-width: 120px;
-        height: 80px;
-        font-size: 0.9rem;
-        padding: 1rem 0.3rem;
-    }
-    
-    .info-message {
-        font-size: 1.2rem;
-        padding: 1.5rem;
-    }
-}
 /* ===== Стили для авторизации ===== */
 .auth-section {
     background: rgba(18, 22, 33, 0.8);
     border-radius: 20px;
     padding: 1.5rem;
     margin: 1rem auto;
-    max-width: 400px;
+    max-width: 350px;
     text-align: center;
     backdrop-filter: blur(10px);
     border: 1px solid #2c3142;
@@ -208,7 +176,7 @@ footer a:hover {
 .auth-section h3 {
     color: #c0caf5;
     margin-bottom: 1rem;
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 
 .auth-buttons {
@@ -235,24 +203,6 @@ footer a:hover {
 .google-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(66, 133, 244, 0.4);
-}
-
-.vk-btn {
-    background: linear-gradient(135deg, #4c75a3, #2c3e66);
-}
-
-.vk-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(76, 117, 163, 0.4);
-}
-
-.telegram-btn {
-    background: linear-gradient(135deg, #0088cc, #006699);
-}
-
-.telegram-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 136, 204, 0.4);
 }
 
 .user-info {
@@ -298,9 +248,41 @@ footer a:hover {
 }
 
 @media (max-width: 650px) {
+    nav a {
+        margin: 0 0.6rem;
+        font-size: 0.9rem;
+    }
+    
+    header h1 {
+        font-size: 1.6rem;
+    }
+    
+    .center-text {
+        font-size: 1.2rem;
+        padding: 1rem 1.5rem;
+    }
+    
+    .cards-container {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 150px));
+        gap: 1rem;
+    }
+    
+    .card {
+        min-width: 120px;
+        height: 80px;
+        font-size: 0.9rem;
+        padding: 1rem 0.3rem;
+    }
+    
+    .info-message {
+        font-size: 1.2rem;
+        padding: 1.5rem;
+    }
+    
     .auth-section {
         margin: 0.5rem;
         padding: 1rem;
+        max-width: 280px;
     }
     .auth-btn {
         padding: 0.6rem 1rem;
