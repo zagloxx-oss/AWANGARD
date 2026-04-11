@@ -1128,3 +1128,34 @@ body {
         margin-left: 58px;
     }
 }
+/* Дополнительные стили для админ-панели (гости) */
+.user-type-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.telegram-badge {
+    background: rgba(0, 136, 204, 0.2);
+    color: #0088cc;
+    border: 1px solid rgba(0, 136, 204, 0.3);
+}
+
+.guest-badge {
+    background: rgba(122, 162, 247, 0.2);
+    color: var(--primary);
+    border: 1px solid rgba(122, 162, 247, 0.3);
+}
+
+.user-item {
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+@media (max-width: 700px) {
+    .user-type-badge {
+        margin-left: 58px;
+    }
+}

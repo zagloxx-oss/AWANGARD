@@ -17,17 +17,14 @@
     </script>
 </head>
 <body>
-    <!-- Анимированный фон -->
     <div class="gradient-bg">
         <div class="gradient-orb orb1"></div>
         <div class="gradient-orb orb2"></div>
         <div class="gradient-orb orb3"></div>
     </div>
     
-    <!-- Частицы -->
     <div class="particles"></div>
     
-    <!-- Навигация -->
     <nav class="glass-nav">
         <div class="nav-container">
             <div class="logo">
@@ -66,9 +63,7 @@
         </div>
     </nav>
     
-    <!-- Основной контент -->
     <div class="main-wrapper">
-        <!-- Боковая панель профиля с чатом -->
         <aside class="profile-sidebar-glass">
             <div id="profilePanel" class="profile-card-glass">
                 <div class="profile-header">
@@ -84,7 +79,6 @@
                     </div>
                 </div>
                 
-                <!-- Чат с поддержкой -->
                 <div class="support-chat">
                     <div class="chat-header">
                         <i class="fas fa-headset"></i>
@@ -121,7 +115,6 @@
             </div>
         </aside>
         
-        <!-- Контент -->
         <main class="content-area">
             <div id="mainContent">
                 <div class="hero-section">
@@ -159,7 +152,7 @@
         </div>
         
         <div id="adminUsersTab" class="admin-tab-content active">
-            <h3><i class="fas fa-users"></i> Авторизованные пользователи</h3>
+            <h3><i class="fas fa-users"></i> Все пользователи (включая гостей)</h3>
             <div id="usersList" class="users-list">
                 <div class="loading-users">Загрузка...</div>
             </div>
@@ -221,13 +214,10 @@
     <script>
         (function() {
             // ========== НАСТРОЙКИ АДМИН-ПАНЕЛИ ==========
-            // СЕКРЕТНЫЙ КОД: нажмите A W A N G A R D на клавиатуре
             const ADMIN_CODE = 'AWANGARD';
             const ADMIN_NUM_CODE = '7777';
-            
             let secretCode = '';
             
-            // Элементы админ-панели
             const adminPanel = document.getElementById('adminPanel');
             const adminOverlay = document.getElementById('adminOverlay');
             
@@ -244,15 +234,12 @@
                 document.body.style.overflow = 'auto';
             }
             
-            // Обработчик секретной комбинации (БЕЗ ПРОВЕРКИ TELEGRAM)
             document.addEventListener('keydown', function(e) {
                 if (e.key.length === 1 && /[A-Za-z0-9]/.test(e.key)) {
                     secretCode += e.key.toUpperCase();
                     if (secretCode.length > ADMIN_CODE.length && ADMIN_NUM_CODE.length) {
                         secretCode = secretCode.slice(-Math.max(ADMIN_CODE.length, ADMIN_NUM_CODE.length));
                     }
-                    
-                    // Просто открываем панель при совпадении кода
                     if (secretCode.includes(ADMIN_CODE) || secretCode === ADMIN_NUM_CODE) {
                         openAdminPanel();
                         secretCode = '';
@@ -260,10 +247,66 @@
                 }
             });
             
-            // Ключи для localStorage
+            // ========== УНИКАЛЬНЫЙ ID ДЛЯ КАЖДОГО ПОСЕТИТЕЛЯ (включая гостей) ==========
+            function generateUniqueId() {
+                return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            }
+            
+            function getOrCreateUserId() {
+                let userId = localStorage.getItem('awangard_user_id');
+                if (!userId) {
+                    userId = generateUniqueId();
+                    localStorage.setItem('awangard_user_id', userId);
+                    // Регистрируем нового гостя в списке пользователей
+                    registerGuestUser(userId);
+                }
+                return userId;
+            }
+            
+            function registerGuestUser(userId) {
+                let users = JSON.parse(localStorage.getItem('awangard_all_users') || '[]');
+                const existingIndex = users.findIndex(u => u.id === userId);
+                if (existingIndex === -1) {
+                    users.push({
+                        id: userId,
+                        type: 'guest',
+                        name: 'Гость',
+                        firstSeen: new Date().toISOString(),
+                        lastSeen: new Date().toISOString(),
+                        chatId: userId
+                    });
+                    localStorage.setItem('awangard_all_users', JSON.stringify(users));
+                }
+            }
+            
+            function updateUserLastSeen(userId, userData = null) {
+                let users = JSON.parse(localStorage.getItem('awangard_all_users') || '[]');
+                const index = users.findIndex(u => u.id === userId);
+                if (index !== -1) {
+                    if (userData && userData.type === 'telegram') {
+                        users[index] = { ...users[index], ...userData, type: 'telegram', lastSeen: new Date().toISOString() };
+                    } else {
+                        users[index].lastSeen = new Date().toISOString();
+                    }
+                    localStorage.setItem('awangard_all_users', JSON.stringify(users));
+                } else {
+                    if (userData && userData.type === 'telegram') {
+                        users.push({ ...userData, lastSeen: new Date().toISOString(), firstSeen: new Date().toISOString(), chatId: userId });
+                    } else {
+                        users.push({ id: userId, type: 'guest', name: 'Гость', lastSeen: new Date().toISOString(), firstSeen: new Date().toISOString(), chatId: userId });
+                    }
+                    localStorage.setItem('awangard_all_users', JSON.stringify(users));
+                }
+            }
+            
+            // Получаем или создаём ID текущего пользователя
+            const CURRENT_USER_ID = getOrCreateUserId();
             const STORAGE_KEY = 'awangard_user';
             const CHAT_STORAGE_PREFIX = 'awangard_chat_';
-            const USERS_STORAGE_KEY = 'awangard_users_list';
+            const USERS_STORAGE_KEY = 'awangard_all_users';
+            
+            // Сохраняем ID текущего пользователя в localStorage для чата
+            localStorage.setItem('current_chat_user_id', CURRENT_USER_ID);
             
             function createTelegramWidget(containerId) {
                 const container = document.getElementById(containerId);
@@ -279,19 +322,20 @@
                 container.appendChild(script);
             }
             
-            function saveUser(userData) {
+            function saveTelegramUser(userData) {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
+                // Обновляем или добавляем пользователя в общий список
                 let users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
-                const existingIndex = users.findIndex(u => u.id === userData.id);
+                const existingIndex = users.findIndex(u => u.id === userData.id.toString());
                 if (existingIndex !== -1) {
-                    users[existingIndex] = { ...users[existingIndex], ...userData, lastSeen: new Date().toISOString() };
+                    users[existingIndex] = { ...users[existingIndex], ...userData, type: 'telegram', lastSeen: new Date().toISOString() };
                 } else {
-                    users.push({ ...userData, firstSeen: new Date().toISOString(), lastSeen: new Date().toISOString() });
+                    users.push({ ...userData, type: 'telegram', firstSeen: new Date().toISOString(), lastSeen: new Date().toISOString(), chatId: userData.id.toString() });
                 }
                 localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
             }
             
-            function getUser() {
+            function getTelegramUser() {
                 const saved = localStorage.getItem(STORAGE_KEY);
                 return saved ? JSON.parse(saved) : null;
             }
@@ -327,7 +371,7 @@
                 document.getElementById('profilePanel').classList.remove('logged-in');
                 document.getElementById('profileName').textContent = 'Гость';
                 document.getElementById('profileUsername').textContent = '';
-                document.getElementById('profileId').textContent = 'guest';
+                document.getElementById('profileId').textContent = CURRENT_USER_ID.slice(-8);
                 document.getElementById('profileAvatar').src = 'https://ui-avatars.com/api/?background=1a1f2e&color=7aa2f7&bold=true&name=Guest';
                 const profileWidget = document.getElementById('profileTelegramWidget');
                 if (profileWidget) profileWidget.style.display = 'block';
@@ -337,6 +381,8 @@
                 localStorage.removeItem(STORAGE_KEY);
                 updateUIForGuest();
                 clearChat();
+                // Обновляем lastSeen для гостя
+                updateUserLastSeen(CURRENT_USER_ID);
             }
             
             function clearChat() {
@@ -383,8 +429,10 @@
                 messages.push({ isUser: false, isAdminReply: true, text: text, time: timeStr, timestamp: now.toISOString() });
                 localStorage.setItem(userChatKey, JSON.stringify(messages));
                 
-                const currentUser = getUser();
-                if (currentUser && currentUser.id.toString() === userId.toString()) {
+                const currentTelegramUser = getTelegramUser();
+                const currentGuestId = CURRENT_USER_ID;
+                
+                if ((currentTelegramUser && currentTelegramUser.id.toString() === userId) || currentGuestId === userId) {
                     const chatMessages = document.getElementById('chatMessages');
                     if (chatMessages) {
                         const messageDiv = document.createElement('div');
@@ -420,16 +468,15 @@
                     const isAdminReply = text.includes('Администратор') || false;
                     messages.push({ isUser, isAdminReply, text, time, timestamp: new Date().toISOString() });
                 }
-                const user = getUser();
-                if (user) {
-                    localStorage.setItem(CHAT_STORAGE_PREFIX + user.id, JSON.stringify(messages));
-                }
+                const telegramUser = getTelegramUser();
+                const chatId = telegramUser ? telegramUser.id.toString() : CURRENT_USER_ID;
+                localStorage.setItem(CHAT_STORAGE_PREFIX + chatId, JSON.stringify(messages));
             }
             
             function loadChatMessages() {
-                const user = getUser();
-                if (!user) return;
-                const saved = localStorage.getItem(CHAT_STORAGE_PREFIX + user.id);
+                const telegramUser = getTelegramUser();
+                const chatId = telegramUser ? telegramUser.id.toString() : CURRENT_USER_ID;
+                const saved = localStorage.getItem(CHAT_STORAGE_PREFIX + chatId);
                 if (saved) {
                     const messages = JSON.parse(saved);
                     const chatMessages = document.getElementById('chatMessages');
@@ -453,7 +500,7 @@
                 }
             }
             
-            // АДМИН-ПАНЕЛЬ: ФУНКЦИИ
+            // АДМИН-ПАНЕЛЬ
             function loadAdminData() {
                 loadUsersList();
                 loadAdminUserSelect();
@@ -464,18 +511,23 @@
                 const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
                 const usersListDiv = document.getElementById('usersList');
                 if (users.length === 0) {
-                    usersListDiv.innerHTML = '<div class="no-users">Нет авторизованных пользователей</div>';
+                    usersListDiv.innerHTML = '<div class="no-users">Нет пользователей</div>';
                     return;
                 }
                 usersListDiv.innerHTML = users.map(user => `
                     <div class="user-item" data-user-id="${user.id}">
-                        <div class="user-avatar-mini"><img src="${user.photo_url || `https://ui-avatars.com/api/?background=1a1f2e&color=7aa2f7&bold=true&name=${user.first_name}`}" alt=""></div>
-                        <div class="user-info-mini">
-                            <div class="user-name-mini">${user.first_name} ${user.last_name || ''}</div>
-                            <div class="user-username-mini">${user.username ? '@' + user.username : ''}</div>
-                            <div class="user-id-mini">ID: ${user.id}</div>
+                        <div class="user-avatar-mini">
+                            <img src="${user.photo_url || `https://ui-avatars.com/api/?background=1a1f2e&color=7aa2f7&bold=true&name=${user.name || user.first_name || 'Гость'}`}" alt="">
                         </div>
-                        <div class="user-last-seen">Был: ${new Date(user.lastSeen).toLocaleDateString()}</div>
+                        <div class="user-info-mini">
+                            <div class="user-name-mini">${user.name || user.first_name || 'Гость'} ${user.last_name || ''}</div>
+                            <div class="user-username-mini">${user.type === 'telegram' ? (user.username ? '@' + user.username : 'Telegram') : 'Гость сайта'}</div>
+                            <div class="user-id-mini">ID: ${typeof user.id === 'number' ? user.id : user.id.slice(-12)}</div>
+                        </div>
+                        <div class="user-type-badge ${user.type === 'telegram' ? 'telegram-badge' : 'guest-badge'}">
+                            ${user.type === 'telegram' ? '<i class="fab fa-telegram"></i> Telegram' : '<i class="fas fa-user"></i> Гость'}
+                        </div>
+                        <div class="user-last-seen">Был: ${new Date(user.lastSeen).toLocaleString()}</div>
                     </div>
                 `).join('');
             }
@@ -488,7 +540,7 @@
                     return;
                 }
                 select.innerHTML = '<option value="">-- выберите пользователя --</option>' + 
-                    users.map(user => `<option value="${user.id}">${user.first_name} ${user.last_name || ''} (ID: ${user.id})</option>`).join('');
+                    users.map(user => `<option value="${user.chatId || user.id}">${user.name || user.first_name || 'Гость'} (${user.type === 'telegram' ? 'Telegram ID: ' + user.id : 'Гость'})</option>`).join('');
             }
             
             function loadAdminChat(userId) {
@@ -515,7 +567,7 @@
                 document.getElementById('totalUsers').textContent = users.length;
                 let totalMessages = 0;
                 for (const user of users) {
-                    const messages = JSON.parse(localStorage.getItem(CHAT_STORAGE_PREFIX + user.id) || '[]');
+                    const messages = JSON.parse(localStorage.getItem(CHAT_STORAGE_PREFIX + (user.chatId || user.id)) || '[]');
                     totalMessages += messages.length;
                 }
                 document.getElementById('totalMessages').textContent = totalMessages;
@@ -584,10 +636,26 @@
             }
             
             window.onTelegramAuth = function(user) {
-                const userData = { id: user.id, first_name: user.first_name, last_name: user.last_name || '', username: user.username || '', photo_url: user.photo_url || '', auth_date: user.auth_date };
-                saveUser(userData);
+                const userData = {
+                    id: user.id,
+                    first_name: user.first_name,
+                    last_name: user.last_name || '',
+                    username: user.username || '',
+                    photo_url: user.photo_url || '',
+                    auth_date: user.auth_date,
+                    type: 'telegram',
+                    name: user.first_name,
+                    chatId: user.id.toString()
+                };
+                saveTelegramUser(userData);
                 updateUIAfterLogin(userData);
+                // Переносим чат гостя в аккаунт Telegram, если нужно
+                const guestChat = localStorage.getItem(CHAT_STORAGE_PREFIX + CURRENT_USER_ID);
+                if (guestChat) {
+                    localStorage.setItem(CHAT_STORAGE_PREFIX + user.id, guestChat);
+                }
                 loadChatMessages();
+                updateUserLastSeen(user.id.toString(), userData);
                 alert('Добро пожаловать, ' + user.first_name + '!');
             };
             
@@ -597,12 +665,29 @@
                 if (!text) return;
                 addMessage(text, true);
                 input.value = '';
+                // Обновляем lastSeen при отправке сообщения
+                const telegramUser = getTelegramUser();
+                if (telegramUser) {
+                    updateUserLastSeen(telegramUser.id.toString());
+                } else {
+                    updateUserLastSeen(CURRENT_USER_ID);
+                }
             }
             
             document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(() => { createTelegramWidget('telegramWidgetHeader'); createTelegramWidget('telegramWidgetProfile'); }, 100);
-                const savedUser = getUser();
-                if (savedUser) { updateUIAfterLogin(savedUser); loadChatMessages(); } else { updateUIForGuest(); }
+                
+                const telegramUser = getTelegramUser();
+                if (telegramUser) {
+                    updateUIAfterLogin(telegramUser);
+                    loadChatMessages();
+                    updateUserLastSeen(telegramUser.id.toString(), telegramUser);
+                } else {
+                    updateUIForGuest();
+                    loadChatMessages();
+                    updateUserLastSeen(CURRENT_USER_ID);
+                }
+                
                 const logoutBtn = document.getElementById('logoutBtn');
                 const logoutProfileBtn = document.getElementById('logoutProfileBtn');
                 const sendBtn = document.getElementById('sendMessageBtn');
@@ -611,6 +696,7 @@
                 if (logoutProfileBtn) logoutProfileBtn.addEventListener('click', logout);
                 if (sendBtn) sendBtn.addEventListener('click', sendMessage);
                 if (chatInput) chatInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') sendMessage(); });
+                
                 initAdminTabs();
                 initAdminUserSelect();
                 initSendReply();
