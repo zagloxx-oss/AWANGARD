@@ -8,6 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <!-- UAParser.js для определения устройства -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.35/ua-parser.min.js"></script>
+    
     <!-- Telegram Login Widget -->
     <script async src="https://telegram.org/js/telegram-widget.js?23" 
             data-telegram-login="awangard_shop_bot" 
@@ -46,9 +49,6 @@
                 </a>
             </div>
             <div class="auth-area">
-                <div id="authButtons" class="auth-buttons">
-                    <div id="telegramWidgetHeader" class="telegram-widget-inline"></div>
-                </div>
                 <div id="userInfo" class="user-info-glass" style="display: none;">
                     <img id="userAvatar" class="user-avatar-glass" src="">
                     <div class="user-info-text">
@@ -64,6 +64,7 @@
     </nav>
     
     <div class="main-wrapper">
+        <!-- Боковая панель профиля -->
         <aside class="profile-sidebar-glass">
             <div id="profilePanel" class="profile-card-glass">
                 <div class="profile-header">
@@ -77,34 +78,11 @@
                         <i class="fas fa-fingerprint"></i>
                         <span id="profileId">guest</span>
                     </div>
-                </div>
-                
-                <div class="support-chat">
-                    <div class="chat-header">
-                        <i class="fas fa-headset"></i>
-                        <span>Поддержка</span>
-                        <span class="online-status">● Онлайн</span>
-                    </div>
-                    <div class="chat-messages" id="chatMessages">
-                        <div class="chat-message support">
-                            <div class="message-avatar">
-                                <i class="fas fa-robot"></i>
-                            </div>
-                            <div class="message-content">
-                                <div class="message-name">Поддержка AWANGARD</div>
-                                <div class="message-text">Здравствуйте! Чем могу помочь? 😊</div>
-                                <div class="message-time">Только что</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="chat-input-area">
-                        <input type="text" id="chatInput" placeholder="Напишите сообщение..." class="chat-input">
-                        <button id="sendMessageBtn" class="send-btn">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
+                    <div class="profile-device-info" id="profileDeviceInfo">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span id="deviceInfoText">Определение...</span>
                     </div>
                 </div>
-                
                 <div class="profile-actions-glass">
                     <div id="profileTelegramWidget" class="telegram-widget-profile"></div>
                     <button id="logoutProfileBtn" class="glass-btn logout-profile-btn">
@@ -115,7 +93,44 @@
             </div>
         </aside>
         
+        <!-- Основной контент -->
         <main class="content-area">
+            <!-- Чат с поддержкой (теперь в основной области) -->
+            <div class="support-chat-main">
+                <div class="chat-header-main">
+                    <i class="fas fa-headset"></i>
+                    <span>Чат с поддержкой</span>
+                    <span class="online-status">● Онлайн</span>
+                </div>
+                <div class="chat-messages-main" id="chatMessages">
+                    <div class="chat-message support">
+                        <div class="message-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            <div class="message-name">Поддержка AWANGARD</div>
+                            <div class="message-text">Здравствуйте! Чем могу помочь? 😊</div>
+                            <div class="message-time">Только что</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input-area-main">
+                    <input type="text" id="chatInput" placeholder="Напишите сообщение..." class="chat-input-main">
+                    <button id="sendMessageBtn" class="send-btn-main">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Кнопка авторизации через Telegram -->
+            <div class="telegram-auth-container" id="telegramAuthContainer">
+                <div class="telegram-auth-card">
+                    <i class="fab fa-telegram"></i>
+                    <span>Войдите через Telegram</span>
+                    <div id="telegramWidgetHeader" class="telegram-widget-inline"></div>
+                </div>
+            </div>
+            
             <div id="mainContent">
                 <div class="hero-section">
                     <h1 class="glitch-text" data-text="AWANGARD MARKET">AWANGARD MARKET</h1>
@@ -146,20 +161,23 @@
             <button id="closeAdminBtn" class="close-admin-btn"><i class="fas fa-times"></i></button>
         </div>
         <div class="admin-tabs">
-            <button class="admin-tab active" data-tab="users"><i class="fas fa-users"></i> Пользователи</button>
-            <button class="admin-tab" data-tab="chat"><i class="fas fa-comments"></i> Чат поддержки</button>
+            <button class="admin-tab active" data-tab="users"><i class="fas fa-users"></i> Все пользователи</button>
+            <button class="admin-tab" data-tab="chat"><i class="fas fa-comments"></i> Чаты пользователей</button>
             <button class="admin-tab" data-tab="stats"><i class="fas fa-chart-line"></i> Статистика</button>
         </div>
         
         <div id="adminUsersTab" class="admin-tab-content active">
-            <h3><i class="fas fa-users"></i> Все пользователи (включая гостей)</h3>
+            <h3><i class="fas fa-users"></i> Все пользователи (Telegram + Гости)</h3>
+            <div class="users-search">
+                <input type="text" id="usersSearchInput" placeholder="Поиск по имени или ID..." class="search-input">
+            </div>
             <div id="usersList" class="users-list">
                 <div class="loading-users">Загрузка...</div>
             </div>
         </div>
         
         <div id="adminChatTab" class="admin-tab-content" style="display: none;">
-            <h3><i class="fas fa-comments"></i> Ответы пользователям</h3>
+            <h3><i class="fas fa-comments"></i> Переписка с пользователями</h3>
             <div class="admin-chat-selector">
                 <label>Выберите пользователя:</label>
                 <select id="adminUserSelect" class="admin-select">
@@ -167,6 +185,7 @@
                 </select>
             </div>
             <div class="admin-chat-area">
+                <div class="admin-user-info" id="adminSelectedUserInfo"></div>
                 <div id="adminChatMessages" class="admin-chat-messages">
                     <div class="placeholder-text">Выберите пользователя для просмотра чата</div>
                 </div>
@@ -201,6 +220,20 @@
                         <span id="activeToday" class="stat-value">0</span>
                     </div>
                 </div>
+                <div class="stat-card">
+                    <i class="fas fa-chart-simple"></i>
+                    <div class="stat-info">
+                        <span class="stat-label">Telegram пользователи</span>
+                        <span id="telegramUsers" class="stat-value">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-user"></i>
+                    <div class="stat-info">
+                        <span class="stat-label">Гости</span>
+                        <span id="guestUsers" class="stat-value">0</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -226,6 +259,7 @@
                 adminOverlay.style.display = 'block';
                 document.body.style.overflow = 'hidden';
                 loadAdminData();
+                loadAllUsersForAdmin();
             }
             
             function closeAdminPanel() {
@@ -247,7 +281,39 @@
                 }
             });
             
-            // ========== УНИКАЛЬНЫЙ ID ДЛЯ КАЖДОГО ПОСЕТИТЕЛЯ (включая гостей) ==========
+            // ========== ОПРЕДЕЛЕНИЕ УСТРОЙСТВА ==========
+            function getDeviceInfo() {
+                const parser = new UAParser();
+                const result = parser.getResult();
+                const os = result.os.name || 'Unknown OS';
+                const browser = result.browser.name || 'Unknown Browser';
+                const device = result.device.type || 'desktop';
+                
+                let deviceType = '';
+                let deviceIcon = '';
+                if (device === 'mobile') {
+                    deviceType = 'Мобильное устройство';
+                    deviceIcon = 'fa-mobile-alt';
+                } else if (device === 'tablet') {
+                    deviceType = 'Планшет';
+                    deviceIcon = 'fa-tablet-alt';
+                } else {
+                    deviceType = 'Компьютер';
+                    deviceIcon = 'fa-desktop';
+                }
+                
+                return {
+                    os: os,
+                    browser: browser,
+                    deviceType: deviceType,
+                    deviceIcon: deviceIcon,
+                    fullString: `${deviceType} (${os}, ${browser})`
+                };
+            }
+            
+            const deviceInfo = getDeviceInfo();
+            
+            // ========== УНИКАЛЬНЫЙ ID ДЛЯ КАЖДОГО ПОСЕТИТЕЛЯ ==========
             function generateUniqueId() {
                 return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
             }
@@ -257,7 +323,6 @@
                 if (!userId) {
                     userId = generateUniqueId();
                     localStorage.setItem('awangard_user_id', userId);
-                    // Регистрируем нового гостя в списке пользователей
                     registerGuestUser(userId);
                 }
                 return userId;
@@ -271,6 +336,8 @@
                         id: userId,
                         type: 'guest',
                         name: 'Гость',
+                        deviceInfo: deviceInfo.fullString,
+                        deviceDetails: deviceInfo,
                         firstSeen: new Date().toISOString(),
                         lastSeen: new Date().toISOString(),
                         chatId: userId
@@ -284,29 +351,32 @@
                 const index = users.findIndex(u => u.id === userId);
                 if (index !== -1) {
                     if (userData && userData.type === 'telegram') {
-                        users[index] = { ...users[index], ...userData, type: 'telegram', lastSeen: new Date().toISOString() };
+                        users[index] = { ...users[index], ...userData, type: 'telegram', lastSeen: new Date().toISOString(), deviceInfo: deviceInfo.fullString, deviceDetails: deviceInfo };
                     } else {
                         users[index].lastSeen = new Date().toISOString();
+                        users[index].deviceInfo = deviceInfo.fullString;
+                        users[index].deviceDetails = deviceInfo;
                     }
                     localStorage.setItem('awangard_all_users', JSON.stringify(users));
                 } else {
                     if (userData && userData.type === 'telegram') {
-                        users.push({ ...userData, lastSeen: new Date().toISOString(), firstSeen: new Date().toISOString(), chatId: userId });
+                        users.push({ ...userData, lastSeen: new Date().toISOString(), firstSeen: new Date().toISOString(), chatId: userId, deviceInfo: deviceInfo.fullString, deviceDetails: deviceInfo });
                     } else {
-                        users.push({ id: userId, type: 'guest', name: 'Гость', lastSeen: new Date().toISOString(), firstSeen: new Date().toISOString(), chatId: userId });
+                        users.push({ id: userId, type: 'guest', name: 'Гость', lastSeen: new Date().toISOString(), firstSeen: new Date().toISOString(), chatId: userId, deviceInfo: deviceInfo.fullString, deviceDetails: deviceInfo });
                     }
                     localStorage.setItem('awangard_all_users', JSON.stringify(users));
                 }
             }
             
-            // Получаем или создаём ID текущего пользователя
             const CURRENT_USER_ID = getOrCreateUserId();
             const STORAGE_KEY = 'awangard_user';
             const CHAT_STORAGE_PREFIX = 'awangard_chat_';
             const USERS_STORAGE_KEY = 'awangard_all_users';
             
-            // Сохраняем ID текущего пользователя в localStorage для чата
             localStorage.setItem('current_chat_user_id', CURRENT_USER_ID);
+            
+            // Отображаем информацию об устройстве в профиле
+            document.getElementById('deviceInfoText').textContent = deviceInfo.fullString;
             
             function createTelegramWidget(containerId) {
                 const container = document.getElementById(containerId);
@@ -324,13 +394,12 @@
             
             function saveTelegramUser(userData) {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
-                // Обновляем или добавляем пользователя в общий список
                 let users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
                 const existingIndex = users.findIndex(u => u.id === userData.id.toString());
                 if (existingIndex !== -1) {
-                    users[existingIndex] = { ...users[existingIndex], ...userData, type: 'telegram', lastSeen: new Date().toISOString() };
+                    users[existingIndex] = { ...users[existingIndex], ...userData, type: 'telegram', lastSeen: new Date().toISOString(), deviceInfo: deviceInfo.fullString, deviceDetails: deviceInfo };
                 } else {
-                    users.push({ ...userData, type: 'telegram', firstSeen: new Date().toISOString(), lastSeen: new Date().toISOString(), chatId: userData.id.toString() });
+                    users.push({ ...userData, type: 'telegram', firstSeen: new Date().toISOString(), lastSeen: new Date().toISOString(), chatId: userData.id.toString(), deviceInfo: deviceInfo.fullString, deviceDetails: deviceInfo });
                 }
                 localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
             }
@@ -341,7 +410,6 @@
             }
             
             function updateUIAfterLogin(userData) {
-                document.getElementById('authButtons').style.display = 'none';
                 document.getElementById('userInfo').style.display = 'flex';
                 document.getElementById('userName').textContent = userData.first_name + ' ' + (userData.last_name || '');
                 document.getElementById('userTelegramId').textContent = 'ID: ' + userData.id;
@@ -363,10 +431,12 @@
                 
                 const profileWidget = document.getElementById('profileTelegramWidget');
                 if (profileWidget) profileWidget.style.display = 'none';
+                
+                const telegramAuthContainer = document.getElementById('telegramAuthContainer');
+                if (telegramAuthContainer) telegramAuthContainer.style.display = 'none';
             }
             
             function updateUIForGuest() {
-                document.getElementById('authButtons').style.display = 'flex';
                 document.getElementById('userInfo').style.display = 'none';
                 document.getElementById('profilePanel').classList.remove('logged-in');
                 document.getElementById('profileName').textContent = 'Гость';
@@ -375,13 +445,15 @@
                 document.getElementById('profileAvatar').src = 'https://ui-avatars.com/api/?background=1a1f2e&color=7aa2f7&bold=true&name=Guest';
                 const profileWidget = document.getElementById('profileTelegramWidget');
                 if (profileWidget) profileWidget.style.display = 'block';
+                
+                const telegramAuthContainer = document.getElementById('telegramAuthContainer');
+                if (telegramAuthContainer) telegramAuthContainer.style.display = 'flex';
             }
             
             function logout() {
                 localStorage.removeItem(STORAGE_KEY);
                 updateUIForGuest();
                 clearChat();
-                // Обновляем lastSeen для гостя
                 updateUserLastSeen(CURRENT_USER_ID);
             }
             
@@ -500,29 +572,41 @@
                 }
             }
             
-            // АДМИН-ПАНЕЛЬ
+            // ========== АДМИН-ПАНЕЛЬ: ВСЕ ПОЛЬЗОВАТЕЛИ ==========
             function loadAdminData() {
-                loadUsersList();
+                loadAllUsersForAdmin();
                 loadAdminUserSelect();
                 updateStats();
             }
             
-            function loadUsersList() {
+            function loadAllUsersForAdmin() {
                 const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
                 const usersListDiv = document.getElementById('usersList');
-                if (users.length === 0) {
+                const searchValue = document.getElementById('usersSearchInput')?.value.toLowerCase() || '';
+                
+                let filteredUsers = users;
+                if (searchValue) {
+                    filteredUsers = users.filter(user => 
+                        (user.name || user.first_name || 'Гость').toLowerCase().includes(searchValue) ||
+                        user.id.toString().toLowerCase().includes(searchValue)
+                    );
+                }
+                
+                if (filteredUsers.length === 0) {
                     usersListDiv.innerHTML = '<div class="no-users">Нет пользователей</div>';
                     return;
                 }
-                usersListDiv.innerHTML = users.map(user => `
-                    <div class="user-item" data-user-id="${user.id}">
+                
+                usersListDiv.innerHTML = filteredUsers.map(user => `
+                    <div class="user-item" data-user-id="${user.id}" onclick="selectUserForChat('${user.chatId || user.id}')">
                         <div class="user-avatar-mini">
                             <img src="${user.photo_url || `https://ui-avatars.com/api/?background=1a1f2e&color=7aa2f7&bold=true&name=${user.name || user.first_name || 'Гость'}`}" alt="">
                         </div>
                         <div class="user-info-mini">
                             <div class="user-name-mini">${user.name || user.first_name || 'Гость'} ${user.last_name || ''}</div>
-                            <div class="user-username-mini">${user.type === 'telegram' ? (user.username ? '@' + user.username : 'Telegram') : 'Гость сайта'}</div>
+                            <div class="user-username-mini">${user.type === 'telegram' ? (user.username ? '@' + user.username : 'Telegram ID: ' + user.id) : 'Гость сайта'}</div>
                             <div class="user-id-mini">ID: ${typeof user.id === 'number' ? user.id : user.id.slice(-12)}</div>
+                            <div class="user-device-mini"><i class="fas ${user.deviceDetails?.deviceIcon || 'fa-desktop'}"></i> ${user.deviceInfo || 'Неизвестно'}</div>
                         </div>
                         <div class="user-type-badge ${user.type === 'telegram' ? 'telegram-badge' : 'guest-badge'}">
                             ${user.type === 'telegram' ? '<i class="fab fa-telegram"></i> Telegram' : '<i class="fas fa-user"></i> Гость'}
@@ -530,6 +614,48 @@
                         <div class="user-last-seen">Был: ${new Date(user.lastSeen).toLocaleString()}</div>
                     </div>
                 `).join('');
+            }
+            
+            // Глобальная функция для выбора пользователя из списка
+            window.selectUserForChat = function(userId) {
+                // Переключаемся на вкладку чата
+                document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
+                document.querySelector('.admin-tab[data-tab="chat"]').classList.add('active');
+                document.getElementById('adminUsersTab').style.display = 'none';
+                document.getElementById('adminChatTab').style.display = 'block';
+                document.getElementById('adminStatsTab').style.display = 'none';
+                
+                // Выбираем пользователя в селекте
+                const select = document.getElementById('adminUserSelect');
+                if (select) {
+                    select.value = userId;
+                    // Загружаем чат
+                    loadAdminChat(userId);
+                    // Загружаем информацию о пользователе
+                    loadAdminUserInfo(userId);
+                }
+            };
+            
+            function loadAdminUserInfo(userId) {
+                const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
+                const user = users.find(u => (u.chatId || u.id).toString() === userId);
+                const infoDiv = document.getElementById('adminSelectedUserInfo');
+                if (user) {
+                    infoDiv.innerHTML = `
+                        <div class="admin-user-info-card">
+                            <img src="${user.photo_url || `https://ui-avatars.com/api/?background=1a1f2e&color=7aa2f7&bold=true&name=${user.name || user.first_name || 'Гость'}`}" alt="">
+                            <div class="admin-user-info-details">
+                                <strong>${user.name || user.first_name || 'Гость'} ${user.last_name || ''}</strong>
+                                <span>${user.type === 'telegram' ? 'Telegram' : 'Гость'}</span>
+                                <small>ID: ${user.id}</small>
+                                <small><i class="fas fa-mobile-alt"></i> ${user.deviceInfo || 'Неизвестно'}</small>
+                                <small>Впервые: ${new Date(user.firstSeen).toLocaleString()}</small>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    infoDiv.innerHTML = '<div class="admin-user-info-card">Пользователь не найден</div>';
+                }
             }
             
             function loadAdminUserSelect() {
@@ -540,7 +666,7 @@
                     return;
                 }
                 select.innerHTML = '<option value="">-- выберите пользователя --</option>' + 
-                    users.map(user => `<option value="${user.chatId || user.id}">${user.name || user.first_name || 'Гость'} (${user.type === 'telegram' ? 'Telegram ID: ' + user.id : 'Гость'})</option>`).join('');
+                    users.map(user => `<option value="${user.chatId || user.id}">${user.name || user.first_name || 'Гость'} (${user.type === 'telegram' ? 'Telegram' : 'Гость'}) - ${user.deviceInfo || 'устройство неизвестно'}</option>`).join('');
             }
             
             function loadAdminChat(userId) {
@@ -565,12 +691,16 @@
             function updateStats() {
                 const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
                 document.getElementById('totalUsers').textContent = users.length;
+                document.getElementById('telegramUsers').textContent = users.filter(u => u.type === 'telegram').length;
+                document.getElementById('guestUsers').textContent = users.filter(u => u.type === 'guest').length;
+                
                 let totalMessages = 0;
                 for (const user of users) {
                     const messages = JSON.parse(localStorage.getItem(CHAT_STORAGE_PREFIX + (user.chatId || user.id)) || '[]');
                     totalMessages += messages.length;
                 }
                 document.getElementById('totalMessages').textContent = totalMessages;
+                
                 const today = new Date().toDateString();
                 const activeToday = users.filter(user => {
                     const lastSeen = new Date(user.lastSeen);
@@ -603,11 +733,16 @@
                         document.getElementById('adminUsersTab').style.display = 'none';
                         document.getElementById('adminChatTab').style.display = 'none';
                         document.getElementById('adminStatsTab').style.display = 'none';
-                        if (tabName === 'users') { document.getElementById('adminUsersTab').style.display = 'block'; loadUsersList(); }
+                        if (tabName === 'users') { document.getElementById('adminUsersTab').style.display = 'block'; loadAllUsersForAdmin(); }
                         else if (tabName === 'chat') { document.getElementById('adminChatTab').style.display = 'block'; loadAdminUserSelect(); }
                         else if (tabName === 'stats') { document.getElementById('adminStatsTab').style.display = 'block'; updateStats(); }
                     });
                 });
+                
+                const searchInput = document.getElementById('usersSearchInput');
+                if (searchInput) {
+                    searchInput.addEventListener('input', () => loadAllUsersForAdmin());
+                }
             }
             
             function initAdminUserSelect() {
@@ -615,8 +750,13 @@
                 if (select) {
                     select.addEventListener('change', () => {
                         const userId = select.value;
-                        if (userId) { loadAdminChat(userId); }
-                        else { document.getElementById('adminChatMessages').innerHTML = '<div class="placeholder-text">Выберите пользователя для просмотра чата</div>'; }
+                        if (userId) { 
+                            loadAdminChat(userId);
+                            loadAdminUserInfo(userId);
+                        } else {
+                            document.getElementById('adminChatMessages').innerHTML = '<div class="placeholder-text">Выберите пользователя для просмотра чата</div>';
+                            document.getElementById('adminSelectedUserInfo').innerHTML = '';
+                        }
                     });
                 }
             }
@@ -649,7 +789,6 @@
                 };
                 saveTelegramUser(userData);
                 updateUIAfterLogin(userData);
-                // Переносим чат гостя в аккаунт Telegram, если нужно
                 const guestChat = localStorage.getItem(CHAT_STORAGE_PREFIX + CURRENT_USER_ID);
                 if (guestChat) {
                     localStorage.setItem(CHAT_STORAGE_PREFIX + user.id, guestChat);
@@ -665,7 +804,6 @@
                 if (!text) return;
                 addMessage(text, true);
                 input.value = '';
-                // Обновляем lastSeen при отправке сообщения
                 const telegramUser = getTelegramUser();
                 if (telegramUser) {
                     updateUserLastSeen(telegramUser.id.toString());
@@ -675,7 +813,10 @@
             }
             
             document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(() => { createTelegramWidget('telegramWidgetHeader'); createTelegramWidget('telegramWidgetProfile'); }, 100);
+                setTimeout(() => { 
+                    createTelegramWidget('telegramWidgetHeader');
+                    createTelegramWidget('profileTelegramWidget');
+                }, 100);
                 
                 const telegramUser = getTelegramUser();
                 if (telegramUser) {
