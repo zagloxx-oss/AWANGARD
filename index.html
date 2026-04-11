@@ -16,7 +16,15 @@
         </nav>
     </header>
     <main>
+        <!-- Контейнер для карточек на главной странице -->
         <div id="cardsContainer" class="cards-container"></div>
+        
+        <!-- Контейнер для страницы "О нас" (изначально скрыт) -->
+        <div id="aboutContainer" style="display: none;">
+            <div id="infoBanner" class="center-text interactive-banner">
+                Купить сопровождение или UC в плашке главная
+            </div>
+        </div>
     </main>
     <footer>
         <p>© 2026 AWANGARD | <a href="https://vk.com/vip_kotik_1" target="_blank">ВКонтакте</a></p>
@@ -27,6 +35,8 @@
             var homeLink = document.getElementById('homeLink');
             var aboutLink = document.getElementById('aboutLink');
             var cardsContainer = document.getElementById('cardsContainer');
+            var aboutContainer = document.getElementById('aboutContainer');
+            var infoBanner = document.getElementById('infoBanner');
 
             // Данные для UC карточек с ценами (первые 6 с бонусами и ценами, остальные 4 обычные без клика)
             var ucCardsData = [
@@ -48,9 +58,23 @@
                 "Сопровождение", "Сопровождение", "Сопровождение", "Сопровождение", "Сопровождение"
             ];
 
-            // Функция показа всплывающего окна
+            // Функция показа всплывающего окна для карточек
             function showPaymentPopup(cardText, price) {
                 alert("Оплатить " + cardText + " - " + price);
+            }
+
+            // Функция для открытия отдельного окна с сообщением (при клике на плашку)
+            function openInfoWindow() {
+                var message = "Привет! Я создал этот сайт сам, и пока он сырой, но вы можете что-нибудь купить и поддержать меня, а также оставьте отзыв, пж!";
+                // Открываем новое окно с сообщением
+                var newWindow = window.open('', '_blank', 'width=500,height=300,resizable=yes,scrollbars=yes');
+                newWindow.document.write('<!DOCTYPE html><html><head><title>Информация</title><style>body{font-family:Arial;background:#0a0e17;color:#c0caf5;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;padding:20px;text-align:center;} .message{background:#1a1f2e;padding:30px;border-radius:20px;border:1px solid #2c3142;}</style></head><body><div class="message">' + message + '</div></body></html>');
+                newWindow.document.close();
+            }
+
+            // Добавляем обработчик клика на плашку (если она существует)
+            if (infoBanner) {
+                infoBanner.addEventListener('click', openInfoWindow);
             }
 
             function createCards() {
@@ -84,11 +108,15 @@
             }
 
             function showAbout() {
-                cardsContainer.innerHTML = '';
-                var message = document.createElement('div');
-                message.className = 'info-message';
-                message.textContent = 'Страница "О нас" в разработке';
-                cardsContainer.appendChild(message);
+                // Показываем контейнер "О нас", скрываем карточки
+                cardsContainer.style.display = 'none';
+                aboutContainer.style.display = 'block';
+            }
+
+            function showHome() {
+                // Показываем карточки, скрываем контейнер "О нас"
+                cardsContainer.style.display = 'grid';
+                aboutContainer.style.display = 'none';
             }
 
             if (homeLink) {
@@ -96,7 +124,7 @@
                     e.preventDefault();
                     homeLink.classList.add('active');
                     aboutLink.classList.remove('active');
-                    createCards();
+                    showHome();
                 });
             }
 
@@ -109,6 +137,8 @@
                 });
             }
 
+            // При загрузке страницы показываем главную (карточки)
+            showHome();
             createCards();
         })();
     </script>

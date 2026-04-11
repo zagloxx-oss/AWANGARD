@@ -64,6 +64,37 @@ main {
     overflow-y: auto;
 }
 
+/* Большая надпись по центру (плашка) */
+.center-text {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #c0caf5;
+    text-shadow: 0 0 10px rgba(192, 202, 245, 0.5);
+    background: rgba(18, 22, 33, 0.6);
+    backdrop-filter: blur(4px);
+    padding: 2rem 3rem;
+    border-radius: 40px;
+    border: 1px solid #2c3142;
+    max-width: 90%;
+    margin: 0 auto;
+    text-align: center;
+    word-break: break-word;
+}
+
+/* Интерактивная плашка */
+.interactive-banner {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.interactive-banner:hover {
+    transform: scale(1.02);
+    border-color: #7aa2f7;
+    box-shadow: 0 0 15px rgba(122, 162, 247, 0.3);
+    background: rgba(18, 22, 33, 0.8);
+}
+
 .cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 200px));
@@ -138,6 +169,11 @@ footer a:hover {
     
     header h1 {
         font-size: 1.6rem;
+    }
+    
+    .center-text {
+        font-size: 1.2rem;
+        padding: 1rem 1.5rem;
     }
     
     .cards-container {
