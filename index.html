@@ -38,48 +38,17 @@
             </div>
             <div class="nav-links">
                 <a href="#" id="homeLink" class="active"><i class="fas fa-home"></i><span>Главная</span></a>
+                <a href="#" id="profileLink"><i class="fas fa-user"></i><span>Профиль</span></a>
+                <a href="#" id="reviewsLink"><i class="fas fa-star"></i><span>Отзывы</span></a>
                 <a href="#" id="supportLink"><i class="fas fa-headset"></i><span>Поддержка</span></a>
                 <a href="#" id="aboutLink"><i class="fas fa-info-circle"></i><span>О нас</span></a>
-            </div>
-            <div class="auth-area">
-                <div id="userInfo" class="user-info-neon" style="display: none;">
-                    <span id="userName" class="user-name-neon"></span>
-                    <button id="logoutBtn" class="logout-btn-neon"><i class="fas fa-sign-out-alt"></i></button>
-                </div>
             </div>
         </div>
     </nav>
     
     <div class="main-wrapper">
-        <aside class="profile-sidebar-neon">
-            <div id="profilePanel" class="profile-card-neon">
-                <div class="profile-header">
-                    <div class="profile-avatar-neon">
-                        <img id="profileAvatar" src="https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=Guest" alt="Avatar">
-                        <div class="avatar-pulse"></div>
-                    </div>
-                    <h3 id="profileName">Гость</h3>
-                    <p id="profileUsername"></p>
-                    <div class="profile-id-neon">
-                        <i class="fas fa-fingerprint"></i>
-                        <span id="profileId">guest</span>
-                    </div>
-                    <div class="profile-device-neon" id="profileDeviceInfo">
-                        <i class="fas fa-mobile-alt"></i>
-                        <span id="deviceInfoText">Определение...</span>
-                    </div>
-                </div>
-                <div class="profile-actions-neon">
-                    <div id="telegramLoginContainer" class="telegram-login-container"></div>
-                    <button id="logoutProfileBtn" class="neon-btn logout-neon-btn">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Выйти</span>
-                    </button>
-                </div>
-            </div>
-        </aside>
-        
         <main class="content-area">
+            <!-- Главная страница -->
             <div id="mainContent">
                 <div class="hero-section">
                     <h1 class="neon-glitch" data-text="AWANGARD NEON">AWANGARD NEON</h1>
@@ -88,24 +57,110 @@
                 <div id="cardsContainer" class="cards-grid-neon"></div>
             </div>
             
+            <!-- Страница профиля -->
+            <div id="profileContent" style="display: none;">
+                <div class="profile-page-card">
+                    <div class="profile-page-header">
+                        <div class="profile-page-avatar">
+                            <img id="profilePageAvatar" src="https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=Guest" alt="Avatar">
+                            <div class="avatar-pulse"></div>
+                        </div>
+                        <div class="profile-page-info">
+                            <h2 id="profilePageName">Гость</h2>
+                            <p id="profilePageUsername"></p>
+                            <div class="profile-page-id">
+                                <i class="fas fa-fingerprint"></i>
+                                <span id="profilePageId">guest</span>
+                            </div>
+                            <div class="profile-page-device" id="profilePageDeviceInfo">
+                                <i class="fas fa-mobile-alt"></i>
+                                <span id="deviceInfoTextPage">Определение...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-page-actions">
+                        <div id="telegramLoginPage" class="telegram-login-page"></div>
+                        <button id="logoutPageBtn" class="neon-btn logout-neon-btn" style="display: none;">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Выйти</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Страница отзывов -->
+            <div id="reviewsContent" style="display: none;">
+                <div class="reviews-page-card">
+                    <h2><i class="fas fa-star"></i> Отзывы наших клиентов</h2>
+                    <div class="reviews-stats">
+                        <div class="average-rating">
+                            <span class="average-value" id="averageRating">0</span>
+                            <div class="stars-display" id="averageStars"></div>
+                            <span class="reviews-count">(<span id="reviewsCount">0</span> отзывов)</span>
+                        </div>
+                    </div>
+                    <div id="reviewsList" class="reviews-list">
+                        <div class="no-reviews">Пока нет отзывов. Будьте первым!</div>
+                    </div>
+                    <div class="add-review-form">
+                        <h3>Оставить отзыв</h3>
+                        <div class="rating-input">
+                            <span>Ваша оценка:</span>
+                            <div class="stars-input" id="starsInput">
+                                <i class="far fa-star" data-value="1"></i>
+                                <i class="far fa-star" data-value="2"></i>
+                                <i class="far fa-star" data-value="3"></i>
+                                <i class="far fa-star" data-value="4"></i>
+                                <i class="far fa-star" data-value="5"></i>
+                            </div>
+                        </div>
+                        <textarea id="reviewText" placeholder="Напишите ваш отзыв..." maxlength="500" class="review-textarea"></textarea>
+                        <div class="review-actions">
+                            <span class="char-counter">0/500</span>
+                            <button id="submitReviewBtn" class="neon-btn submit-review-btn">Отправить отзыв</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Страница "О нас" -->
             <div id="aboutContainer" style="display: none;">
                 <div class="about-card-neon">
-                    <div class="about-icon">
-                        <i class="fas fa-store"></i>
-                    </div>
+                    <div class="about-icon"><i class="fas fa-store"></i></div>
                     <h2>О нас</h2>
                     <p>AWANGARD — это надёжный магазин игровых товаров для PUBG Mobile. Мы предлагаем лучшие цены и моментальную доставку.</p>
-                    <div id="infoBanner" class="info-banner-neon">
-                        <i class="fas fa-comment-dots"></i>
-                        <span>Нажмите, чтобы узнать больше</span>
-                    </div>
                 </div>
             </div>
         </main>
     </div>
     
-    <div class="mobile-auth-bar" id="mobileAuthBar">
-        <div id="mobileTelegramContainer" class="mobile-telegram-container"></div>
+    <!-- Модальное окно выбора оплаты -->
+    <div id="paymentModal" class="payment-modal" style="display: none;">
+        <div class="payment-modal-content">
+            <div class="payment-modal-header">
+                <h3><i class="fas fa-credit-card"></i> Выберите способ оплаты</h3>
+                <button class="close-modal" id="closeModalBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="payment-modal-body">
+                <div class="payment-option" data-method="donation">
+                    <i class="fas fa-gift"></i>
+                    <div class="payment-option-info">
+                        <span class="payment-option-title">DonationAlerts</span>
+                        <span class="payment-option-desc">Быстрая оплата картой, ЮMoney, криптовалютой</span>
+                    </div>
+                </div>
+                <div class="payment-option" data-method="manual">
+                    <i class="fas fa-headset"></i>
+                    <div class="payment-option-info">
+                        <span class="payment-option-title">Ручная оплата</span>
+                        <span class="payment-option-desc">Свяжитесь с поддержкой для оплаты</span>
+                    </div>
+                </div>
+            </div>
+            <div class="payment-modal-footer">
+                <button class="cancel-btn" id="cancelPaymentBtn">Отмена</button>
+            </div>
+        </div>
     </div>
     
     <div id="adminPanel" class="admin-panel-neon" style="display: none;">
@@ -116,31 +171,29 @@
         <div class="admin-tabs-neon">
             <button class="admin-tab-neon active" data-tab="users"><i class="fas fa-users"></i> Users</button>
             <button class="admin-tab-neon" data-tab="chat"><i class="fas fa-comments"></i> Chats</button>
+            <button class="admin-tab-neon" data-tab="reviews"><i class="fas fa-star"></i> Reviews</button>
             <button class="admin-tab-neon" data-tab="stats"><i class="fas fa-chart-line"></i> Stats</button>
         </div>
         
         <div id="adminUsersTab" class="admin-tab-content-neon active">
             <h3><i class="fas fa-users"></i> Все пользователи</h3>
-            <div class="users-search">
-                <input type="text" id="usersSearchInput" placeholder="Поиск..." class="search-input-neon">
-            </div>
+            <div class="users-search"><input type="text" id="usersSearchInput" placeholder="Поиск..." class="search-input-neon"></div>
             <div id="usersList" class="users-list-neon"><div class="loading-users">Загрузка...</div></div>
         </div>
         
         <div id="adminChatTab" class="admin-tab-content-neon" style="display: none;">
             <h3><i class="fas fa-comments"></i> Чаты пользователей</h3>
-            <div class="admin-chat-selector">
-                <label>Выберите пользователя:</label>
-                <select id="adminUserSelect" class="admin-select-neon"><option value="">-- выберите --</option></select>
-            </div>
+            <div class="admin-chat-selector"><label>Выберите пользователя:</label><select id="adminUserSelect" class="admin-select-neon"><option value="">-- выберите --</option></select></div>
             <div class="admin-chat-area-neon">
                 <div id="adminSelectedUserInfo" class="admin-user-info-neon"></div>
                 <div id="adminChatMessages" class="admin-chat-messages-neon"><div class="placeholder-text">Выберите пользователя</div></div>
-                <div class="admin-chat-input-area-neon">
-                    <input type="text" id="adminReplyInput" placeholder="Ответ пользователю..." class="admin-chat-input-neon">
-                    <button id="sendReplyBtn" class="send-reply-neon"><i class="fas fa-paper-plane"></i></button>
-                </div>
+                <div class="admin-chat-input-area-neon"><input type="text" id="adminReplyInput" placeholder="Ответ пользователю..." class="admin-chat-input-neon"><button id="sendReplyBtn" class="send-reply-neon"><i class="fas fa-paper-plane"></i></button></div>
             </div>
+        </div>
+        
+        <div id="adminReviewsTab" class="admin-tab-content-neon" style="display: none;">
+            <h3><i class="fas fa-star"></i> Управление отзывами</h3>
+            <div id="adminReviewsList" class="admin-reviews-list"><div class="loading-users">Загрузка...</div></div>
         </div>
         
         <div id="adminStatsTab" class="admin-tab-content-neon" style="display: none;">
@@ -148,37 +201,36 @@
                 <div class="stat-card-neon"><i class="fas fa-users"></i><div class="stat-info-neon"><span class="stat-label">Всего</span><span id="totalUsers" class="stat-value-neon">0</span></div></div>
                 <div class="stat-card-neon"><i class="fab fa-telegram"></i><div class="stat-info-neon"><span class="stat-label">Telegram</span><span id="telegramUsers" class="stat-value-neon">0</span></div></div>
                 <div class="stat-card-neon"><i class="fas fa-user"></i><div class="stat-info-neon"><span class="stat-label">Гости</span><span id="guestUsers" class="stat-value-neon">0</span></div></div>
-                <div class="stat-card-neon"><i class="fas fa-comments"></i><div class="stat-info-neon"><span class="stat-label">Сообщений</span><span id="totalMessages" class="stat-value-neon">0</span></div></div>
+                <div class="stat-card-neon"><i class="fas fa-star"></i><div class="stat-info-neon"><span class="stat-label">Отзывов</span><span id="totalReviews" class="stat-value-neon">0</span></div></div>
             </div>
         </div>
     </div>
     <div id="adminOverlay" class="admin-overlay-neon" style="display: none;"></div>
     
-    <footer class="neon-footer">
-        <p>© 2026 AWANGARD | NEON PUBG Mobile Store</p>
-    </footer>
+    <footer class="neon-footer"><p>© 2026 AWANGARD | NEON PUBG Mobile Store</p></footer>
 
     <script>
         (function() {
-            // ========== НАСТРОЙКИ АДМИН-ПАНЕЛИ ==========
+            // ========== ОПТИМИЗАЦИЯ: ленивая загрузка ==========
+            const lazyLoadObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.classList.remove('lazy');
+                        lazyLoadObserver.unobserve(img);
+                    }
+                });
+            });
+            
+            // ========== АДМИН-ПАНЕЛЬ ==========
             const ADMIN_CODE = 'AWANGARD';
             let secretCode = '';
-            
             const adminPanel = document.getElementById('adminPanel');
             const adminOverlay = document.getElementById('adminOverlay');
             
-            function openAdminPanel() {
-                adminPanel.style.display = 'flex';
-                adminOverlay.style.display = 'block';
-                document.body.style.overflow = 'hidden';
-                loadAdminData();
-            }
-            
-            function closeAdminPanel() {
-                adminPanel.style.display = 'none';
-                adminOverlay.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
+            function openAdminPanel() { adminPanel.style.display = 'flex'; adminOverlay.style.display = 'block'; document.body.style.overflow = 'hidden'; loadAdminData(); }
+            function closeAdminPanel() { adminPanel.style.display = 'none'; adminOverlay.style.display = 'none'; document.body.style.overflow = 'auto'; }
             
             document.addEventListener('keydown', function(e) {
                 if (e.key.length === 1 && /[A-Za-z0-9]/.test(e.key)) {
@@ -200,7 +252,7 @@
             }
             
             const deviceInfo = getDeviceInfo();
-            const deviceInfoElement = document.getElementById('deviceInfoText');
+            const deviceInfoElement = document.getElementById('deviceInfoTextPage');
             if (deviceInfoElement) deviceInfoElement.textContent = deviceInfo.fullString;
             
             // ========== УНИКАЛЬНЫЙ ID ==========
@@ -208,11 +260,7 @@
             
             function getOrCreateUserId() {
                 let userId = localStorage.getItem('awangard_user_id');
-                if (!userId) {
-                    userId = generateUniqueId();
-                    localStorage.setItem('awangard_user_id', userId);
-                    registerUser(userId, 'guest', 'Гость');
-                }
+                if (!userId) { userId = generateUniqueId(); localStorage.setItem('awangard_user_id', userId); registerUser(userId, 'guest', 'Гость'); }
                 return userId;
             }
             
@@ -234,74 +282,40 @@
             const CHAT_STORAGE_PREFIX = 'awangard_chat_';
             const USERS_STORAGE_KEY = 'awangard_all_users';
             const TELEGRAM_USER_KEY = 'awangard_telegram_user';
+            const REVIEWS_STORAGE_KEY = 'awangard_reviews';
             
-            function getTelegramUser() {
-                const saved = localStorage.getItem(TELEGRAM_USER_KEY);
-                return saved ? JSON.parse(saved) : null;
-            }
+            function getTelegramUser() { const saved = localStorage.getItem(TELEGRAM_USER_KEY); return saved ? JSON.parse(saved) : null; }
             
             function saveTelegramUser(userData) {
                 localStorage.setItem(TELEGRAM_USER_KEY, JSON.stringify(userData));
                 let users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
                 const existing = users.find(u => u.id === userData.id.toString());
-                if (existing) {
-                    existing.type = 'telegram';
-                    existing.name = userData.first_name + ' ' + (userData.last_name || '');
-                    existing.photo = userData.photo_url;
-                    existing.telegramId = userData.id;
-                    existing.lastSeen = new Date().toISOString();
-                } else {
-                    users.push({ id: userData.id.toString(), type: 'telegram', name: userData.first_name + ' ' + (userData.last_name || ''), photo: userData.photo_url, telegramId: userData.id, deviceInfo: deviceInfo.fullString, firstSeen: new Date().toISOString(), lastSeen: new Date().toISOString(), chatId: userData.id.toString() });
-                }
+                if (existing) { existing.type = 'telegram'; existing.name = userData.first_name + ' ' + (userData.last_name || ''); existing.photo = userData.photo_url; existing.telegramId = userData.id; existing.lastSeen = new Date().toISOString(); }
+                else { users.push({ id: userData.id.toString(), type: 'telegram', name: userData.first_name + ' ' + (userData.last_name || ''), photo: userData.photo_url, telegramId: userData.id, deviceInfo: deviceInfo.fullString, firstSeen: new Date().toISOString(), lastSeen: new Date().toISOString(), chatId: userData.id.toString() }); }
                 localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
             }
             
             function updateUIAfterLogin(userData) {
-                const userInfoDiv = document.getElementById('userInfo');
-                const userNameSpan = document.getElementById('userName');
-                const profilePanelDiv = document.getElementById('profilePanel');
-                const profileNameH3 = document.getElementById('profileName');
-                const profileUsernameP = document.getElementById('profileUsername');
-                const profileIdSpan = document.getElementById('profileId');
-                const profileAvatarImg = document.getElementById('profileAvatar');
-                const mobileAuthBar = document.getElementById('mobileAuthBar');
-                const telegramContainer = document.getElementById('telegramLoginContainer');
-                
-                if (userInfoDiv) userInfoDiv.style.display = 'flex';
-                if (userNameSpan) userNameSpan.textContent = userData.first_name + ' ' + (userData.last_name || '');
-                if (profilePanelDiv) profilePanelDiv.classList.add('logged-in');
-                if (profileNameH3) profileNameH3.textContent = userData.first_name + ' ' + (userData.last_name || '');
-                if (profileUsernameP) profileUsernameP.textContent = userData.username ? '@' + userData.username : '';
-                if (profileIdSpan) profileIdSpan.textContent = userData.id;
-                if (profileAvatarImg) profileAvatarImg.src = userData.photo_url || `https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=${userData.first_name}`;
-                if (mobileAuthBar) mobileAuthBar.style.display = 'none';
-                if (telegramContainer) telegramContainer.style.display = 'none';
+                document.getElementById('profilePageName').textContent = userData.first_name + ' ' + (userData.last_name || '');
+                document.getElementById('profilePageUsername').textContent = userData.username ? '@' + userData.username : '';
+                document.getElementById('profilePageId').textContent = userData.id;
+                document.getElementById('profilePageAvatar').src = userData.photo_url || `https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=${userData.first_name}`;
+                document.getElementById('telegramLoginPage').style.display = 'none';
+                document.getElementById('logoutPageBtn').style.display = 'flex';
+                // Обновляем информацию в админке
+                loadUsersList();
             }
             
             function updateUIForGuest() {
-                const userInfoDiv = document.getElementById('userInfo');
-                const profilePanelDiv = document.getElementById('profilePanel');
-                const profileNameH3 = document.getElementById('profileName');
-                const profileUsernameP = document.getElementById('profileUsername');
-                const profileIdSpan = document.getElementById('profileId');
-                const profileAvatarImg = document.getElementById('profileAvatar');
-                const mobileAuthBar = document.getElementById('mobileAuthBar');
-                const telegramContainer = document.getElementById('telegramLoginContainer');
-                
-                if (userInfoDiv) userInfoDiv.style.display = 'none';
-                if (profilePanelDiv) profilePanelDiv.classList.remove('logged-in');
-                if (profileNameH3) profileNameH3.textContent = 'Гость';
-                if (profileUsernameP) profileUsernameP.textContent = '';
-                if (profileIdSpan) profileIdSpan.textContent = CURRENT_USER_ID.slice(-8);
-                if (profileAvatarImg) profileAvatarImg.src = 'https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=Guest';
-                if (mobileAuthBar) mobileAuthBar.style.display = 'flex';
-                if (telegramContainer) telegramContainer.style.display = 'block';
+                document.getElementById('profilePageName').textContent = 'Гость';
+                document.getElementById('profilePageUsername').textContent = '';
+                document.getElementById('profilePageId').textContent = CURRENT_USER_ID.slice(-8);
+                document.getElementById('profilePageAvatar').src = 'https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=Guest';
+                document.getElementById('telegramLoginPage').style.display = 'block';
+                document.getElementById('logoutPageBtn').style.display = 'none';
             }
             
-            function logout() {
-                localStorage.removeItem(TELEGRAM_USER_KEY);
-                updateUIForGuest();
-            }
+            function logout() { localStorage.removeItem(TELEGRAM_USER_KEY); updateUIForGuest(); }
             
             function addAdminMessageToUser(userId, text) {
                 const messages = JSON.parse(localStorage.getItem(CHAT_STORAGE_PREFIX + userId) || '[]');
@@ -317,21 +331,17 @@
             function initTelegramLogin() {
                 window.onTelegramAuth = function(user) {
                     if (user && user.id) {
-                        const userData = {
-                            id: user.id,
-                            first_name: user.first_name,
-                            last_name: user.last_name || '',
-                            username: user.username || '',
-                            photo_url: user.photo_url || ''
-                        };
+                        const userData = { id: user.id, first_name: user.first_name, last_name: user.last_name || '', username: user.username || '', photo_url: user.photo_url || '' };
                         saveTelegramUser(userData);
                         updateUIAfterLogin(userData);
                         updateUserLastSeen(user.id.toString());
                         alert('Добро пожаловать, ' + user.first_name + '!');
+                        // Закрываем профиль и показываем главную
+                        document.getElementById('profileLink').click();
                     }
                 };
                 
-                const container = document.getElementById('telegramLoginContainer');
+                const container = document.getElementById('telegramLoginPage');
                 if (container) {
                     container.innerHTML = '';
                     const script = document.createElement('script');
@@ -343,28 +353,233 @@
                     script.setAttribute('data-request-access', 'write');
                     container.appendChild(script);
                 }
+            }
+            
+            // ========== ОТЗЫВЫ ==========
+            function getReviews() { return JSON.parse(localStorage.getItem(REVIEWS_STORAGE_KEY) || '[]'); }
+            
+            function saveReviews(reviews) { localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(reviews)); }
+            
+            function addReview(userId, userName, rating, text) {
+                const reviews = getReviews();
+                reviews.unshift({ id: Date.now(), userId, userName, rating, text, date: new Date().toISOString(), avatar: `https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=${userName}` });
+                saveReviews(reviews);
+                renderReviews();
+                updateStats();
+            }
+            
+            function deleteReview(reviewId) {
+                let reviews = getReviews();
+                reviews = reviews.filter(r => r.id !== reviewId);
+                saveReviews(reviews);
+                renderReviews();
+                if (document.getElementById('adminReviewsList').style.display !== 'none') renderAdminReviews();
+                updateStats();
+            }
+            
+            function renderReviews() {
+                const reviews = getReviews();
+                const container = document.getElementById('reviewsList');
+                const reviewsCountSpan = document.getElementById('reviewsCount');
+                const averageRatingSpan = document.getElementById('averageRating');
+                const averageStarsDiv = document.getElementById('averageStars');
                 
-                const mobileContainer = document.getElementById('mobileTelegramContainer');
-                if (mobileContainer) {
-                    mobileContainer.innerHTML = '';
-                    const mobileScript = document.createElement('script');
-                    mobileScript.async = true;
-                    mobileScript.src = 'https://telegram.org/js/telegram-widget.js?23';
-                    mobileScript.setAttribute('data-telegram-login', 'awangard_shop_bot');
-                    mobileScript.setAttribute('data-size', 'large');
-                    mobileScript.setAttribute('data-onauth', 'onTelegramAuth(user)');
-                    mobileScript.setAttribute('data-request-access', 'write');
-                    mobileContainer.appendChild(mobileScript);
+                if (reviewsCountSpan) reviewsCountSpan.textContent = reviews.length;
+                
+                let totalRating = 0;
+                reviews.forEach(r => totalRating += r.rating);
+                const average = reviews.length > 0 ? (totalRating / reviews.length).toFixed(1) : 0;
+                if (averageRatingSpan) averageRatingSpan.textContent = average;
+                
+                if (averageStarsDiv) {
+                    averageStarsDiv.innerHTML = '';
+                    for (let i = 1; i <= 5; i++) {
+                        const star = document.createElement('i');
+                        star.className = i <= Math.round(average) ? 'fas fa-star' : 'far fa-star';
+                        averageStarsDiv.appendChild(star);
+                    }
                 }
+                
+                if (!container) return;
+                if (reviews.length === 0) { container.innerHTML = '<div class="no-reviews">Пока нет отзывов. Будьте первым!</div>'; return; }
+                
+                container.innerHTML = reviews.map(r => `
+                    <div class="review-item" data-id="${r.id}">
+                        <div class="review-header">
+                            <img src="${r.avatar}" class="review-avatar" alt="">
+                            <div class="review-user-info">
+                                <span class="review-user-name">${escapeHtml(r.userName)}</span>
+                                <div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}${'<i class="far fa-star"></i>'.repeat(5 - r.rating)}</div>
+                            </div>
+                            <span class="review-date">${new Date(r.date).toLocaleDateString()}</span>
+                        </div>
+                        <div class="review-text">${escapeHtml(r.text)}</div>
+                    </div>
+                `).join('');
+            }
+            
+            function renderAdminReviews() {
+                const reviews = getReviews();
+                const container = document.getElementById('adminReviewsList');
+                if (!container) return;
+                if (reviews.length === 0) { container.innerHTML = '<div class="no-reviews">Нет отзывов</div>'; return; }
+                container.innerHTML = reviews.map(r => `
+                    <div class="admin-review-item">
+                        <div class="admin-review-info">
+                            <strong>${escapeHtml(r.userName)}</strong>
+                            <div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div>
+                            <span>${escapeHtml(r.text.substring(0, 100))}${r.text.length > 100 ? '...' : ''}</span>
+                            <small>${new Date(r.date).toLocaleString()}</small>
+                        </div>
+                        <button class="delete-review-btn" data-id="${r.id}"><i class="fas fa-trash"></i> Удалить</button>
+                    </div>
+                `).join('');
+                container.querySelectorAll('.delete-review-btn').forEach(btn => {
+                    btn.addEventListener('click', () => deleteReview(parseInt(btn.dataset.id)));
+                });
+            }
+            
+            // Инициализация звёздного рейтинга
+            function initStarsInput() {
+                const stars = document.querySelectorAll('#starsInput i');
+                let selectedRating = 0;
+                stars.forEach(star => {
+                    star.addEventListener('mouseenter', function() {
+                        const value = parseInt(this.dataset.value);
+                        stars.forEach((s, i) => {
+                            if (i < value) s.className = 'fas fa-star';
+                            else s.className = 'far fa-star';
+                        });
+                    });
+                    star.addEventListener('mouseleave', function() {
+                        stars.forEach((s, i) => {
+                            if (i < selectedRating) s.className = 'fas fa-star';
+                            else s.className = 'far fa-star';
+                        });
+                    });
+                    star.addEventListener('click', function() {
+                        selectedRating = parseInt(this.dataset.value);
+                        stars.forEach((s, i) => {
+                            if (i < selectedRating) s.className = 'fas fa-star';
+                            else s.className = 'far fa-star';
+                        });
+                    });
+                });
+                return () => selectedRating;
+            }
+            
+            let getSelectedRating = () => 0;
+            
+            // ========== ОПЛАТА ==========
+            const DONATION_URL = 'https://www.donationalerts.com/r/limitblitzoffical';
+            const BOT_TOKEN = '8745985444:AAGA1jByHKR78uThXfkurejklLrIp53bp6M';
+            const ADMIN_ID = 'ВАШ_TELEGRAM_ID'; // ЗАМЕНИТЕ НА ВАШ TELEGRAM ID
+            
+            let currentProduct = null;
+            let currentPrice = null;
+            
+            function showPaymentModal(productName, price) {
+                currentProduct = productName;
+                currentPrice = price;
+                const modal = document.getElementById('paymentModal');
+                if (modal) modal.style.display = 'flex';
+            }
+            
+            function closePaymentModal() {
+                const modal = document.getElementById('paymentModal');
+                if (modal) modal.style.display = 'none';
+                currentProduct = null;
+                currentPrice = null;
+            }
+            
+            function processPayment(method) {
+                if (!currentProduct || !currentPrice) return;
+                const user = getTelegramUser();
+                const userId = user ? user.id : CURRENT_USER_ID;
+                const userName = user ? user.first_name : 'Гость';
+                const cleanPrice = currentPrice.toString().replace(/[^\d]/g, '');
+                
+                if (method === 'donation') {
+                    const message = encodeURIComponent(`Покупка: ${currentProduct} | ID: ${userId}`);
+                    const donateUrl = `${DONATION_URL}?amount=${cleanPrice}&message=${message}&currency=RUB`;
+                    window.open(donateUrl, '_blank', 'width=500,height=700');
+                    
+                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chat_id: ADMIN_ID, text: `🛍️ НОВЫЙ ЗАКАЗ!\n\n📦 Товар: ${currentProduct}\n💰 Сумма: ${cleanPrice} ₽\n👤 Пользователь: ${userName}\n🆔 ID: ${userId}\n\n💬 Оплата через DonationAlerts` })
+                    }).catch(console.error);
+                    
+                    alert(`✅ Заказ оформлен!\n\nТовар: ${currentProduct}\nСумма: ${cleanPrice} ₽\n\nОткроется окно DonationAlerts для оплаты.`);
+                } else if (method === 'manual') {
+                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chat_id: ADMIN_ID, text: `📞 ЗАПРОС РУЧНОЙ ОПЛАТЫ!\n\n📦 Товар: ${currentProduct}\n💰 Сумма: ${cleanPrice} ₽\n👤 Пользователь: ${userName}\n🆔 ID: ${userId}\n\nСвяжитесь с пользователем для уточнения деталей.` })
+                    }).catch(console.error);
+                    
+                    alert(`✅ Запрос отправлен!\n\nТовар: ${currentProduct}\nСумма: ${cleanPrice} ₽\n\nС вами свяжется администратор для уточнения деталей оплаты.\nTelegram: @l_AWANGARD_l`);
+                }
+                closePaymentModal();
+            }
+            
+            function showPaymentPopup(cardText, price) {
+                const user = getTelegramUser();
+                if (!user) {
+                    const confirmAuth = confirm('Для оплаты необходимо авторизоваться через Telegram. Перейти к авторизации?');
+                    if (confirmAuth) { document.getElementById('profileLink').click(); }
+                    return;
+                }
+                showPaymentModal(cardText, price);
+            }
+            
+            // ========== ТОВАРЫ ==========
+            var ucCardsData = [
+                { text: "60 UC", price: "100 ₽", oldPrice: "150 ₽", letter: "UC" },
+                { text: "300+25 UC", price: "450 ₽", oldPrice: "600 ₽", letter: "UC" },
+                { text: "600+60 UC", price: "900 ₽", oldPrice: "1200 ₽", letter: "UC" },
+                { text: "1500+300 UC", price: "2200 ₽", oldPrice: "3000 ₽", letter: "UC" },
+                { text: "3000+850 UC", price: "4500 ₽", oldPrice: "6000 ₽", letter: "UC" },
+                { text: "6000+2100 UC", price: "9000 ₽", oldPrice: "12000 ₽", letter: "UC" }
+            ];
+            var supportCardsData = [
+                { text: "1 000 000 метровалюты", price: "100 ₽", letter: "M" },
+                { text: "2 000 000 метровалюты", price: "200 ₽", letter: "M" },
+                { text: "3 000 000 метровалюты", price: "300 ₽", letter: "M" },
+                { text: "4 000 000 метровалюты", price: "400 ₽", letter: "M" },
+                { text: "5 000 000 метровалюты", price: "500 ₽", letter: "M" },
+                { text: "6 000 000 метровалюты", price: "600 ₽", letter: "M" },
+                { text: "7 000 000 метровалюты", price: "700 ₽", letter: "M" },
+                { text: "8 000 000 метровалюты", price: "800 ₽", letter: "M" },
+                { text: "9 000 000 метровалюты", price: "900 ₽", letter: "M" },
+                { text: "10 000 000 метровалюты", price: "1000 ₽", letter: "M" }
+            ];
+            
+            function createCards() {
+                const container = document.getElementById('cardsContainer');
+                if (!container) return;
+                container.innerHTML = '';
+                [...ucCardsData, ...supportCardsData].forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card-neon';
+                    card.innerHTML = `
+                        <div class="card-letter-neon ${item.letter === 'UC' ? 'uc-letter' : 'm-letter'}">${item.letter}</div>
+                        <div class="card-info-neon">
+                            <h3>${item.text}</h3>
+                            ${item.oldPrice ? `<div class="old-price-neon">${item.oldPrice}</div>` : ''}
+                            <div class="price-neon">${item.price}</div>
+                            <button class="buy-btn-neon">Купить</button>
+                        </div>
+                    `;
+                    card.querySelector('.buy-btn-neon').addEventListener('click', () => showPaymentPopup(item.text, item.price));
+                    container.appendChild(card);
+                });
             }
             
             // ========== АДМИН-ПАНЕЛЬ ==========
-            function loadAdminData() { loadUsersList(); loadAdminUserSelect(); updateStats(); }
+            function loadAdminData() { loadUsersList(); loadAdminUserSelect(); updateStats(); renderAdminReviews(); }
             
             function loadUsersList() {
                 const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
-                const searchInput = document.getElementById('usersSearchInput');
-                const search = searchInput?.value.toLowerCase() || '';
+                const search = document.getElementById('usersSearchInput')?.value.toLowerCase() || '';
                 const filtered = users.filter(u => u.name?.toLowerCase().includes(search) || u.id.toString().includes(search));
                 const usersListDiv = document.getElementById('usersList');
                 if (usersListDiv) {
@@ -383,8 +598,7 @@
             }
             
             window.selectUserForChat = function(userId) {
-                const chatTab = document.querySelector('.admin-tab-neon[data-tab="chat"]');
-                if (chatTab) chatTab.click();
+                document.querySelector('.admin-tab-neon[data-tab="chat"]').click();
                 const select = document.getElementById('adminUserSelect');
                 if (select) { select.value = userId; loadAdminChat(userId); loadAdminUserInfo(userId); }
             };
@@ -417,18 +631,11 @@
             
             function updateStats() {
                 const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
-                const totalUsersSpan = document.getElementById('totalUsers');
-                const telegramUsersSpan = document.getElementById('telegramUsers');
-                const guestUsersSpan = document.getElementById('guestUsers');
-                const totalMessagesSpan = document.getElementById('totalMessages');
-                
-                if (totalUsersSpan) totalUsersSpan.textContent = users.length;
-                if (telegramUsersSpan) telegramUsersSpan.textContent = users.filter(u => u.type === 'telegram').length;
-                if (guestUsersSpan) guestUsersSpan.textContent = users.filter(u => u.type !== 'telegram').length;
-                
-                let totalMsg = 0;
-                users.forEach(u => { const msgs = JSON.parse(localStorage.getItem(CHAT_STORAGE_PREFIX + (u.chatId || u.id)) || '[]'); totalMsg += msgs.length; });
-                if (totalMessagesSpan) totalMessagesSpan.textContent = totalMsg;
+                const reviews = getReviews();
+                document.getElementById('totalUsers').textContent = users.length;
+                document.getElementById('telegramUsers').textContent = users.filter(u => u.type === 'telegram').length;
+                document.getElementById('guestUsers').textContent = users.filter(u => u.type !== 'telegram').length;
+                document.getElementById('totalReviews').textContent = reviews.length;
             }
             
             function sendAdminReply() {
@@ -436,119 +643,67 @@
                 const text = document.getElementById('adminReplyInput')?.value.trim();
                 if (!userId || !text) return;
                 addAdminMessageToUser(userId, text);
-                const replyInput = document.getElementById('adminReplyInput');
-                if (replyInput) replyInput.value = '';
+                document.getElementById('adminReplyInput').value = '';
                 loadAdminChat(userId);
-                updateStats();
                 alert('Ответ отправлен!');
             }
             
-            // ========== ОПЛАТА ЧЕРЕЗ DONATIONALERTS (РУБЛИ) ==========
-            const DONATION_URL = 'https://www.donationalerts.com/r/limitblitzoffical';
-            const BOT_TOKEN = '8745985444:AAGA1jByHKR78uThXfkurejklLrIp53bp6M';
-            const ADMIN_ID = 'ВАШ_TELEGRAM_ID'; // ЗАМЕНИТЕ НА ВАШ TELEGRAM ID
+            // ========== НАВИГАЦИЯ ==========
+            const homeLink = document.getElementById('homeLink');
+            const profileLink = document.getElementById('profileLink');
+            const reviewsLink = document.getElementById('reviewsLink');
+            const aboutLink = document.getElementById('aboutLink');
+            const supportLink = document.getElementById('supportLink');
+            const mainContent = document.getElementById('mainContent');
+            const profileContent = document.getElementById('profileContent');
+            const reviewsContent = document.getElementById('reviewsContent');
+            const aboutContainer = document.getElementById('aboutContainer');
             
-            function sendAdminNotification(productName, price, userName, userId) {
-                const message = `🛍️ НОВЫЙ ЗАКАЗ!\n\n📦 Товар: ${productName}\n💰 Сумма: ${price} ₽\n👤 Пользователь: ${userName}\n🆔 ID: ${userId}\n\n💬 Оплата через DonationAlerts (RUB)`;
-                
-                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: ADMIN_ID, text: message })
-                }).catch(console.error);
+            function showHome() { 
+                if (mainContent) mainContent.style.display = 'block';
+                if (profileContent) profileContent.style.display = 'none';
+                if (reviewsContent) reviewsContent.style.display = 'none';
+                if (aboutContainer) aboutContainer.style.display = 'none';
+                homeLink.classList.add('active'); profileLink.classList.remove('active'); reviewsLink.classList.remove('active'); aboutLink.classList.remove('active');
+                createCards();
+            }
+            function showProfile() { 
+                if (mainContent) mainContent.style.display = 'none';
+                if (profileContent) profileContent.style.display = 'block';
+                if (reviewsContent) reviewsContent.style.display = 'none';
+                if (aboutContainer) aboutContainer.style.display = 'none';
+                profileLink.classList.add('active'); homeLink.classList.remove('active'); reviewsLink.classList.remove('active'); aboutLink.classList.remove('active');
+            }
+            function showReviews() { 
+                if (mainContent) mainContent.style.display = 'none';
+                if (profileContent) profileContent.style.display = 'none';
+                if (reviewsContent) reviewsContent.style.display = 'block';
+                if (aboutContainer) aboutContainer.style.display = 'none';
+                reviewsLink.classList.add('active'); homeLink.classList.remove('active'); profileLink.classList.remove('active'); aboutLink.classList.remove('active');
+                renderReviews();
+            }
+            function showAbout() { 
+                if (mainContent) mainContent.style.display = 'none';
+                if (profileContent) profileContent.style.display = 'none';
+                if (reviewsContent) reviewsContent.style.display = 'none';
+                if (aboutContainer) aboutContainer.style.display = 'block';
+                aboutLink.classList.add('active'); homeLink.classList.remove('active'); profileLink.classList.remove('active'); reviewsLink.classList.remove('active');
             }
             
-            function payWithDonationAlerts(productName, price) {
-                const user = getTelegramUser();
-                const userId = user ? user.id : CURRENT_USER_ID;
-                const userName = user ? user.first_name : 'Гость';
-                
-                const cleanPrice = price.toString().replace(/[^\d]/g, '');
-                const message = encodeURIComponent(`Покупка: ${productName} | ID: ${userId} | Товар: ${productName}`);
-                const donateUrl = `${DONATION_URL}?amount=${cleanPrice}&message=${message}&currency=RUB`;
-                
-                window.open(donateUrl, '_blank', 'width=500,height=700');
-                sendAdminNotification(productName, cleanPrice, userName, userId);
-                
-                alert(`✅ Заказ оформлен!\n\nТовар: ${productName}\nСумма: ${cleanPrice} ₽\n\nОткроется окно DonationAlerts для оплаты.\nПосле оплаты товар будет отправлен в течение 5-10 минут.`);
-            }
-            
-            // ГЛАВНАЯ ФУНКЦИЯ ОПЛАТЫ
-            function showPaymentPopup(cardText, price) {
-                const user = getTelegramUser();
-                
-                if (!user) {
-                    const confirmAuth = confirm('Для оплаты необходимо авторизоваться через Telegram. Перейти к авторизации?');
-                    if (confirmAuth) {
-                        document.getElementById('telegramLoginContainer')?.scrollIntoView({ behavior: 'smooth' });
-                    }
-                    return;
-                }
-                
-                payWithDonationAlerts(cardText, price);
-            }
-            
-            // ========== ТОВАРЫ ==========
-            var ucCardsData = [
-                { text: "60 UC", price: "100 ₽", oldPrice: "150 ₽", letter: "UC" },
-                { text: "300+25 UC", price: "450 ₽", oldPrice: "600 ₽", letter: "UC" },
-                { text: "600+60 UC", price: "900 ₽", oldPrice: "1200 ₽", letter: "UC" },
-                { text: "1500+300 UC", price: "2200 ₽", oldPrice: "3000 ₽", letter: "UC" },
-                { text: "3000+850 UC", price: "4500 ₽", oldPrice: "6000 ₽", letter: "UC" },
-                { text: "6000+2100 UC", price: "9000 ₽", oldPrice: "12000 ₽", letter: "UC" }
-            ];
-            
-            var supportCardsData = [
-                { text: "1 000 000 метровалюты", price: "100 ₽", letter: "M" },
-                { text: "2 000 000 метровалюты", price: "200 ₽", letter: "M" },
-                { text: "3 000 000 метровалюты", price: "300 ₽", letter: "M" },
-                { text: "4 000 000 метровалюты", price: "400 ₽", letter: "M" },
-                { text: "5 000 000 метровалюты", price: "500 ₽", letter: "M" },
-                { text: "6 000 000 метровалюты", price: "600 ₽", letter: "M" },
-                { text: "7 000 000 метровалюты", price: "700 ₽", letter: "M" },
-                { text: "8 000 000 метровалюты", price: "800 ₽", letter: "M" },
-                { text: "9 000 000 метровалюты", price: "900 ₽", letter: "M" },
-                { text: "10 000 000 метровалюты", price: "1000 ₽", letter: "M" }
-            ];
-            
-            function openInfoWindow() { alert("🔥 AWANGARD NEON STORE\n\n✅ Моментальная доставка\n✅ Лучшие цены\n✅ Поддержка 24/7"); }
-            
-            const infoBanner = document.getElementById('infoBanner');
-            if (infoBanner) infoBanner.addEventListener('click', openInfoWindow);
-            
-            function createCards() {
-                const container = document.getElementById('cardsContainer');
-                if (!container) return;
-                container.innerHTML = '';
-                
-                [...ucCardsData, ...supportCardsData].forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'product-card-neon';
-                    card.innerHTML = `
-                        <div class="card-letter-neon ${item.letter === 'UC' ? 'uc-letter' : 'm-letter'}">${item.letter}</div>
-                        <div class="card-info-neon">
-                            <h3>${item.text}</h3>
-                            ${item.oldPrice ? `<div class="old-price-neon">${item.oldPrice}</div>` : ''}
-                            <div class="price-neon">${item.price}</div>
-                            <button class="buy-btn-neon">Купить</button>
-                        </div>
-                    `;
-                    const buyBtn = card.querySelector('.buy-btn-neon');
-                    if (buyBtn) {
-                        buyBtn.addEventListener('click', () => showPaymentPopup(item.text, item.price));
-                    }
-                    container.appendChild(card);
-                });
-            }
+            if (homeLink) homeLink.addEventListener('click', (e) => { e.preventDefault(); showHome(); });
+            if (profileLink) profileLink.addEventListener('click', (e) => { e.preventDefault(); showProfile(); });
+            if (reviewsLink) reviewsLink.addEventListener('click', (e) => { e.preventDefault(); showReviews(); });
+            if (aboutLink) aboutLink.addEventListener('click', (e) => { e.preventDefault(); showAbout(); });
+            if (supportLink) supportLink.addEventListener('click', (e) => { e.preventDefault(); window.open('https://t.me/l_AWANGARD_l', '_blank'); });
             
             // ========== ЧАСТИЦЫ ==========
             function createParticles() {
                 const container = document.getElementById('particlesContainer');
                 if (!container) return;
-                for (let i = 0; i < 100; i++) {
+                for (let i = 0; i < 60; i++) {
                     const particle = document.createElement('div');
                     particle.className = 'particle-neon';
-                    const size = Math.random() * 4 + 1;
+                    const size = Math.random() * 3 + 1;
                     particle.style.width = size + 'px';
                     particle.style.height = size + 'px';
                     particle.style.left = Math.random() * 100 + '%';
@@ -560,109 +715,88 @@
                 }
             }
             
-            // ========== НАВИГАЦИЯ ==========
-            const homeLink = document.getElementById('homeLink');
-            const aboutLink = document.getElementById('aboutLink');
-            const cardsContainer = document.getElementById('cardsContainer');
-            const aboutContainer = document.getElementById('aboutContainer');
-            const supportLink = document.getElementById('supportLink');
-            
-            if (supportLink) {
-                supportLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.open('https://t.me/l_AWANGARD_l', '_blank');
-                });
-            }
-            
-            function showAbout() {
-                if (cardsContainer) cardsContainer.style.display = 'none';
-                if (aboutContainer) aboutContainer.style.display = 'block';
-                const hero = document.querySelector('.hero-section');
-                if (hero) hero.classList.add('hidden');
-            }
-            
-            function showHome() {
-                if (cardsContainer) {
-                    cardsContainer.style.display = 'grid';
-                    createCards();
-                }
-                if (aboutContainer) aboutContainer.style.display = 'none';
-                const hero = document.querySelector('.hero-section');
-                if (hero) hero.classList.remove('hidden');
-            }
-            
-            if (homeLink) {
-                homeLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    homeLink.classList.add('active');
-                    if (aboutLink) aboutLink.classList.remove('active');
-                    showHome();
-                });
-            }
-            
-            if (aboutLink) {
-                aboutLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    aboutLink.classList.add('active');
-                    if (homeLink) homeLink.classList.remove('active');
-                    showAbout();
-                });
-            }
-            
             // ========== ЗАПУСК ==========
             document.addEventListener('DOMContentLoaded', function() {
                 initTelegramLogin();
                 createParticles();
+                getSelectedRating = initStarsInput();
                 
                 const telegramUser = getTelegramUser();
                 if (telegramUser) updateUIAfterLogin(telegramUser);
                 else updateUIForGuest();
                 
-                const logoutBtn = document.getElementById('logoutBtn');
-                const logoutProfileBtn = document.getElementById('logoutProfileBtn');
+                renderReviews();
                 
-                if (logoutBtn) logoutBtn.addEventListener('click', logout);
-                if (logoutProfileBtn) logoutProfileBtn.addEventListener('click', logout);
+                const logoutPageBtn = document.getElementById('logoutPageBtn');
+                if (logoutPageBtn) logoutPageBtn.addEventListener('click', logout);
                 
-                // Админ-панель табы
+                // Отправка отзыва
+                const submitReviewBtn = document.getElementById('submitReviewBtn');
+                const reviewText = document.getElementById('reviewText');
+                const charCounter = document.querySelector('.char-counter');
+                
+                if (reviewText) {
+                    reviewText.addEventListener('input', function() {
+                        if (charCounter) charCounter.textContent = this.value.length + '/500';
+                    });
+                }
+                
+                if (submitReviewBtn) {
+                    submitReviewBtn.addEventListener('click', () => {
+                        const user = getTelegramUser();
+                        if (!user) { alert('Для отправки отзыва необходимо авторизоваться через Telegram'); showProfile(); return; }
+                        const rating = getSelectedRating();
+                        if (rating === 0) { alert('Поставьте оценку от 1 до 5 звёзд'); return; }
+                        const text = reviewText?.value.trim();
+                        if (!text) { alert('Напишите текст отзыва'); return; }
+                        addReview(user.id.toString(), user.first_name + ' ' + (user.last_name || ''), rating, text);
+                        if (reviewText) reviewText.value = '';
+                        document.querySelectorAll('#starsInput i').forEach(s => s.className = 'far fa-star');
+                        alert('Спасибо за отзыв!');
+                        showReviews();
+                    });
+                }
+                
+                // Модальное окно оплаты
+                const modal = document.getElementById('paymentModal');
+                const closeModalBtn = document.getElementById('closeModalBtn');
+                const cancelPaymentBtn = document.getElementById('cancelPaymentBtn');
+                const paymentOptions = document.querySelectorAll('.payment-option');
+                
+                if (closeModalBtn) closeModalBtn.addEventListener('click', closePaymentModal);
+                if (cancelPaymentBtn) cancelPaymentBtn.addEventListener('click', closePaymentModal);
+                if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closePaymentModal(); });
+                
+                paymentOptions.forEach(option => {
+                    option.addEventListener('click', () => processPayment(option.dataset.method));
+                });
+                
+                // Админ-панель
                 const adminTabs = document.querySelectorAll('.admin-tab-neon');
                 adminTabs.forEach(tab => {
                     tab.addEventListener('click', () => {
                         adminTabs.forEach(t => t.classList.remove('active'));
                         tab.classList.add('active');
-                        const usersTab = document.getElementById('adminUsersTab');
-                        const chatTab = document.getElementById('adminChatTab');
-                        const statsTab = document.getElementById('adminStatsTab');
-                        if (usersTab) usersTab.style.display = 'none';
-                        if (chatTab) chatTab.style.display = 'none';
-                        if (statsTab) statsTab.style.display = 'none';
-                        if (tab.getAttribute('data-tab') === 'users') { if (usersTab) usersTab.style.display = 'block'; loadUsersList(); }
-                        else if (tab.getAttribute('data-tab') === 'chat') { if (chatTab) chatTab.style.display = 'block'; loadAdminUserSelect(); }
-                        else if (tab.getAttribute('data-tab') === 'stats') { if (statsTab) statsTab.style.display = 'block'; updateStats(); }
+                        document.getElementById('adminUsersTab').style.display = 'none';
+                        document.getElementById('adminChatTab').style.display = 'none';
+                        document.getElementById('adminReviewsTab').style.display = 'none';
+                        document.getElementById('adminStatsTab').style.display = 'none';
+                        if (tab.getAttribute('data-tab') === 'users') { document.getElementById('adminUsersTab').style.display = 'block'; loadUsersList(); }
+                        else if (tab.getAttribute('data-tab') === 'chat') { document.getElementById('adminChatTab').style.display = 'block'; loadAdminUserSelect(); }
+                        else if (tab.getAttribute('data-tab') === 'reviews') { document.getElementById('adminReviewsTab').style.display = 'block'; renderAdminReviews(); }
+                        else if (tab.getAttribute('data-tab') === 'stats') { document.getElementById('adminStatsTab').style.display = 'block'; updateStats(); }
                     });
                 });
                 
-                const adminUserSelect = document.getElementById('adminUserSelect');
-                if (adminUserSelect) {
-                    adminUserSelect.addEventListener('change', (e) => { if (e.target.value) { loadAdminChat(e.target.value); loadAdminUserInfo(e.target.value); } });
-                }
-                
-                const sendReplyBtn = document.getElementById('sendReplyBtn');
-                if (sendReplyBtn) sendReplyBtn.addEventListener('click', sendAdminReply);
-                
-                const adminReplyInput = document.getElementById('adminReplyInput');
-                if (adminReplyInput) {
-                    adminReplyInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendAdminReply(); });
-                }
-                
-                const closeAdminBtn = document.getElementById('closeAdminBtn');
-                if (closeAdminBtn) closeAdminBtn.addEventListener('click', closeAdminPanel);
-                if (adminOverlay) adminOverlay.addEventListener('click', closeAdminPanel);
-                
-                const usersSearchInput = document.getElementById('usersSearchInput');
-                if (usersSearchInput) usersSearchInput.addEventListener('input', () => loadUsersList());
+                document.getElementById('adminUserSelect')?.addEventListener('change', (e) => { if (e.target.value) { loadAdminChat(e.target.value); loadAdminUserInfo(e.target.value); } });
+                document.getElementById('sendReplyBtn')?.addEventListener('click', sendAdminReply);
+                document.getElementById('adminReplyInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendAdminReply(); });
+                document.getElementById('closeAdminBtn')?.addEventListener('click', closeAdminPanel);
+                document.getElementById('adminOverlay')?.addEventListener('click', closeAdminPanel);
+                document.getElementById('usersSearchInput')?.addEventListener('input', () => loadUsersList());
                 
                 createCards();
+                showHome();
             });
         })();
     </script>
