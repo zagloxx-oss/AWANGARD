@@ -1,29 +1,92 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWANGARD.COM | Dark Edition</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body class="dark-theme">
-    <header>
-        <h1>🌙 кукусики!</h1>
-        <nav>
-            <!-- Сделал ссылку "Главная" активной: href="#", но добавил класс active -->
-            <a href="#" class="active">Главная</a>
-            <a href="#">О нас</a>
-            <a href="https://vk.com/vip_kotik_1" target="_blank">📱 Мой ВК</a>
-        </nav>
-    </header>
-    <main>
-        <!-- Центральная часть: большая надпись -->
-        <div class="center-text">
-            Купить сопровождение или UC в плашке главная
-        </div>
-    </main>
-    <footer>
-        <p>© 2026 AWANGARD | <a href="https://vk.com/vip_kotik_1" target="_blank">ВКонтакте</a></p>
-    </footer>
-</body>
-</html>
+!DOCTYPE html
+html lang=ru
+head
+    meta charset=UTF-8
+    meta name=viewport content=width=device-width, initial-scale=1.0
+    titleAWANGARD.COM  Dark Editiontitle
+    link rel=stylesheet href=style.css
+head
+body class=dark-theme
+    header
+        h1🌙 кукусики!h1
+        nav
+            a href=# id=homeLink class=activeГлавнаяa
+            a href=# id=aboutLinkО насa
+            a href=httpsvk.comvip_kotik_1 target=_blank📱 Мой ВКa
+        nav
+    header
+    main
+        !-- Контейнер для карточек (появляются при клике на Главную) --
+        div id=cardsContainer class=cards-containerdiv
+    main
+    footer
+        p© 2026 AWANGARD  a href=httpsvk.comvip_kotik_1 target=_blankВКонтактеap
+    footer
+
+    script
+         Получаем элементы
+        const homeLink = document.getElementById('homeLink');
+        const aboutLink = document.getElementById('aboutLink');
+        const cardsContainer = document.getElementById('cardsContainer');
+
+         Функция для создания карточек
+        function createCards() {
+             Очищаем контейнер
+            cardsContainer.innerHTML = '';
+            
+             Создаём 10 карточек UC
+            for (let i = 1; i = 10; i++) {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.textContent = 'UC';
+                cardsContainer.appendChild(card);
+            }
+            
+             Создаём 10 карточек Сопровождение
+            for (let i = 1; i = 10; i++) {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.textContent = 'Сопровождение';
+                cardsContainer.appendChild(card);
+            }
+        }
+
+         Функция для очистки контейнера (для страницы О нас)
+        function clearCards() {
+            cardsContainer.innerHTML = '';
+             Можно добавить какой-то текст или оставить пустым
+            const message = document.createElement('div');
+            message.className = 'info-message';
+            message.textContent = 'Страница О нас в разработке';
+            cardsContainer.appendChild(message);
+        }
+
+         Обработчик клика на Главная
+        homeLink.addEventListener('click', function(e) {
+            e.preventDefault();  отменяем переход по ссылке
+            
+             Меняем активный класс
+            homeLink.classList.add('active');
+            aboutLink.classList.remove('active');
+            
+             Показываем карточки
+            createCards();
+        });
+
+         Обработчик клика на О нас
+        aboutLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+             Меняем активный класс
+            aboutLink.classList.add('active');
+            homeLink.classList.remove('active');
+            
+             Очищаем и показываем сообщение
+            clearCards();
+        });
+
+         При загрузке страницы показываем карточки (Главная активна по умолчанию)
+        createCards();
+    script
+body
+html

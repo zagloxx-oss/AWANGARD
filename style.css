@@ -42,6 +42,7 @@ nav a {
     transition: all 0.3s ease;
     padding: 0.4rem 0.8rem;
     border-radius: 8px;
+    cursor: pointer;
 }
 
 nav a:hover {
@@ -60,27 +61,58 @@ nav a.active {
 
 main {
     flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+/* Контейнер для карточек — сетка */
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 200px));
+    gap: 1.5rem;
+    justify-content: center;
+    align-items: start;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Стиль карточки — среднего размера, одинаковые */
+.card {
+    background: linear-gradient(135deg, #1a1f2e 0%, #0f121c 100%);
+    border: 1px solid #2c3142;
+    border-radius: 16px;
+    padding: 1.5rem 0.5rem;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #c0caf5;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    min-width: 150px;
+    height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    padding: 2rem;
 }
 
-/* Большая надпись по центру */
-.center-text {
-    font-size: 3rem;
-    font-weight: 800;
-    letter-spacing: 2px;
-    color: #c0caf5;
-    text-shadow: 0 0 10px rgba(192, 202, 245, 0.5);
+.card:hover {
+    transform: translateY(-5px);
+    border-color: #7aa2f7;
+    box-shadow: 0 8px 20px rgba(122, 162, 247, 0.2);
+    background: linear-gradient(135deg, #252b3e 0%, #181d2c 100%);
+}
+
+/* Сообщение на странице "О нас" */
+.info-message {
+    font-size: 2rem;
+    text-align: center;
+    color: #a9b1d6;
+    padding: 3rem;
     background: rgba(18, 22, 33, 0.6);
-    backdrop-filter: blur(4px);
-    padding: 2rem 3rem;
-    border-radius: 40px;
-    border: 1px solid #2c3142;
-    max-width: 90%;
-    word-break: break-word;
+    border-radius: 24px;
+    max-width: 600px;
+    margin: 2rem auto;
 }
 
 footer {
@@ -109,12 +141,24 @@ footer a:hover {
         font-size: 0.9rem;
     }
     
-    .center-text {
-        font-size: 1.8rem;
-        padding: 1.2rem 1.5rem;
-    }
-    
     header h1 {
         font-size: 1.6rem;
+    }
+    
+    .cards-container {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 150px));
+        gap: 1rem;
+    }
+    
+    .card {
+        min-width: 120px;
+        height: 80px;
+        font-size: 0.9rem;
+        padding: 1rem 0.3rem;
+    }
+    
+    .info-message {
+        font-size: 1.2rem;
+        padding: 1.5rem;
     }
 }
