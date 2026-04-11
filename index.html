@@ -38,24 +38,28 @@
             var aboutContainer = document.getElementById('aboutContainer');
             var infoBanner = document.getElementById('infoBanner');
 
-            // Данные для UC карточек с ценами (первые 6 с бонусами и ценами, остальные 4 обычные без клика)
+            // Данные для UC карточек (6 с бонусами и ценами)
             var ucCardsData = [
                 { text: "60 UC", price: "100 руб." },
                 { text: "300+25 UC", price: "450 руб." },
                 { text: "600+60 UC", price: "900 руб." },
                 { text: "1500+300 UC", price: "2200 руб." },
                 { text: "3000+850 UC", price: "4500 руб." },
-                { text: "6000+2100 UC", price: "9000 руб." },
-                { text: "UC", price: null },
-                { text: "UC", price: null },
-                { text: "UC", price: null },
-                { text: "UC", price: null }
+                { text: "6000+2100 UC", price: "9000 руб." }
             ];
 
-            // Данные для карточек Сопровождение (10 штук, без изменений, без клика)
+            // Данные для карточек Сопровождение (10 штук с метровалютой и ценой)
             var supportCardsData = [
-                "Сопровождение", "Сопровождение", "Сопровождение", "Сопровождение", "Сопровождение",
-                "Сопровождение", "Сопровождение", "Сопровождение", "Сопровождение", "Сопровождение"
+                { text: "1 000 000 метровалюты", price: "100 руб." },
+                { text: "2 000 000 метровалюты", price: "200 руб." },
+                { text: "3 000 000 метровалюты", price: "300 руб." },
+                { text: "4 000 000 метровалюты", price: "400 руб." },
+                { text: "5 000 000 метровалюты", price: "500 руб." },
+                { text: "6 000 000 метровалюты", price: "600 руб." },
+                { text: "7 000 000 метровалюты", price: "700 руб." },
+                { text: "8 000 000 метровалюты", price: "800 руб." },
+                { text: "9 000 000 метровалюты", price: "900 руб." },
+                { text: "10 000 000 метровалюты", price: "1000 руб." }
             ];
 
             // Функция показа всплывающего окна для карточек
@@ -66,7 +70,6 @@
             // Функция для открытия отдельного окна с сообщением (при клике на плашку)
             function openInfoWindow() {
                 var message = "Привет! Я создал этот сайт сам, и пока он сырой, но вы можете что-нибудь купить и поддержать меня, а также оставьте отзыв, пж!";
-                // Открываем новое окно с сообщением
                 var newWindow = window.open('', '_blank', 'width=500,height=300,resizable=yes,scrollbars=yes');
                 newWindow.document.write('<!DOCTYPE html><html><head><title>Информация</title><style>body{font-family:Arial;background:#0a0e17;color:#c0caf5;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;padding:20px;text-align:center;} .message{background:#1a1f2e;padding:30px;border-radius:20px;border:1px solid #2c3142;}</style></head><body><div class="message">' + message + '</div></body></html>');
                 newWindow.document.close();
@@ -80,41 +83,43 @@
             function createCards() {
                 cardsContainer.innerHTML = '';
                 
-                // Создаём 10 карточек UC
+                // Создаём 6 карточек UC (с ценами)
                 for (var i = 0; i < ucCardsData.length; i++) {
                     var card = document.createElement('div');
                     card.className = 'card';
                     card.textContent = ucCardsData[i].text;
                     
-                    // Если у карточки есть цена - добавляем обработчик клика
-                    if (ucCardsData[i].price !== null) {
-                        (function(cardText, price) {
-                            card.addEventListener('click', function() {
-                                showPaymentPopup(cardText, price);
-                            });
-                        })(ucCardsData[i].text, ucCardsData[i].price);
-                    }
+                    (function(cardText, price) {
+                        card.addEventListener('click', function() {
+                            showPaymentPopup(cardText, price);
+                        });
+                    })(ucCardsData[i].text, ucCardsData[i].price);
                     
                     cardsContainer.appendChild(card);
                 }
                 
-                // Создаём 10 карточек Сопровождение (без клика)
+                // Создаём 10 карточек Сопровождение (с метровалютой и ценой)
                 for (var i = 0; i < supportCardsData.length; i++) {
                     var card = document.createElement('div');
                     card.className = 'card';
-                    card.textContent = supportCardsData[i];
+                    card.textContent = supportCardsData[i].text;
+                    
+                    (function(cardText, price) {
+                        card.addEventListener('click', function() {
+                            showPaymentPopup(cardText, price);
+                        });
+                    })(supportCardsData[i].text, supportCardsData[i].price);
+                    
                     cardsContainer.appendChild(card);
                 }
             }
 
             function showAbout() {
-                // Показываем контейнер "О нас", скрываем карточки
                 cardsContainer.style.display = 'none';
                 aboutContainer.style.display = 'block';
             }
 
             function showHome() {
-                // Показываем карточки, скрываем контейнер "О нас"
                 cardsContainer.style.display = 'grid';
                 aboutContainer.style.display = 'none';
             }
@@ -137,7 +142,6 @@
                 });
             }
 
-            // При загрузке страницы показываем главную (карточки)
             showHome();
             createCards();
         })();
