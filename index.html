@@ -52,6 +52,10 @@
                 <div class="hero-section">
                     <h1 class="neon-glitch" data-text="AWANGARD NEON">AWANGARD NEON</h1>
                     <p class="hero-subtitle">PUBG Mobile | UC | Метровалюта</p>
+                    <!-- ИНФОРМАЦИОННАЯ НАДПИСЬ (под заголовком, без отдельной плашки) -->
+                    <div class="info-text-under-title">
+                        🔥 Привет! Здесь ты можешь купить UC, а также сопровождение. Пока работает оплата только по DonationAlerts, но позже добавятся другие способы оплаты. Также ты можешь оплатить напрямую — просто нажми на иконку "Поддержка". Если ты хочешь помочь в сопровождениях за денежку с этих сопроводов, то тоже переходи по плашке "Поддержка". УДАЧНЫХ ПОКУПОК! 🔥
+                    </div>
                 </div>
                 <div id="cardsContainer" class="cards-grid-neon"></div>
             </div>
@@ -78,7 +82,6 @@
                         </div>
                     </div>
                     <div class="profile-page-actions">
-                        <!-- Кнопка входа через Telegram для ПК -->
                         <div id="telegramLoginPage" class="telegram-login-page"></div>
                         <button id="logoutPageBtn" class="neon-btn logout-neon-btn" style="display: none;">
                             <i class="fas fa-sign-out-alt"></i>
@@ -114,6 +117,7 @@
                                 <i class="far fa-star" data-value="5"></i>
                             </div>
                         </div>
+                        <input type="text" id="reviewName" placeholder="Ваше имя (для отображения)" class="review-name-input" maxlength="50">
                         <textarea id="reviewText" placeholder="Напишите ваш отзыв..." maxlength="500" class="review-textarea"></textarea>
                         <div class="review-actions">
                             <span class="char-counter">0/500</span>
@@ -324,13 +328,20 @@
             
             function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
             
-            // ========== ОТЗЫВЫ ==========
+            // ========== ОТЗЫВЫ (БЕЗ АВТОРИЗАЦИИ) ==========
             function getReviews() { return JSON.parse(localStorage.getItem(REVIEWS_STORAGE_KEY) || '[]'); }
             function saveReviews(reviews) { localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(reviews)); }
             
-            function addReview(userId, userName, rating, text) {
+            function addReview(userName, rating, text) {
                 const reviews = getReviews();
-                reviews.unshift({ id: Date.now(), userId, userName, rating, text, date: new Date().toISOString(), avatar: `https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=${userName}` });
+                reviews.unshift({ 
+                    id: Date.now(), 
+                    userName: userName || 'Аноним', 
+                    rating: rating, 
+                    text: text, 
+                    date: new Date().toISOString(), 
+                    avatar: `https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=${userName || 'Аноним'}`
+                });
                 saveReviews(reviews);
                 renderReviews();
                 updateStats();
@@ -422,13 +433,9 @@
                 });
             }
             
-            // ========== ОПЛАТА (ПРОСТО ПЕРЕХОД ПО ССЫЛКЕ) ==========
-            // БЕЗ ПРОВЕРКИ АВТОРИЗАЦИИ
+            // ========== ОПЛАТА ==========
             function showPaymentPopup(cardText, price) {
-                // Просто открываем DonationAlerts в новой вкладке
                 window.open(DONATION_URL, '_blank');
-                
-                // Отправляем уведомление админу (опционально)
                 fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ chat_id: ADMIN_ID, text: `🛍️ КЛИК ПО ТОВАРУ!\n\n📦 Товар: ${cardText}\n💰 Цена: ${price}\n\nПользователь перешёл к оплате на DonationAlerts` })
@@ -634,8 +641,9 @@
                 const logoutPageBtn = document.getElementById('logoutPageBtn');
                 if (logoutPageBtn) logoutPageBtn.addEventListener('click', logout);
                 
-                // Отправка отзыва
+                // Отправка отзыва (без авторизации)
                 const submitReviewBtn = document.getElementById('submitReviewBtn');
+                const reviewName = document.getElementById('reviewName');
                 const reviewText = document.getElementById('reviewText');
                 const charCounter = document.querySelector('.char-counter');
                 
@@ -647,13 +655,13 @@
                 
                 if (submitReviewBtn) {
                     submitReviewBtn.addEventListener('click', () => {
-                        const user = getTelegramUser();
-                        if (!user) { alert('Для отправки отзыва необходимо авторизоваться через Telegram'); showProfile(); return; }
                         if (selectedRating === 0) { alert('Поставьте оценку от 1 до 5 звёзд'); return; }
+                        const name = reviewName?.value.trim() || 'Аноним';
                         const text = reviewText?.value.trim();
                         if (!text) { alert('Напишите текст отзыва'); return; }
-                        addReview(user.id.toString(), user.first_name + ' ' + (user.last_name || ''), selectedRating, text);
+                        addReview(name, selectedRating, text);
                         if (reviewText) reviewText.value = '';
+                        if (reviewName) reviewName.value = '';
                         selectedRating = 0;
                         document.querySelectorAll('#starsInput i').forEach(s => s.className = 'far fa-star');
                         alert('Спасибо за отзыв!');
