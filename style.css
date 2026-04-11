@@ -1,505 +1,613 @@
-/* Тёмная тема — AWANGARD.COM */
+/* ========== ОСНОВНЫЕ ПЕРЕМЕННЫЕ ========== */
+:root {
+    --primary: #7aa2f7;
+    --primary-dark: #565f89;
+    --secondary: #bb9af7;
+    --accent: #f7768e;
+    --success: #9ece6a;
+    --bg-dark: #0a0e17;
+    --bg-card: rgba(26, 31, 46, 0.7);
+    --glass-border: rgba(122, 162, 247, 0.2);
+    --text-primary: #c0caf5;
+    --text-secondary: #a9b1d6;
+    --shadow-glow: 0 0 20px rgba(122, 162, 247, 0.3);
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body.dark-theme {
-    background-color: #0a0e17;
-    color: #e0e0e0;
-    font-family: 'Segoe UI', 'Arial', sans-serif;
-    line-height: 1.6;
+body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background: #0a0e17;
+    color: var(--text-primary);
+    overflow-x: hidden;
     min-height: 100vh;
+}
+
+/* ========== АНИМИРОВАННЫЙ ГРАДИЕНТНЫЙ ФОН ========== */
+.gradient-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    overflow: hidden;
+}
+
+.gradient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.5;
+    animation: float 20s infinite ease-in-out;
+}
+
+.orb1 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, #7aa2f7, #565f89);
+    top: -200px;
+    left: -200px;
+}
+
+.orb2 {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, #bb9af7, #7aa2f7);
+    bottom: -300px;
+    right: -200px;
+    animation-delay: -5s;
+}
+
+.orb3 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, #f7768e, #bb9af7);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation-delay: -10s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -30px) scale(1.05); }
+    66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+/* ========== ЧАСТИЦЫ ========== */
+.particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--primary);
+    border-radius: 50%;
+    opacity: 0.5;
+    animation: particleFloat 3s infinite;
+}
+
+@keyframes particleFloat {
+    0% { transform: translateY(0) scale(1); opacity: 0.5; }
+    100% { transform: translateY(-100vh) scale(0); opacity: 0; }
+}
+
+/* ========== СТЕКЛЯННАЯ НАВИГАЦИЯ ========== */
+.glass-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10, 14, 23, 0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 0.8rem 0;
+}
+
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: 'Orbitron', monospace;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.logo i {
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    color: var(--primary);
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-links a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    background: rgba(122, 162, 247, 0.15);
+    color: var(--primary);
+    box-shadow: var(--shadow-glow);
+}
+
+.auth-area {
+    display: flex;
+    align-items: center;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+.btn-glow {
+    background: linear-gradient(135deg, #4285f4, #34a853);
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 40px;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-glow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(66, 133, 244, 0.4);
+}
+
+.user-info-glass {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: rgba(26, 31, 46, 0.6);
+    padding: 0.3rem 0.8rem 0.3rem 0.5rem;
+    border-radius: 60px;
+    backdrop-filter: blur(10px);
+}
+
+.user-avatar-glass {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary);
+}
+
+.user-info-text {
     display: flex;
     flex-direction: column;
 }
 
-header {
-    background: linear-gradient(135deg, #0f121c 0%, #1a1f2e 100%);
-    padding: 1rem 1.5rem;
-    text-align: center;
-    border-bottom: 2px solid #2a2f3f;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-}
-
-header h1 {
-    font-size: 2rem;
-    letter-spacing: 2px;
-    color: #c0caf5;
-    text-shadow: 0 0 5px rgba(192, 202, 245, 0.3);
-}
-
-nav {
-    margin-top: 0.5rem;
-}
-
-nav a {
-    color: #a9b1d6;
-    text-decoration: none;
-    margin: 0 1rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    padding: 0.4rem 0.8rem;
-    border-radius: 8px;
-    cursor: pointer;
-    display: inline-block;
-}
-
-nav a:hover {
-    color: #ffffff;
-    background-color: #2a2f3f;
-    text-shadow: 0 0 4px #7aa2f7;
-}
-
-nav a.active {
-    color: #ffffff;
-    background-color: #2c3e66;
-    box-shadow: 0 0 8px rgba(60, 120, 200, 0.5);
-    border-bottom: 2px solid #7aa2f7;
-}
-
-/* Кнопки авторизации в шапке */
-.auth-buttons-header {
-    position: absolute;
-    top: 1rem;
-    right: 1.5rem;
-}
-
-.auth-btn-small {
-    background: linear-gradient(135deg, #4285f4, #34a853);
-    border: none;
-    padding: 0.4rem 1rem;
-    border-radius: 30px;
-    color: white;
-    cursor: pointer;
-    font-size: 0.8rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.auth-btn-small:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.4);
-}
-
-.google-btn-small {
-    background: linear-gradient(135deg, #4285f4, #34a853);
-}
-
-.user-info {
-    position: absolute;
-    top: 0.8rem;
-    right: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    background: rgba(18, 22, 33, 0.8);
-    padding: 0.3rem 0.8rem 0.3rem 0.5rem;
-    border-radius: 40px;
-    backdrop-filter: blur(5px);
-}
-
-.user-avatar-small {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.user-name-small {
-    color: #c0caf5;
+.user-name-glass {
     font-size: 0.85rem;
-    font-weight: 500;
-    max-width: 150px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
-.logout-btn-small {
-    background: #dc2626;
-    border: none;
-    padding: 0.3rem 0.8rem;
-    border-radius: 30px;
-    color: white;
-    cursor: pointer;
+.user-email-glass {
     font-size: 0.7rem;
+    color: var(--text-secondary);
+}
+
+.logout-btn-glass {
+    background: rgba(247, 118, 142, 0.2);
+    border: none;
+    padding: 0.4rem 0.7rem;
+    border-radius: 30px;
+    color: var(--accent);
+    cursor: pointer;
     transition: all 0.3s ease;
 }
 
-.logout-btn-small:hover {
-    background: #b91c1c;
+.logout-btn-glass:hover {
+    background: rgba(247, 118, 142, 0.4);
 }
 
-/* Основной контейнер с боковой панелью */
+/* ========== БОКОВАЯ ПАНЕЛЬ ========== */
 .main-wrapper {
     display: flex;
-    flex: 1;
-    padding: 1.5rem;
-    gap: 1.5rem;
-    max-width: 1600px;
-    margin: 0 auto;
-    width: 100%;
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    gap: 2rem;
 }
 
-/* Боковая панель профиля */
-.profile-sidebar {
-    width: 280px;
+.profile-sidebar-glass {
+    width: 300px;
     flex-shrink: 0;
 }
 
-.profile-card {
-    background: linear-gradient(135deg, #12162a 0%, #0a0e17 100%);
-    border: 1px solid #2c3142;
-    border-radius: 24px;
+.profile-card-glass {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border-radius: 28px;
+    border: 1px solid var(--glass-border);
     padding: 1.5rem;
     text-align: center;
     position: sticky;
-    top: 1rem;
+    top: 90px;
     transition: all 0.3s ease;
 }
 
-.profile-avatar img {
+.profile-card-glass:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-glow);
+}
+
+.profile-avatar-glass {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-avatar-glass img {
     width: 100px;
     height: 100px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid #7aa2f7;
+    border: 3px solid var(--primary);
+}
+
+.avatar-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--primary), transparent);
+    opacity: 0.3;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.05); }
+}
+
+.profile-header h3 {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.profile-header p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.3rem;
+}
+
+.profile-stats {
+    margin: 1.5rem 0;
+    padding: 0.8rem;
+    background: rgba(10, 14, 23, 0.5);
+    border-radius: 16px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--primary);
+}
+
+.profile-actions-glass {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.glass-btn {
+    background: rgba(66, 133, 244, 0.2);
+    border: 1px solid rgba(66, 133, 244, 0.3);
+    padding: 0.7rem;
+    border-radius: 40px;
+    color: white;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.glass-btn:hover {
+    background: rgba(66, 133, 244, 0.4);
+    transform: translateY(-2px);
+}
+
+/* ========== ОСНОВНОЙ КОНТЕНТ ========== */
+.content-area {
+    flex: 1;
+}
+
+.hero-section {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.glitch-text {
+    font-size: 3.5rem;
+    font-weight: 800;
+    font-family: 'Orbitron', monospace;
+    background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    position: relative;
+    animation: glitch 3s infinite;
+}
+
+@keyframes glitch {
+    0%, 100% { transform: skew(0deg); }
+    95% { transform: skew(0deg); }
+    96% { transform: skew(2deg); }
+    97% { transform: skew(-2deg); }
+    98% { transform: skew(1deg); }
+    99% { transform: skew(-1deg); }
+}
+
+.hero-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+}
+
+/* ========== КАРТОЧКИ ТОВАРОВ ========== */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+.product-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid var(--glass-border);
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--primary);
+    box-shadow: var(--shadow-glow);
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    color: var(--primary);
     margin-bottom: 1rem;
 }
 
-.profile-info h3 {
-    color: #c0caf5;
-    font-size: 1.2rem;
+.product-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    color: var(--text-primary);
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
     margin-bottom: 0.3rem;
 }
 
-.profile-info p {
-    color: #a9b1d6;
-    font-size: 0.8rem;
-    margin-bottom: 0.5rem;
-    word-break: break-all;
+.price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--success);
+    margin-bottom: 1rem;
 }
 
-.profile-id {
-    background: rgba(0, 0, 0, 0.3);
-    padding: 0.3rem 0.6rem;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    color: #7aa2f7;
-    display: inline-block;
-    margin-top: 0.5rem;
-}
-
-.profile-actions {
-    margin-top: 1rem;
-}
-
-.profile-login-btn {
-    background: linear-gradient(135deg, #4285f4, #34a853);
+.buy-btn {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
     border: none;
-    padding: 0.6rem 1.2rem;
+    padding: 0.7rem 1.5rem;
     border-radius: 40px;
     color: white;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 500;
     transition: all 0.3s ease;
     width: 100%;
 }
 
-.profile-login-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(66, 133, 244, 0.4);
-}
-
-.profile-card.logged-in .profile-actions {
-    display: none;
-}
-
-/* Если пользователь не авторизован, показываем кнопку входа в профиле */
-.profile-card:not(.logged-in) .profile-actions {
-    display: block;
-}
-
-.profile-card.logged-in .profile-actions {
-    display: none;
-}
-
-main {
-    flex: 1;
-    overflow-y: auto;
-}
-
-/* Большая надпись по центру (плашка) */
-.center-text {
-    font-size: 2rem;
-    font-weight: 800;
-    letter-spacing: 2px;
-    color: #c0caf5;
-    text-shadow: 0 0 10px rgba(192, 202, 245, 0.5);
-    background: rgba(18, 22, 33, 0.6);
-    backdrop-filter: blur(4px);
-    padding: 2rem 3rem;
-    border-radius: 40px;
-    border: 1px solid #2c3142;
-    max-width: 90%;
-    margin: 0 auto;
-    text-align: center;
-    word-break: break-word;
-}
-
-/* Интерактивная плашка */
-.interactive-banner {
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.interactive-banner:hover {
+.buy-btn:hover {
     transform: scale(1.02);
-    border-color: #7aa2f7;
-    box-shadow: 0 0 15px rgba(122, 162, 247, 0.3);
-    background: rgba(18, 22, 33, 0.8);
+    box-shadow: 0 5px 20px rgba(122, 162, 247, 0.4);
 }
 
-.cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 200px));
-    gap: 1.5rem;
-    justify-content: center;
-    align-items: start;
-    max-width: 1400px;
+.support-card .card-icon {
+    color: var(--secondary);
+}
+
+/* ========== СТРАНИЦА "О НАС" ========== */
+.about-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border-radius: 32px;
+    border: 1px solid var(--glass-border);
+    padding: 3rem;
+    text-align: center;
+    max-width: 600px;
     margin: 0 auto;
 }
 
-.card {
-    background: linear-gradient(135deg, #1a1f2e 0%, #0f121c 100%);
-    border: 1px solid #2c3142;
-    border-radius: 16px;
-    padding: 1.5rem 0.5rem;
-    text-align: center;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #c0caf5;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    min-width: 150px;
-    height: 100px;
+.about-icon {
+    font-size: 4rem;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+}
+
+.about-card h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.about-card p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.info-banner {
+    background: rgba(122, 162, 247, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    border-color: #7aa2f7;
-    box-shadow: 0 8px 20px rgba(122, 162, 247, 0.2);
-    background: linear-gradient(135deg, #252b3e 0%, #181d2c 100%);
+.info-banner:hover {
+    background: rgba(122, 162, 247, 0.2);
+    border-color: var(--primary);
 }
 
-.info-message {
-    font-size: 2rem;
+/* ========== ПОДВАЛ ========== */
+.glass-footer {
+    background: rgba(10, 14, 23, 0.8);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--glass-border);
     text-align: center;
-    color: #a9b1d6;
-    padding: 3rem;
-    background: rgba(18, 22, 33, 0.6);
-    border-radius: 24px;
-    max-width: 600px;
-    margin: 2rem auto;
+    padding: 1.5rem;
+    margin-top: 2rem;
 }
 
-footer {
-    text-align: center;
-    padding: 1rem;
-    background-color: #0b0e16;
-    border-top: 1px solid #222738;
-    font-size: 0.8rem;
-}
-
-footer a {
-    color: #7aa2f7;
-    text-decoration: none;
-}
-
-footer a:hover {
-    text-decoration: underline;
-    color: #bb9af7;
-}
-
-/* Адаптивность */
-@media (max-width: 800px) {
+/* ========== АДАПТИВНОСТЬ ========== */
+@media (max-width: 900px) {
     .main-wrapper {
         flex-direction: column;
-        padding: 1rem;
+        padding: 0 1rem;
     }
     
-    .profile-sidebar {
+    .profile-sidebar-glass {
         width: 100%;
-        order: -1;
     }
     
-    .profile-card {
+    .profile-card-glass {
         position: static;
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 1.5rem;
         text-align: left;
-        padding: 1rem;
+        flex-wrap: wrap;
     }
     
-    .profile-avatar img {
-        width: 60px;
-        height: 60px;
-        margin-bottom: 0;
+    .profile-avatar-glass img {
+        width: 70px;
+        height: 70px;
     }
     
-    .profile-info {
-        flex: 1;
+    .profile-stats {
+        margin: 0;
     }
     
-    .profile-actions {
-        margin-top: 0;
-        width: auto;
+    .profile-actions-glass {
+        flex-direction: row;
     }
     
-    .profile-login-btn {
-        width: auto;
-        padding: 0.4rem 1rem;
-        font-size: 0.75rem;
+    .nav-container {
+        flex-direction: column;
+        padding: 0 1rem;
     }
     
-    .auth-buttons-header, .user-info {
-        position: static;
-        margin-top: 0.5rem;
-        justify-content: center;
+    .glitch-text {
+        font-size: 2rem;
     }
     
-    .user-info {
-        justify-content: center;
+    .cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1rem;
     }
 }
 
-@media (max-width: 650px) {
-    nav a {
-        margin: 0 0.5rem;
-        font-size: 0.8rem;
+@media (max-width: 600px) {
+    .nav-links {
+        gap: 0.5rem;
     }
     
-    header h1 {
-        font-size: 1.4rem;
+    .nav-links a span {
+        display: none;
     }
     
-    .center-text {
+    .nav-links a i {
         font-size: 1.2rem;
-        padding: 1rem 1.5rem;
     }
     
-    .cards-container {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 150px));
-        gap: 1rem;
+    .glitch-text {
+        font-size: 1.5rem;
     }
     
-    .card {
-        min-width: 120px;
-        height: 80px;
-        font-size: 0.85rem;
-        padding: 0.8rem 0.3rem;
+    .cards-grid {
+        grid-template-columns: 1fr;
     }
     
-    .info-message {
-        font-size: 1rem;
+    .about-card {
         padding: 1.5rem;
     }
 }
-/* Кнопка Telegram */
-.telegram-btn-small {
-    background: linear-gradient(135deg, #0088cc, #006699);
+
+.hidden {
+    display: none;
 }
 
-.telegram-btn-small:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 136, 204, 0.4);
-}
-
-.profile-telegram-btn {
-    background: linear-gradient(135deg, #0088cc, #006699);
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 40px;
-    color: white;
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    width: 100%;
-    margin-top: 0.5rem;
-}
-
-.profile-telegram-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 136, 204, 0.4);
-}
-
-.auth-buttons-header {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-}
-/* Telegram виджет */
-.telegram-widget-container {
-    display: inline-block;
-    margin-left: 0.5rem;
-    vertical-align: middle;
-}
-
-.profile-telegram-widget {
-    margin-top: 0.5rem;
-}
-
-.profile-telegram-widget iframe,
-.telegram-widget-container iframe {
+.telegram-widget-inline iframe,
+.telegram-widget-profile iframe {
     border-radius: 40px !important;
-}
-
-/* Адаптация для мобильных устройств */
-@media (max-width: 650px) {
-    .telegram-widget-container {
-        margin-left: 0;
-        margin-top: 0.5rem;
-    }
-    
-    .auth-buttons-header {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-}
-/* Telegram виджет */
-.telegram-widget-container {
-    display: inline-block;
-    margin-left: 0.5rem;
-    vertical-align: middle;
-}
-
-.profile-telegram-widget {
-    margin-top: 0.5rem;
-}
-
-.profile-telegram-widget iframe,
-.telegram-widget-container iframe {
-    border-radius: 40px !important;
-}
-
-/* Адаптация для мобильных устройств */
-@media (max-width: 650px) {
-    .telegram-widget-container {
-        margin-left: 0;
-        margin-top: 0.5rem;
-    }
-    
-    .auth-buttons-header {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
 }
