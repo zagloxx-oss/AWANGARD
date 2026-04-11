@@ -8,125 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-        
-        const firebaseConfig = {
-            apiKey: "AIzaSyBbr2tOvtdFEbs-wia9L86S8Vr3vvzOQPM",
-            authDomain: "awangard-hsop.firebaseapp.com",
-            projectId: "awangard-hsop",
-            storageBucket: "awangard-hsop.firebasestorage.app",
-            messagingSenderId: "482556975147",
-            appId: "1:482556975147:web:e301d8da03bf88008ef26e",
-            measurementId: "G-4KEVY4F5B7"
-        };
-        
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const googleProvider = new GoogleAuthProvider();
-        
-        const authButtons = document.getElementById('authButtons');
-        const userInfo = document.getElementById('userInfo');
-        const userName = document.getElementById('userName');
-        const userEmail = document.getElementById('userEmail');
-        const userAvatar = document.getElementById('userAvatar');
-        const loginBtn = document.getElementById('loginBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const profilePanel = document.getElementById('profilePanel');
-        
-        async function loginWithGoogle() {
-            try {
-                const result = await signInWithPopup(auth, googleProvider);
-                localStorage.removeItem('telegram_user');
-            } catch (error) {
-                alert("Ошибка входа: " + error.message);
-            }
-        }
-        
-        async function logout() {
-            try {
-                if (auth.currentUser) await signOut(auth);
-                localStorage.removeItem('telegram_user');
-                updateUIForLogout();
-            } catch (error) {
-                console.error("Ошибка выхода:", error);
-            }
-        }
-        
-        function updateUIForLogout() {
-            authButtons.style.display = 'flex';
-            userInfo.style.display = 'none';
-            profilePanel.classList.remove('logged-in');
-            document.getElementById('profileName').textContent = 'Гость';
-            document.getElementById('profileEmail').textContent = 'Войдите, чтобы продолжить';
-            document.getElementById('profileAvatar').src = 'https://ui-avatars.com/api/?background=1a1f2e&color=7aa2f7&bold=true&name=Guest';
-            document.getElementById('profileId').textContent = 'guest';
-        }
-        
-        function updateProfilePanel(user) {
-            const telegramUser = localStorage.getItem('telegram_user');
-            
-            if (user) {
-                profilePanel.classList.add('logged-in');
-                document.getElementById('profileName').textContent = user.displayName || "Пользователь";
-                document.getElementById('profileEmail').textContent = user.email || "email не указан";
-                document.getElementById('profileAvatar').src = user.photoURL || `https://ui-avatars.com/api/?background=1a1f2e&color=7aa2f7&bold=true&name=${encodeURIComponent(user.displayName || 'User')}`;
-                document.getElementById('profileId').textContent = user.uid.substring(0, 8);
-            } else if (telegramUser) {
-                const tgUser = JSON.parse(telegramUser);
-                profilePanel.classList.add('logged-in');
-                document.getElementById('profileName').textContent = tgUser.first_name + ' ' + (tgUser.last_name || '');
-                document.getElementById('profileEmail').textContent = tgUser.username ? '@' + tgUser.username : 'telegram пользователь';
-                document.getElementById('profileAvatar').src = tgUser.photo_url || `https://ui-avatars.com/api/?background=1a1f2e&color=7aa2f7&bold=true&name=${tgUser.first_name}`;
-                document.getElementById('profileId').textContent = tgUser.id;
-                authButtons.style.display = 'none';
-                userInfo.style.display = 'flex';
-                userName.textContent = tgUser.first_name + ' ' + (tgUser.last_name || '');
-                userEmail.textContent = tgUser.username ? '@' + tgUser.username : '';
-                userAvatar.src = tgUser.photo_url || `https://ui-avatars.com/api/?background=1a1f2e&color=7aa2f7&bold=true&name=${tgUser.first_name}`;
-                userAvatar.style.display = 'block';
-            } else {
-                profilePanel.classList.remove('logged-in');
-            }
-        }
-        
-        window.onTelegramAuth = function(user) {
-            localStorage.setItem('telegram_user', JSON.stringify(user));
-            alert('Добро пожаловать, ' + user.first_name + '!');
-            location.reload();
-        };
-        
-        onAuthStateChanged(auth, (user) => {
-            const telegramUser = localStorage.getItem('telegram_user');
-            if (user) {
-                authButtons.style.display = 'none';
-                userInfo.style.display = 'flex';
-                userName.textContent = user.displayName || user.email || "Пользователь";
-                userEmail.textContent = user.email || "";
-                userAvatar.src = user.photoURL || `https://ui-avatars.com/api/?background=1a1f2e&color=7aa2f7&bold=true&name=${encodeURIComponent(user.displayName || 'User')}`;
-                userAvatar.style.display = 'block';
-            } else if (telegramUser) {
-                const tgUser = JSON.parse(telegramUser);
-                authButtons.style.display = 'none';
-                userInfo.style.display = 'flex';
-                userName.textContent = tgUser.first_name + ' ' + (tgUser.last_name || '');
-                userEmail.textContent = tgUser.username ? '@' + tgUser.username : '';
-                userAvatar.src = tgUser.photo_url || `https://ui-avatars.com/api/?background=1a1f2e&color=7aa2f7&bold=true&name=${tgUser.first_name}`;
-                userAvatar.style.display = 'block';
-            } else {
-                authButtons.style.display = 'flex';
-                userInfo.style.display = 'none';
-            }
-            updateProfilePanel(user);
-        });
-        
-        if (loginBtn) loginBtn.addEventListener('click', loginWithGoogle);
-        if (logoutBtn) logoutBtn.addEventListener('click', logout);
-        window.loginWithGoogle = loginWithGoogle;
-    </script>
-    
+    <!-- Telegram Login Widget -->
     <script async src="https://telegram.org/js/telegram-widget.js?23" 
             data-telegram-login="awangard_shop_bot" 
             data-size="large" 
@@ -168,17 +50,13 @@
             </div>
             <div class="auth-area">
                 <div id="authButtons" class="auth-buttons">
-                    <button id="loginBtn" class="btn-glow">
-                        <i class="fab fa-google"></i>
-                        <span>Google</span>
-                    </button>
                     <div id="telegramWidgetHeader" class="telegram-widget-inline"></div>
                 </div>
                 <div id="userInfo" class="user-info-glass" style="display: none;">
                     <img id="userAvatar" class="user-avatar-glass" src="">
                     <div class="user-info-text">
                         <span id="userName" class="user-name-glass"></span>
-                        <span id="userEmail" class="user-email-glass"></span>
+                        <span id="userTelegramId" class="user-email-glass"></span>
                     </div>
                     <button id="logoutBtn" class="logout-btn-glass">
                         <i class="fas fa-sign-out-alt"></i>
@@ -190,7 +68,7 @@
     
     <!-- Основной контент -->
     <div class="main-wrapper">
-        <!-- Боковая панель профиля -->
+        <!-- Боковая панель профиля с чатом -->
         <aside class="profile-sidebar-glass">
             <div id="profilePanel" class="profile-card-glass">
                 <div class="profile-header">
@@ -199,20 +77,46 @@
                         <div class="avatar-glow"></div>
                     </div>
                     <h3 id="profileName">Гость</h3>
-                    <p id="profileEmail">Войдите, чтобы продолжить</p>
-                </div>
-                <div class="profile-stats">
-                    <div class="stat-item">
-                        <i class="fas fa-id-card"></i>
+                    <p id="profileUsername"></p>
+                    <div class="profile-id-badge">
+                        <i class="fas fa-fingerprint"></i>
                         <span id="profileId">guest</span>
                     </div>
                 </div>
+                
+                <!-- Чат с поддержкой -->
+                <div class="support-chat">
+                    <div class="chat-header">
+                        <i class="fas fa-headset"></i>
+                        <span>Поддержка</span>
+                        <span class="online-status">● Онлайн</span>
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-message support">
+                            <div class="message-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="message-content">
+                                <div class="message-name">Поддержка AWANGARD</div>
+                                <div class="message-text">Здравствуйте! Чем могу помочь? 😊</div>
+                                <div class="message-time">Только что</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="Напишите сообщение..." class="chat-input">
+                        <button id="sendMessageBtn" class="send-btn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+                
                 <div class="profile-actions-glass">
-                    <button id="profileLoginBtn" class="glass-btn">
-                        <i class="fab fa-google"></i>
-                        <span>Google</span>
-                    </button>
                     <div id="profileTelegramWidget" class="telegram-widget-profile"></div>
+                    <button id="logoutProfileBtn" class="glass-btn logout-profile-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Выйти</span>
+                    </button>
                 </div>
             </div>
         </aside>
@@ -248,6 +152,10 @@
 
     <script>
         (function() {
+            // Ключи для localStorage
+            const STORAGE_KEY = 'awangard_user';
+            
+            // Функция создания Telegram виджета
             function createTelegramWidget(containerId) {
                 const container = document.getElementById(containerId);
                 if (!container) return;
@@ -262,24 +170,246 @@
                 container.appendChild(script);
             }
             
-            setTimeout(() => {
-                createTelegramWidget('telegramWidgetHeader');
-                createTelegramWidget('telegramWidgetProfile');
-            }, 100);
+            // Сохранение пользователя
+            function saveUser(userData) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
+            }
             
+            // Получение пользователя
+            function getUser() {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                return saved ? JSON.parse(saved) : null;
+            }
+            
+            // Обновление интерфейса после входа
+            function updateUIAfterLogin(userData) {
+                // Показываем информацию о пользователе в шапке
+                document.getElementById('authButtons').style.display = 'none';
+                document.getElementById('userInfo').style.display = 'flex';
+                document.getElementById('userName').textContent = userData.first_name + ' ' + (userData.last_name || '');
+                document.getElementById('userTelegramId').textContent = 'ID: ' + userData.id;
+                if (userData.photo_url) {
+                    document.getElementById('userAvatar').src = userData.photo_url;
+                } else {
+                    document.getElementById('userAvatar').src = `https://ui-avatars.com/api/?background=1a1f2e&color=7aa2f7&bold=true&name=${userData.first_name}`;
+                }
+                
+                // Обновляем профильную панель
+                document.getElementById('profilePanel').classList.add('logged-in');
+                document.getElementById('profileName').textContent = userData.first_name + ' ' + (userData.last_name || '');
+                document.getElementById('profileUsername').textContent = userData.username ? '@' + userData.username : '';
+                document.getElementById('profileId').textContent = userData.id;
+                if (userData.photo_url) {
+                    document.getElementById('profileAvatar').src = userData.photo_url;
+                } else {
+                    document.getElementById('profileAvatar').src = `https://ui-avatars.com/api/?background=1a1f2e&color=7aa2f7&bold=true&name=${userData.first_name}`;
+                }
+                
+                // Скрываем кнопки входа в профиле
+                const profileWidget = document.getElementById('profileTelegramWidget');
+                if (profileWidget) profileWidget.style.display = 'none';
+            }
+            
+            // Обновление интерфейса для гостя
+            function updateUIForGuest() {
+                document.getElementById('authButtons').style.display = 'flex';
+                document.getElementById('userInfo').style.display = 'none';
+                document.getElementById('profilePanel').classList.remove('logged-in');
+                document.getElementById('profileName').textContent = 'Гость';
+                document.getElementById('profileUsername').textContent = '';
+                document.getElementById('profileId').textContent = 'guest';
+                document.getElementById('profileAvatar').src = 'https://ui-avatars.com/api/?background=1a1f2e&color=7aa2f7&bold=true&name=Guest';
+                
+                const profileWidget = document.getElementById('profileTelegramWidget');
+                if (profileWidget) profileWidget.style.display = 'block';
+            }
+            
+            // Выход из аккаунта
+            function logout() {
+                localStorage.removeItem(STORAGE_KEY);
+                updateUIForGuest();
+                // Очищаем чат
+                clearChat();
+            }
+            
+            // Очистка чата
+            function clearChat() {
+                const chatMessages = document.getElementById('chatMessages');
+                if (chatMessages) {
+                    chatMessages.innerHTML = `
+                        <div class="chat-message support">
+                            <div class="message-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="message-content">
+                                <div class="message-name">Поддержка AWANGARD</div>
+                                <div class="message-text">Здравствуйте! Чем могу помочь? 😊</div>
+                                <div class="message-time">Только что</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Добавление сообщения в чат
+            function addMessage(text, isUser = true) {
+                const chatMessages = document.getElementById('chatMessages');
+                if (!chatMessages) return;
+                
+                const now = new Date();
+                const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'chat-message ' + (isUser ? 'user' : 'support');
+                messageDiv.innerHTML = `
+                    <div class="message-avatar">
+                        <i class="${isUser ? 'fas fa-user' : 'fas fa-robot'}"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-name">${isUser ? 'Вы' : 'Поддержка AWANGARD'}</div>
+                        <div class="message-text">${escapeHtml(text)}</div>
+                        <div class="message-time">${timeStr}</div>
+                    </div>
+                `;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // Сохраняем сообщения в localStorage
+                saveChatMessages();
+            }
+            
+            // Экранирование HTML
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            // Сохранение сообщений чата
+            function saveChatMessages() {
+                const chatMessages = document.getElementById('chatMessages');
+                if (!chatMessages) return;
+                const messages = [];
+                for (const msg of chatMessages.children) {
+                    const isUser = msg.classList.contains('user');
+                    const text = msg.querySelector('.message-text')?.textContent || '';
+                    const time = msg.querySelector('.message-time')?.textContent || '';
+                    messages.push({ isUser, text, time });
+                }
+                const user = getUser();
+                if (user) {
+                    localStorage.setItem(`chat_${user.id}`, JSON.stringify(messages));
+                }
+            }
+            
+            // Загрузка сообщений чата
+            function loadChatMessages() {
+                const user = getUser();
+                if (!user) return;
+                
+                const saved = localStorage.getItem(`chat_${user.id}`);
+                if (saved) {
+                    const messages = JSON.parse(saved);
+                    const chatMessages = document.getElementById('chatMessages');
+                    if (chatMessages && messages.length > 0) {
+                        chatMessages.innerHTML = '';
+                        for (const msg of messages) {
+                            const messageDiv = document.createElement('div');
+                            messageDiv.className = 'chat-message ' + (msg.isUser ? 'user' : 'support');
+                            messageDiv.innerHTML = `
+                                <div class="message-avatar">
+                                    <i class="${msg.isUser ? 'fas fa-user' : 'fas fa-robot'}"></i>
+                                </div>
+                                <div class="message-content">
+                                    <div class="message-name">${msg.isUser ? 'Вы' : 'Поддержка AWANGARD'}</div>
+                                    <div class="message-text">${escapeHtml(msg.text)}</div>
+                                    <div class="message-time">${msg.time}</div>
+                                </div>
+                            `;
+                            chatMessages.appendChild(messageDiv);
+                        }
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }
+                }
+            }
+            
+            // Обработчик входа через Telegram
+            window.onTelegramAuth = function(user) {
+                // Сохраняем данные пользователя
+                const userData = {
+                    id: user.id,
+                    first_name: user.first_name,
+                    last_name: user.last_name || '',
+                    username: user.username || '',
+                    photo_url: user.photo_url || '',
+                    auth_date: user.auth_date
+                };
+                saveUser(userData);
+                updateUIAfterLogin(userData);
+                loadChatMessages();
+                alert('Добро пожаловать, ' + user.first_name + '!');
+            };
+            
+            // Отправка сообщения в чат
+            function sendMessage() {
+                const input = document.getElementById('chatInput');
+                const text = input.value.trim();
+                if (!text) return;
+                
+                addMessage(text, true);
+                input.value = '';
+                
+                // Автоответ от поддержки (демо)
+                setTimeout(() => {
+                    const user = getUser();
+                    if (user) {
+                        addMessage('Спасибо за обращение! Наш менеджер скоро свяжется с вами. Ваш ID: ' + user.id, false);
+                    } else {
+                        addMessage('Пожалуйста, авторизуйтесь через Telegram, чтобы продолжить общение.', false);
+                    }
+                }, 1000);
+            }
+            
+            // Инициализация при загрузке
+            document.addEventListener('DOMContentLoaded', function() {
+                // Создаём виджеты Telegram
+                setTimeout(() => {
+                    createTelegramWidget('telegramWidgetHeader');
+                    createTelegramWidget('telegramWidgetProfile');
+                }, 100);
+                
+                // Проверяем сохранённого пользователя
+                const savedUser = getUser();
+                if (savedUser) {
+                    updateUIAfterLogin(savedUser);
+                    loadChatMessages();
+                } else {
+                    updateUIForGuest();
+                }
+                
+                // Обработчики кнопок
+                const logoutBtn = document.getElementById('logoutBtn');
+                const logoutProfileBtn = document.getElementById('logoutProfileBtn');
+                const sendBtn = document.getElementById('sendMessageBtn');
+                const chatInput = document.getElementById('chatInput');
+                
+                if (logoutBtn) logoutBtn.addEventListener('click', logout);
+                if (logoutProfileBtn) logoutProfileBtn.addEventListener('click', logout);
+                if (sendBtn) sendBtn.addEventListener('click', sendMessage);
+                if (chatInput) {
+                    chatInput.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') sendMessage();
+                    });
+                }
+            });
+            
+            // Навигация
             var homeLink = document.getElementById('homeLink');
             var aboutLink = document.getElementById('aboutLink');
             var cardsContainer = document.getElementById('cardsContainer');
             var aboutContainer = document.getElementById('aboutContainer');
             var infoBanner = document.getElementById('infoBanner');
-            var profileLoginBtn = document.getElementById('profileLoginBtn');
             
-            if (profileLoginBtn) {
-                profileLoginBtn.addEventListener('click', function() {
-                    if (typeof window.loginWithGoogle === 'function') window.loginWithGoogle();
-                });
-            }
-
             var ucCardsData = [
                 { text: "60 UC", price: "100 ₽", icon: "fa-gem", oldPrice: "150 ₽" },
                 { text: "300+25 UC", price: "450 ₽", icon: "fa-gem", oldPrice: "600 ₽" },
@@ -307,8 +437,7 @@
             }
 
             function openInfoWindow() {
-                var message = "🔥 AWANGARD — твой надёжный выбор!\n\n✅ Моментальная доставка\n✅ Лучшие цены\n✅ Поддержка 24/7\n\nПрисоединяйся к нам!";
-                alert(message);
+                alert("🔥 AWANGARD — твой надёжный выбор!\n\n✅ Моментальная доставка\n✅ Лучшие цены\n✅ Поддержка 24/7\n\nПрисоединяйся к нам!");
             }
 
             if (infoBanner) infoBanner.addEventListener('click', openInfoWindow);
@@ -346,16 +475,20 @@
             }
 
             function showAbout() {
-                cardsContainer.style.display = 'none';
-                aboutContainer.style.display = 'block';
-                document.querySelector('.hero-section')?.classList.add('hidden');
+                if (cardsContainer) cardsContainer.style.display = 'none';
+                if (aboutContainer) aboutContainer.style.display = 'block';
+                const hero = document.querySelector('.hero-section');
+                if (hero) hero.classList.add('hidden');
             }
 
             function showHome() {
-                cardsContainer.style.display = 'grid';
-                aboutContainer.style.display = 'none';
-                document.querySelector('.hero-section')?.classList.remove('hidden');
-                createCards();
+                if (cardsContainer) {
+                    cardsContainer.style.display = 'grid';
+                    createCards();
+                }
+                if (aboutContainer) aboutContainer.style.display = 'none';
+                const hero = document.querySelector('.hero-section');
+                if (hero) hero.classList.remove('hidden');
             }
 
             if (homeLink) {
@@ -378,16 +511,18 @@
 
             createCards();
             
-            // Анимированные частицы
+            // Частицы
             const particles = document.querySelector('.particles');
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 5 + 's';
-                particle.style.animationDuration = 3 + Math.random() * 5 + 's';
-                particles.appendChild(particle);
+            if (particles) {
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.top = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 5 + 's';
+                    particle.style.animationDuration = 3 + Math.random() * 5 + 's';
+                    particles.appendChild(particle);
+                }
             }
         })();
     </script>
