@@ -1,29 +1,86 @@
-!DOCTYPE html
-html lang=ru
-head
-    meta charset=UTF-8
-    meta name=viewport content=width=device-width, initial-scale=1.0
-    titleAWANGARD.COM  Dark Editiontitle
-    link rel=stylesheet href=style.css
-head
-body class=dark-theme
-    header
-        h1🌙 кукусики!h1
-        nav
-            !-- Сделал ссылку Главная активной href=#, но добавил класс active --
-            a href=# class=activeГлавнаяa
-            a href=#О насa
-            a href=httpsvk.comvip_kotik_1 target=_blank📱 Мой ВКa
-        nav
-    header
-    main
-        !-- Центральная часть большая надпись --
-        div class=center-text
-            Купить сопровождение или UC в плашке главная
-        div
-    main
-    footer
-        p© 2026 AWANGARD  a href=httpsvk.comvip_kotik_1 target=_blankВКонтактеap
-    footer
-body
-html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWANGARD.COM | Dark Edition</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    <header>
+        <h1>🌙 кукусики!</h1>
+        <nav>
+            <a href="#" id="homeLink" class="active">Главная</a>
+            <a href="#" id="aboutLink">О нас</a>
+            <a href="https://vk.com/vip_kotik_1" target="_blank">📱 Мой ВК</a>
+        </nav>
+    </header>
+    <main>
+        <div id="cardsContainer" class="cards-container"></div>
+    </main>
+    <footer>
+        <p>© 2026 AWANGARD | <a href="https://vk.com/vip_kotik_1" target="_blank">ВКонтакте</a></p>
+    </footer>
+
+    <script>
+        (function() {
+            // Элементы
+            var homeLink = document.getElementById('homeLink');
+            var aboutLink = document.getElementById('aboutLink');
+            var cardsContainer = document.getElementById('cardsContainer');
+
+            // Функция создания карточек
+            function createCards() {
+                cardsContainer.innerHTML = '';
+                
+                // 10 карточек UC
+                for (var i = 0; i < 10; i++) {
+                    var card = document.createElement('div');
+                    card.className = 'card';
+                    card.textContent = 'UC';
+                    cardsContainer.appendChild(card);
+                }
+                
+                // 10 карточек Сопровождение
+                for (var i = 0; i < 10; i++) {
+                    var card = document.createElement('div');
+                    card.className = 'card';
+                    card.textContent = 'Сопровождение';
+                    cardsContainer.appendChild(card);
+                }
+            }
+
+            // Функция для страницы "О нас"
+            function showAbout() {
+                cardsContainer.innerHTML = '';
+                var message = document.createElement('div');
+                message.className = 'info-message';
+                message.textContent = 'Страница "О нас" в разработке';
+                cardsContainer.appendChild(message);
+            }
+
+            // Обработчики кликов
+            if (homeLink) {
+                homeLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    homeLink.classList.add('active');
+                    aboutLink.classList.remove('active');
+                    createCards();
+                });
+            }
+
+            if (aboutLink) {
+                aboutLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    aboutLink.classList.add('active');
+                    homeLink.classList.remove('active');
+                    showAbout();
+                });
+            }
+
+            // При загрузке страницы показываем карточки
+            createCards();
+        })();
+    </script>
+</body>
+</html>
