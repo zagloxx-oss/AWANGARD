@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.35/ua-parser.min.js"></script>
-    <script src="https://telegram.org/js/telegram-widget.js?23" async></script>
 </head>
 <body>
     <div class="neon-bg">
@@ -134,35 +133,7 @@
         </main>
     </div>
     
-    <!-- Модальное окно выбора оплаты -->
-    <div id="paymentModal" class="payment-modal" style="display: none;">
-        <div class="payment-modal-content">
-            <div class="payment-modal-header">
-                <h3><i class="fas fa-credit-card"></i> Выберите способ оплаты</h3>
-                <button class="close-modal" id="closeModalBtn"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="payment-modal-body">
-                <div class="payment-option" data-method="donation">
-                    <i class="fas fa-gift"></i>
-                    <div class="payment-option-info">
-                        <span class="payment-option-title">DonationAlerts</span>
-                        <span class="payment-option-desc">Быстрая оплата картой, ЮMoney, криптовалютой</span>
-                    </div>
-                </div>
-                <div class="payment-option" data-method="manual">
-                    <i class="fas fa-headset"></i>
-                    <div class="payment-option-info">
-                        <span class="payment-option-title">Ручная оплата</span>
-                        <span class="payment-option-desc">Свяжитесь с поддержкой для оплаты</span>
-                    </div>
-                </div>
-            </div>
-            <div class="payment-modal-footer">
-                <button class="cancel-btn" id="cancelPaymentBtn">Отмена</button>
-            </div>
-        </div>
-    </div>
-    
+    <!-- Админ-панель -->
     <div id="adminPanel" class="admin-panel-neon" style="display: none;">
         <div class="admin-header-neon">
             <h2><i class="fas fa-shield-alt"></i> ADMIN PANEL</h2>
@@ -211,17 +182,45 @@
 
     <script>
         (function() {
-            // ========== ОПТИМИЗАЦИЯ: ленивая загрузка ==========
-            const lazyLoadObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        img.src = img.dataset.src;
-                        img.classList.remove('lazy');
-                        lazyLoadObserver.unobserve(img);
-                    }
-                });
-            });
+            // ========== TELEGRAM ВХОД (ИСПРАВЛЕННЫЙ) ==========
+            const BOT_TOKEN = '8745985444:AAGA1jByHKR78uThXfkurejklLrIp53bp6M';
+            const DONATION_URL = 'https://www.donationalerts.com/r/limitblitzoffical';
+            const ADMIN_ID = 'ВАШ_TELEGRAM_ID'; // ЗАМЕНИТЕ НА ВАШ TELEGRAM ID
+            
+            // Глобальная функция для Telegram
+            window.onTelegramAuth = function(user) {
+                if (user && user.id) {
+                    const userData = {
+                        id: user.id,
+                        first_name: user.first_name,
+                        last_name: user.last_name || '',
+                        username: user.username || '',
+                        photo_url: user.photo_url || ''
+                    };
+                    saveTelegramUser(userData);
+                    updateUIAfterLogin(userData);
+                    updateUserLastSeen(user.id.toString());
+                    alert('Добро пожаловать, ' + user.first_name + '!');
+                    // Закрываем профиль и показываем главную
+                    document.getElementById('profileLink').click();
+                }
+            };
+            
+            // Функция создания виджета Telegram
+            function initTelegramLogin() {
+                const container = document.getElementById('telegramLoginPage');
+                if (container) {
+                    container.innerHTML = '';
+                    const script = document.createElement('script');
+                    script.async = true;
+                    script.src = 'https://telegram.org/js/telegram-widget.js?23';
+                    script.setAttribute('data-telegram-login', 'awangard_shop_bot');
+                    script.setAttribute('data-size', 'large');
+                    script.setAttribute('data-onauth', 'onTelegramAuth(user)');
+                    script.setAttribute('data-request-access', 'write');
+                    container.appendChild(script);
+                }
+            }
             
             // ========== АДМИН-ПАНЕЛЬ ==========
             const ADMIN_CODE = 'AWANGARD';
@@ -302,7 +301,6 @@
                 document.getElementById('profilePageAvatar').src = userData.photo_url || `https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=${userData.first_name}`;
                 document.getElementById('telegramLoginPage').style.display = 'none';
                 document.getElementById('logoutPageBtn').style.display = 'flex';
-                // Обновляем информацию в админке
                 loadUsersList();
             }
             
@@ -327,37 +325,8 @@
             
             function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
             
-            // ========== TELEGRAM ВХОД ==========
-            function initTelegramLogin() {
-                window.onTelegramAuth = function(user) {
-                    if (user && user.id) {
-                        const userData = { id: user.id, first_name: user.first_name, last_name: user.last_name || '', username: user.username || '', photo_url: user.photo_url || '' };
-                        saveTelegramUser(userData);
-                        updateUIAfterLogin(userData);
-                        updateUserLastSeen(user.id.toString());
-                        alert('Добро пожаловать, ' + user.first_name + '!');
-                        // Закрываем профиль и показываем главную
-                        document.getElementById('profileLink').click();
-                    }
-                };
-                
-                const container = document.getElementById('telegramLoginPage');
-                if (container) {
-                    container.innerHTML = '';
-                    const script = document.createElement('script');
-                    script.async = true;
-                    script.src = 'https://telegram.org/js/telegram-widget.js?23';
-                    script.setAttribute('data-telegram-login', 'awangard_shop_bot');
-                    script.setAttribute('data-size', 'large');
-                    script.setAttribute('data-onauth', 'onTelegramAuth(user)');
-                    script.setAttribute('data-request-access', 'write');
-                    container.appendChild(script);
-                }
-            }
-            
             // ========== ОТЗЫВЫ ==========
             function getReviews() { return JSON.parse(localStorage.getItem(REVIEWS_STORAGE_KEY) || '[]'); }
-            
             function saveReviews(reviews) { localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(reviews)); }
             
             function addReview(userId, userName, rating, text) {
@@ -385,12 +354,10 @@
                 const averageStarsDiv = document.getElementById('averageStars');
                 
                 if (reviewsCountSpan) reviewsCountSpan.textContent = reviews.length;
-                
                 let totalRating = 0;
                 reviews.forEach(r => totalRating += r.rating);
                 const average = reviews.length > 0 ? (totalRating / reviews.length).toFixed(1) : 0;
                 if (averageRatingSpan) averageRatingSpan.textContent = average;
-                
                 if (averageStarsDiv) {
                     averageStarsDiv.innerHTML = '';
                     for (let i = 1; i <= 5; i++) {
@@ -399,10 +366,8 @@
                         averageStarsDiv.appendChild(star);
                     }
                 }
-                
                 if (!container) return;
                 if (reviews.length === 0) { container.innerHTML = '<div class="no-reviews">Пока нет отзывов. Будьте первым!</div>'; return; }
-                
                 container.innerHTML = reviews.map(r => `
                     <div class="review-item" data-id="${r.id}">
                         <div class="review-header">
@@ -439,88 +404,26 @@
                 });
             }
             
-            // Инициализация звёздного рейтинга
+            // Звёздный рейтинг
+            let selectedRating = 0;
             function initStarsInput() {
                 const stars = document.querySelectorAll('#starsInput i');
-                let selectedRating = 0;
                 stars.forEach(star => {
                     star.addEventListener('mouseenter', function() {
                         const value = parseInt(this.dataset.value);
-                        stars.forEach((s, i) => {
-                            if (i < value) s.className = 'fas fa-star';
-                            else s.className = 'far fa-star';
-                        });
+                        stars.forEach((s, i) => { s.className = i < value ? 'fas fa-star' : 'far fa-star'; });
                     });
                     star.addEventListener('mouseleave', function() {
-                        stars.forEach((s, i) => {
-                            if (i < selectedRating) s.className = 'fas fa-star';
-                            else s.className = 'far fa-star';
-                        });
+                        stars.forEach((s, i) => { s.className = i < selectedRating ? 'fas fa-star' : 'far fa-star'; });
                     });
                     star.addEventListener('click', function() {
                         selectedRating = parseInt(this.dataset.value);
-                        stars.forEach((s, i) => {
-                            if (i < selectedRating) s.className = 'fas fa-star';
-                            else s.className = 'far fa-star';
-                        });
+                        stars.forEach((s, i) => { s.className = i < selectedRating ? 'fas fa-star' : 'far fa-star'; });
                     });
                 });
-                return () => selectedRating;
             }
             
-            let getSelectedRating = () => 0;
-            
-            // ========== ОПЛАТА ==========
-            const DONATION_URL = 'https://www.donationalerts.com/r/limitblitzoffical';
-            const BOT_TOKEN = '8745985444:AAGA1jByHKR78uThXfkurejklLrIp53bp6M';
-            const ADMIN_ID = 'ВАШ_TELEGRAM_ID'; // ЗАМЕНИТЕ НА ВАШ TELEGRAM ID
-            
-            let currentProduct = null;
-            let currentPrice = null;
-            
-            function showPaymentModal(productName, price) {
-                currentProduct = productName;
-                currentPrice = price;
-                const modal = document.getElementById('paymentModal');
-                if (modal) modal.style.display = 'flex';
-            }
-            
-            function closePaymentModal() {
-                const modal = document.getElementById('paymentModal');
-                if (modal) modal.style.display = 'none';
-                currentProduct = null;
-                currentPrice = null;
-            }
-            
-            function processPayment(method) {
-                if (!currentProduct || !currentPrice) return;
-                const user = getTelegramUser();
-                const userId = user ? user.id : CURRENT_USER_ID;
-                const userName = user ? user.first_name : 'Гость';
-                const cleanPrice = currentPrice.toString().replace(/[^\d]/g, '');
-                
-                if (method === 'donation') {
-                    const message = encodeURIComponent(`Покупка: ${currentProduct} | ID: ${userId}`);
-                    const donateUrl = `${DONATION_URL}?amount=${cleanPrice}&message=${message}&currency=RUB`;
-                    window.open(donateUrl, '_blank', 'width=500,height=700');
-                    
-                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ chat_id: ADMIN_ID, text: `🛍️ НОВЫЙ ЗАКАЗ!\n\n📦 Товар: ${currentProduct}\n💰 Сумма: ${cleanPrice} ₽\n👤 Пользователь: ${userName}\n🆔 ID: ${userId}\n\n💬 Оплата через DonationAlerts` })
-                    }).catch(console.error);
-                    
-                    alert(`✅ Заказ оформлен!\n\nТовар: ${currentProduct}\nСумма: ${cleanPrice} ₽\n\nОткроется окно DonationAlerts для оплаты.`);
-                } else if (method === 'manual') {
-                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ chat_id: ADMIN_ID, text: `📞 ЗАПРОС РУЧНОЙ ОПЛАТЫ!\n\n📦 Товар: ${currentProduct}\n💰 Сумма: ${cleanPrice} ₽\n👤 Пользователь: ${userName}\n🆔 ID: ${userId}\n\nСвяжитесь с пользователем для уточнения деталей.` })
-                    }).catch(console.error);
-                    
-                    alert(`✅ Запрос отправлен!\n\nТовар: ${currentProduct}\nСумма: ${cleanPrice} ₽\n\nС вами свяжется администратор для уточнения деталей оплаты.\nTelegram: @l_AWANGARD_l`);
-                }
-                closePaymentModal();
-            }
-            
+            // ========== ОПЛАТА (ТОЛЬКО DONATIONALERTS) ==========
             function showPaymentPopup(cardText, price) {
                 const user = getTelegramUser();
                 if (!user) {
@@ -528,7 +431,18 @@
                     if (confirmAuth) { document.getElementById('profileLink').click(); }
                     return;
                 }
-                showPaymentModal(cardText, price);
+                
+                const cleanPrice = price.toString().replace(/[^\d]/g, '');
+                const message = encodeURIComponent(`Покупка: ${cardText} | ID: ${user.id}`);
+                const donateUrl = `${DONATION_URL}?amount=${cleanPrice}&message=${message}&currency=RUB`;
+                window.open(donateUrl, '_blank', 'width=500,height=700');
+                
+                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: ADMIN_ID, text: `🛍️ НОВЫЙ ЗАКАЗ!\n\n📦 Товар: ${cardText}\n💰 Сумма: ${cleanPrice} ₽\n👤 Пользователь: ${user.first_name}\n🆔 ID: ${user.id}\n\n💬 Оплата через DonationAlerts` })
+                }).catch(console.error);
+                
+                alert(`✅ Заказ оформлен!\n\nТовар: ${cardText}\nСумма: ${cleanPrice} ₽\n\nОткроется окно DonationAlerts для оплаты.\nПосле оплаты товар будет отправлен в течение 5-10 минут.`);
             }
             
             // ========== ТОВАРЫ ==========
@@ -719,7 +633,7 @@
             document.addEventListener('DOMContentLoaded', function() {
                 initTelegramLogin();
                 createParticles();
-                getSelectedRating = initStarsInput();
+                initStarsInput();
                 
                 const telegramUser = getTelegramUser();
                 if (telegramUser) updateUIAfterLogin(telegramUser);
@@ -745,31 +659,17 @@
                     submitReviewBtn.addEventListener('click', () => {
                         const user = getTelegramUser();
                         if (!user) { alert('Для отправки отзыва необходимо авторизоваться через Telegram'); showProfile(); return; }
-                        const rating = getSelectedRating();
-                        if (rating === 0) { alert('Поставьте оценку от 1 до 5 звёзд'); return; }
+                        if (selectedRating === 0) { alert('Поставьте оценку от 1 до 5 звёзд'); return; }
                         const text = reviewText?.value.trim();
                         if (!text) { alert('Напишите текст отзыва'); return; }
-                        addReview(user.id.toString(), user.first_name + ' ' + (user.last_name || ''), rating, text);
+                        addReview(user.id.toString(), user.first_name + ' ' + (user.last_name || ''), selectedRating, text);
                         if (reviewText) reviewText.value = '';
+                        selectedRating = 0;
                         document.querySelectorAll('#starsInput i').forEach(s => s.className = 'far fa-star');
                         alert('Спасибо за отзыв!');
                         showReviews();
                     });
                 }
-                
-                // Модальное окно оплаты
-                const modal = document.getElementById('paymentModal');
-                const closeModalBtn = document.getElementById('closeModalBtn');
-                const cancelPaymentBtn = document.getElementById('cancelPaymentBtn');
-                const paymentOptions = document.querySelectorAll('.payment-option');
-                
-                if (closeModalBtn) closeModalBtn.addEventListener('click', closePaymentModal);
-                if (cancelPaymentBtn) cancelPaymentBtn.addEventListener('click', closePaymentModal);
-                if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closePaymentModal(); });
-                
-                paymentOptions.forEach(option => {
-                    option.addEventListener('click', () => processPayment(option.dataset.method));
-                });
                 
                 // Админ-панель
                 const adminTabs = document.querySelectorAll('.admin-tab-neon');
