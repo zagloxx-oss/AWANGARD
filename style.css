@@ -17,32 +17,33 @@ body.dark-theme {
 
 header {
     background: linear-gradient(135deg, #0f121c 0%, #1a1f2e 100%);
-    padding: 1.5rem;
+    padding: 1rem 1.5rem;
     text-align: center;
     border-bottom: 2px solid #2a2f3f;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
 
 header h1 {
-    font-size: 2.2rem;
+    font-size: 2rem;
     letter-spacing: 2px;
     color: #c0caf5;
     text-shadow: 0 0 5px rgba(192, 202, 245, 0.3);
 }
 
 nav {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
 }
 
 nav a {
     color: #a9b1d6;
     text-decoration: none;
-    margin: 0 1.2rem;
+    margin: 0 1rem;
     font-weight: 500;
     transition: all 0.3s ease;
     padding: 0.4rem 0.8rem;
     border-radius: 8px;
     cursor: pointer;
+    display: inline-block;
 }
 
 nav a:hover {
@@ -58,9 +59,176 @@ nav a.active {
     border-bottom: 2px solid #7aa2f7;
 }
 
+/* Кнопки авторизации в шапке */
+.auth-buttons-header {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+}
+
+.auth-btn-small {
+    background: linear-gradient(135deg, #4285f4, #34a853);
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 30px;
+    color: white;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.auth-btn-small:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.4);
+}
+
+.google-btn-small {
+    background: linear-gradient(135deg, #4285f4, #34a853);
+}
+
+.user-info {
+    position: absolute;
+    top: 0.8rem;
+    right: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: rgba(18, 22, 33, 0.8);
+    padding: 0.3rem 0.8rem 0.3rem 0.5rem;
+    border-radius: 40px;
+    backdrop-filter: blur(5px);
+}
+
+.user-avatar-small {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-name-small {
+    color: #c0caf5;
+    font-size: 0.85rem;
+    font-weight: 500;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.logout-btn-small {
+    background: #dc2626;
+    border: none;
+    padding: 0.3rem 0.8rem;
+    border-radius: 30px;
+    color: white;
+    cursor: pointer;
+    font-size: 0.7rem;
+    transition: all 0.3s ease;
+}
+
+.logout-btn-small:hover {
+    background: #b91c1c;
+}
+
+/* Основной контейнер с боковой панелью */
+.main-wrapper {
+    display: flex;
+    flex: 1;
+    padding: 1.5rem;
+    gap: 1.5rem;
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Боковая панель профиля */
+.profile-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+}
+
+.profile-card {
+    background: linear-gradient(135deg, #12162a 0%, #0a0e17 100%);
+    border: 1px solid #2c3142;
+    border-radius: 24px;
+    padding: 1.5rem;
+    text-align: center;
+    position: sticky;
+    top: 1rem;
+    transition: all 0.3s ease;
+}
+
+.profile-avatar img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #7aa2f7;
+    margin-bottom: 1rem;
+}
+
+.profile-info h3 {
+    color: #c0caf5;
+    font-size: 1.2rem;
+    margin-bottom: 0.3rem;
+}
+
+.profile-info p {
+    color: #a9b1d6;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+    word-break: break-all;
+}
+
+.profile-id {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.3rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    color: #7aa2f7;
+    display: inline-block;
+    margin-top: 0.5rem;
+}
+
+.profile-actions {
+    margin-top: 1rem;
+}
+
+.profile-login-btn {
+    background: linear-gradient(135deg, #4285f4, #34a853);
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 40px;
+    color: white;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.profile-login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(66, 133, 244, 0.4);
+}
+
+.profile-card.logged-in .profile-actions {
+    display: none;
+}
+
+/* Если пользователь не авторизован, показываем кнопку входа в профиле */
+.profile-card:not(.logged-in) .profile-actions {
+    display: block;
+}
+
+.profile-card.logged-in .profile-actions {
+    display: none;
+}
+
 main {
     flex: 1;
-    padding: 2rem;
     overflow-y: auto;
 }
 
@@ -144,11 +312,10 @@ main {
 
 footer {
     text-align: center;
-    padding: 1.2rem;
+    padding: 1rem;
     background-color: #0b0e16;
     border-top: 1px solid #222738;
-    margin-top: 2rem;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
 }
 
 footer a {
@@ -161,100 +328,67 @@ footer a:hover {
     color: #bb9af7;
 }
 
-/* ===== Стили для авторизации ===== */
-.auth-section {
-    background: rgba(18, 22, 33, 0.8);
-    border-radius: 20px;
-    padding: 1.5rem;
-    margin: 1rem auto;
-    max-width: 350px;
-    text-align: center;
-    backdrop-filter: blur(10px);
-    border: 1px solid #2c3142;
-}
-
-.auth-section h3 {
-    color: #c0caf5;
-    margin-bottom: 1rem;
-    font-size: 1rem;
-}
-
-.auth-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-}
-
-.auth-btn {
-    padding: 0.8rem 1.5rem;
-    border: none;
-    border-radius: 40px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: white;
-}
-
-.google-btn {
-    background: linear-gradient(135deg, #4285f4, #34a853);
-}
-
-.google-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(66, 133, 244, 0.4);
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 1rem;
-    padding: 0.5rem 1rem;
-    background: rgba(18, 22, 33, 0.6);
-    border-radius: 50px;
-    margin-top: 0.5rem;
-    max-width: 300px;
-    margin-left: auto;
-}
-
-.user-avatar {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.user-name {
-    color: #c0caf5;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.logout-btn {
-    background: #dc2626;
-    border: none;
-    padding: 0.4rem 1rem;
-    border-radius: 30px;
-    color: white;
-    cursor: pointer;
-    font-size: 0.8rem;
-    transition: all 0.3s ease;
-}
-
-.logout-btn:hover {
-    background: #b91c1c;
-    transform: scale(1.02);
+/* Адаптивность */
+@media (max-width: 800px) {
+    .main-wrapper {
+        flex-direction: column;
+        padding: 1rem;
+    }
+    
+    .profile-sidebar {
+        width: 100%;
+        order: -1;
+    }
+    
+    .profile-card {
+        position: static;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        text-align: left;
+        padding: 1rem;
+    }
+    
+    .profile-avatar img {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 0;
+    }
+    
+    .profile-info {
+        flex: 1;
+    }
+    
+    .profile-actions {
+        margin-top: 0;
+        width: auto;
+    }
+    
+    .profile-login-btn {
+        width: auto;
+        padding: 0.4rem 1rem;
+        font-size: 0.75rem;
+    }
+    
+    .auth-buttons-header, .user-info {
+        position: static;
+        margin-top: 0.5rem;
+        justify-content: center;
+    }
+    
+    .user-info {
+        justify-content: center;
+    }
 }
 
 @media (max-width: 650px) {
     nav a {
-        margin: 0 0.6rem;
-        font-size: 0.9rem;
+        margin: 0 0.5rem;
+        font-size: 0.8rem;
     }
     
     header h1 {
-        font-size: 1.6rem;
+        font-size: 1.4rem;
     }
     
     .center-text {
@@ -270,26 +404,12 @@ footer a:hover {
     .card {
         min-width: 120px;
         height: 80px;
-        font-size: 0.9rem;
-        padding: 1rem 0.3rem;
+        font-size: 0.85rem;
+        padding: 0.8rem 0.3rem;
     }
     
     .info-message {
-        font-size: 1.2rem;
+        font-size: 1rem;
         padding: 1.5rem;
-    }
-    
-    .auth-section {
-        margin: 0.5rem;
-        padding: 1rem;
-        max-width: 280px;
-    }
-    .auth-btn {
-        padding: 0.6rem 1rem;
-        font-size: 0.8rem;
-    }
-    .user-info {
-        margin: 0.5rem auto;
-        justify-content: center;
     }
 }

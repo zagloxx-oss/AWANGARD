@@ -28,13 +28,14 @@
         const googleProvider = new GoogleAuthProvider();
         
         // Элементы DOM
-        const authSection = document.getElementById('authSection');
+        const authButtons = document.getElementById('authButtons');
         const userInfo = document.getElementById('userInfo');
         const userName = document.getElementById('userName');
+        const userEmail = document.getElementById('userEmail');
         const userAvatar = document.getElementById('userAvatar');
         const loginBtn = document.getElementById('loginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
-        const mainContent = document.getElementById('mainContent');
+        const profilePanel = document.getElementById('profilePanel');
         
         // Функция входа через Google
         async function loginWithGoogle() {
@@ -57,18 +58,58 @@
             }
         }
         
+        // Функция обновления профиля в боковой панели
+        function updateProfilePanel(user) {
+            if (user) {
+                // Пользователь авторизован
+                profilePanel.classList.add('logged-in');
+                document.getElementById('profileName').textContent = user.displayName || "Пользователь";
+                document.getElementById('profileEmail').textContent = user.email || "email не указан";
+                if (user.photoURL) {
+                    document.getElementById('profileAvatar').src = user.photoURL;
+                } else {
+                    document.getElementById('profileAvatar').src = 'https://ui-avatars.com/api/?background=2c3e66&color=fff&bold=true&name=' + encodeURIComponent(user.displayName || 'User');
+                }
+                // Генерируем уникальный ID пользователя (первые 8 символов)
+                const userId = user.uid.substring(0, 8);
+                document.getElementById('profileId').textContent = userId;
+                
+                // Сохраняем данные пользователя в localStorage для отображения при следующем визите
+                localStorage.setItem('lastUser', JSON.stringify({
+                    displayName: user.displayName,
+                    email: user.email,
+                    photoURL: user.photoURL,
+                    uid: user.uid
+                }));
+            } else {
+                // Пользователь не авторизован - пробуем загрузить последнего пользователя из localStorage
+                const lastUser = localStorage.getItem('lastUser');
+                if (lastUser) {
+                    const userData = JSON.parse(lastUser);
+                    profilePanel.classList.add('logged-in');
+                    document.getElementById('profileName').textContent = userData.displayName || "Пользователь";
+                    document.getElementById('profileEmail').textContent = userData.email || "email не указан";
+                    if (userData.photoURL) {
+                        document.getElementById('profileAvatar').src = userData.photoURL;
+                    } else {
+                        document.getElementById('profileAvatar').src = 'https://ui-avatars.com/api/?background=2c3e66&color=fff&bold=true&name=' + encodeURIComponent(userData.displayName || 'User');
+                    }
+                    document.getElementById('profileId').textContent = userData.uid ? userData.uid.substring(0, 8) : 'guest';
+                } else {
+                    // Гость
+                    profilePanel.classList.remove('logged-in');
+                }
+            }
+        }
+        
         // Отслеживание состояния авторизации
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 // Пользователь авторизован
-                authSection.style.display = 'none';
+                authButtons.style.display = 'none';
                 userInfo.style.display = 'flex';
-                mainContent.style.display = 'block';
-                
-                // Отображаем информацию о пользователе
-                const displayName = user.displayName || user.email || "Пользователь";
-                userName.textContent = displayName;
-                
+                userName.textContent = user.displayName || user.email || "Пользователь";
+                userEmail.textContent = user.email || "";
                 if (user.photoURL) {
                     userAvatar.src = user.photoURL;
                     userAvatar.style.display = 'block';
@@ -77,10 +118,11 @@
                 }
             } else {
                 // Пользователь не авторизован
-                authSection.style.display = 'block';
+                authButtons.style.display = 'block';
                 userInfo.style.display = 'none';
-                mainContent.style.display = 'none';
             }
+            // Обновляем боковую панель профиля
+            updateProfilePanel(user);
         });
         
         // Назначаем обработчики кнопок
@@ -101,34 +143,53 @@
         </nav>
         
         <!-- Блок авторизации (показывается неавторизованным) -->
-        <div id="authSection" class="auth-section">
-            <h3>Войдите через Google, чтобы продолжить</h3>
-            <div class="auth-buttons">
-                <button id="loginBtn" class="auth-btn google-btn">🔐 Войти через Google (Gmail)</button>
-            </div>
+        <div id="authButtons" class="auth-buttons-header">
+            <button id="loginBtn" class="auth-btn-small google-btn-small">🔐 Войти через Google</button>
         </div>
         
         <!-- Блок информации о пользователе (показывается авторизованным) -->
         <div id="userInfo" class="user-info" style="display: none;">
-            <img id="userAvatar" class="user-avatar" src="" alt="Avatar">
-            <span id="userName" class="user-name"></span>
-            <button id="logoutBtn" class="logout-btn">Выйти</button>
+            <img id="userAvatar" class="user-avatar-small" src="" alt="Avatar">
+            <span id="userName" class="user-name-small"></span>
+            <button id="logoutBtn" class="logout-btn-small">Выйти</button>
         </div>
     </header>
     
-    <main>
-        <!-- Основной контент (показывается только после авторизации) -->
-        <div id="mainContent" style="display: none;">
-            <div id="cardsContainer" class="cards-container"></div>
-        </div>
-        
-        <!-- Контейнер для страницы "О нас" (изначально скрыт) -->
-        <div id="aboutContainer" style="display: none;">
-            <div id="infoBanner" class="center-text interactive-banner">
-                Купить сопровождение или UC в плашке главная
+    <div class="main-wrapper">
+        <!-- Боковая панель с профилем -->
+        <aside class="profile-sidebar">
+            <div id="profilePanel" class="profile-card">
+                <div class="profile-avatar">
+                    <img id="profileAvatar" src="https://ui-avatars.com/api/?background=2c3e66&color=fff&bold=true&name=Guest" alt="Avatar">
+                </div>
+                <div class="profile-info">
+                    <h3 id="profileName">Гость</h3>
+                    <p id="profileEmail">войдите для доступа к профилю</p>
+                    <div class="profile-id">
+                        <span>ID: </span>
+                        <span id="profileId">guest</span>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <button id="profileLoginBtn" class="profile-login-btn">Войти через Google</button>
+                </div>
             </div>
-        </div>
-    </main>
+        </aside>
+        
+        <main>
+            <!-- Основной контент (виден всем) -->
+            <div id="mainContent">
+                <div id="cardsContainer" class="cards-container"></div>
+            </div>
+            
+            <!-- Контейнер для страницы "О нас" (изначально скрыт) -->
+            <div id="aboutContainer" style="display: none;">
+                <div id="infoBanner" class="center-text interactive-banner">
+                    Купить сопровождение или UC в плашке главная
+                </div>
+            </div>
+        </main>
+    </div>
     
     <footer>
         <p>© 2026 AWANGARD | <a href="https://vk.com/vip_kotik_1" target="_blank">ВКонтакте</a></p>
@@ -141,6 +202,16 @@
             var cardsContainer = document.getElementById('cardsContainer');
             var aboutContainer = document.getElementById('aboutContainer');
             var infoBanner = document.getElementById('infoBanner');
+            var profileLoginBtn = document.getElementById('profileLoginBtn');
+            
+            // Привязываем кнопку входа в профиле к глобальной функции
+            if (profileLoginBtn) {
+                profileLoginBtn.addEventListener('click', function() {
+                    if (typeof window.loginWithGoogle === 'function') {
+                        window.loginWithGoogle();
+                    }
+                });
+            }
 
             // Данные для UC карточек (6 с бонусами и ценами)
             var ucCardsData = [
@@ -241,13 +312,8 @@
                 });
             }
 
-            // Наблюдатель за появлением контента
-            const observer = new MutationObserver(function() {
-                if (document.getElementById('mainContent').style.display === 'block' && cardsContainer && cardsContainer.children.length === 0) {
-                    createCards();
-                }
-            });
-            observer.observe(document.getElementById('mainContent'), { attributes: true });
+            // Создаём карточки при загрузке (сразу, без авторизации)
+            createCards();
         })();
     </script>
 </body>
