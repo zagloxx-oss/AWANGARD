@@ -146,14 +146,150 @@
         </main>
     </div>
     
+    <!-- СЕКРЕТНАЯ АДМИН-ПАНЕЛЬ (скрыта по умолчанию) -->
+    <div id="adminPanel" class="admin-panel" style="display: none;">
+        <div class="admin-header">
+            <h2><i class="fas fa-shield-alt"></i> Админ-панель AWANGARD</h2>
+            <button id="closeAdminBtn" class="close-admin-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="users"><i class="fas fa-users"></i> Пользователи</button>
+            <button class="admin-tab" data-tab="chat"><i class="fas fa-comments"></i> Чат поддержки</button>
+            <button class="admin-tab" data-tab="stats"><i class="fas fa-chart-line"></i> Статистика</button>
+        </div>
+        
+        <!-- Вкладка: Пользователи -->
+        <div id="adminUsersTab" class="admin-tab-content active">
+            <h3><i class="fas fa-users"></i> Авторизованные пользователи</h3>
+            <div id="usersList" class="users-list">
+                <div class="loading-users">Загрузка...</div>
+            </div>
+        </div>
+        
+        <!-- Вкладка: Чат поддержки (ответы админа) -->
+        <div id="adminChatTab" class="admin-tab-content" style="display: none;">
+            <h3><i class="fas fa-comments"></i> Ответы пользователям</h3>
+            <div class="admin-chat-selector">
+                <label>Выберите пользователя:</label>
+                <select id="adminUserSelect" class="admin-select">
+                    <option value="">-- выберите пользователя --</option>
+                </select>
+            </div>
+            <div class="admin-chat-area">
+                <div id="adminChatMessages" class="admin-chat-messages">
+                    <div class="placeholder-text">Выберите пользователя для просмотра чата</div>
+                </div>
+                <div class="admin-chat-input-area">
+                    <input type="text" id="adminReplyInput" placeholder="Введите ответ пользователю..." class="admin-chat-input">
+                    <button id="sendReplyBtn" class="send-reply-btn"><i class="fas fa-paper-plane"></i> Ответить</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вкладка: Статистика -->
+        <div id="adminStatsTab" class="admin-tab-content" style="display: none;">
+            <h3><i class="fas fa-chart-line"></i> Статистика сайта</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <div class="stat-info">
+                        <span class="stat-label">Всего пользователей</span>
+                        <span id="totalUsers" class="stat-value">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-comments"></i>
+                    <div class="stat-info">
+                        <span class="stat-label">Всего сообщений</span>
+                        <span id="totalMessages" class="stat-value">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-clock"></i>
+                    <div class="stat-info">
+                        <span class="stat-label">Активных сегодня</span>
+                        <span id="activeToday" class="stat-value">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Затемнение для админ-панели -->
+    <div id="adminOverlay" class="admin-overlay" style="display: none;"></div>
+    
     <footer class="glass-footer">
         <p>© 2026 AWANGARD | Все права защищены</p>
     </footer>
 
     <script>
         (function() {
+            // ========== СЕКРЕТНЫЙ КЛЮЧ ДЛЯ АДМИН-ПАНЕЛИ ==========
+            // КОД ДОСТУПА: последовательность клавиш
+            // ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓
+            // СЕКРЕТНАЯ КОМБИНАЦИЯ: нажмите "A" + "W" + "A" + "N" + "G" + "A" + "R" + "D" (по очереди)
+            // ИЛИ используйте код: 7777 (на цифровой клавиатуре)
+            // ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓
+            
+            let secretCode = '';
+            const ADMIN_CODE = 'AWANGARD'; // Код: введите A W A N G A R D на клавиатуре
+            const ADMIN_NUM_CODE = '7777'; // Альтернативный код: 7777
+            
+            // ID админа (ваш Telegram ID - замените на свой)
+            // Чтобы узнать свой ID, войдите на сайт через Telegram и посмотрите в профиле
+            const ADMIN_TELEGRAM_ID = 'YOUR_TELEGRAM_ID'; // ⚠️ ЗАМЕНИТЕ НА ВАШ ТЕЛЕГРАМ ID
+            
+            // Элементы админ-панели
+            const adminPanel = document.getElementById('adminPanel');
+            const adminOverlay = document.getElementById('adminOverlay');
+            
+            // Функция открытия админ-панели
+            function openAdminPanel() {
+                adminPanel.style.display = 'block';
+                adminOverlay.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                loadAdminData();
+            }
+            
+            // Функция закрытия админ-панели
+            function closeAdminPanel() {
+                adminPanel.style.display = 'none';
+                adminOverlay.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            
+            // Обработчик секретной комбинации клавиш
+            document.addEventListener('keydown', function(e) {
+                // Добавляем нажатую клавишу в код (только буквы и цифры)
+                if (e.key.length === 1 && /[A-Za-z0-9]/.test(e.key)) {
+                    secretCode += e.key.toUpperCase();
+                    // Ограничиваем длину строки
+                    if (secretCode.length > ADMIN_CODE.length && ADMIN_NUM_CODE.length) {
+                        secretCode = secretCode.slice(-Math.max(ADMIN_CODE.length, ADMIN_NUM_CODE.length));
+                    }
+                    
+                    // Проверяем совпадение с кодом
+                    if (secretCode.includes(ADMIN_CODE) || secretCode === ADMIN_NUM_CODE) {
+                        // Проверяем, авторизован ли админ
+                        const currentUser = getUser();
+                        if (currentUser && currentUser.id.toString() === ADMIN_TELEGRAM_ID) {
+                            openAdminPanel();
+                            secretCode = '';
+                        } else if (currentUser) {
+                            alert('⛔ Доступ запрещён! Эта панель только для администратора.');
+                            secretCode = '';
+                        } else {
+                            alert('🔐 Пожалуйста, войдите через Telegram, чтобы получить доступ к админ-панели.');
+                            secretCode = '';
+                        }
+                    }
+                }
+            });
+            
             // Ключи для localStorage
             const STORAGE_KEY = 'awangard_user';
+            const CHAT_STORAGE_PREFIX = 'awangard_chat_';
+            const USERS_STORAGE_KEY = 'awangard_users_list';
             
             // Функция создания Telegram виджета
             function createTelegramWidget(containerId) {
@@ -173,6 +309,28 @@
             // Сохранение пользователя
             function saveUser(userData) {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
+                // Сохраняем в список пользователей
+                saveUserToList(userData);
+            }
+            
+            // Сохранение в список пользователей
+            function saveUserToList(userData) {
+                let users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
+                const existingIndex = users.findIndex(u => u.id === userData.id);
+                if (existingIndex !== -1) {
+                    users[existingIndex] = {
+                        ...users[existingIndex],
+                        ...userData,
+                        lastSeen: new Date().toISOString()
+                    };
+                } else {
+                    users.push({
+                        ...userData,
+                        firstSeen: new Date().toISOString(),
+                        lastSeen: new Date().toISOString()
+                    });
+                }
+                localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
             }
             
             // Получение пользователя
@@ -183,7 +341,6 @@
             
             // Обновление интерфейса после входа
             function updateUIAfterLogin(userData) {
-                // Показываем информацию о пользователе в шапке
                 document.getElementById('authButtons').style.display = 'none';
                 document.getElementById('userInfo').style.display = 'flex';
                 document.getElementById('userName').textContent = userData.first_name + ' ' + (userData.last_name || '');
@@ -194,7 +351,6 @@
                     document.getElementById('userAvatar').src = `https://ui-avatars.com/api/?background=1a1f2e&color=7aa2f7&bold=true&name=${userData.first_name}`;
                 }
                 
-                // Обновляем профильную панель
                 document.getElementById('profilePanel').classList.add('logged-in');
                 document.getElementById('profileName').textContent = userData.first_name + ' ' + (userData.last_name || '');
                 document.getElementById('profileUsername').textContent = userData.username ? '@' + userData.username : '';
@@ -205,7 +361,6 @@
                     document.getElementById('profileAvatar').src = `https://ui-avatars.com/api/?background=1a1f2e&color=7aa2f7&bold=true&name=${userData.first_name}`;
                 }
                 
-                // Скрываем кнопки входа в профиле
                 const profileWidget = document.getElementById('profileTelegramWidget');
                 if (profileWidget) profileWidget.style.display = 'none';
             }
@@ -228,7 +383,6 @@
             function logout() {
                 localStorage.removeItem(STORAGE_KEY);
                 updateUIForGuest();
-                // Очищаем чат
                 clearChat();
             }
             
@@ -252,7 +406,7 @@
             }
             
             // Добавление сообщения в чат
-            function addMessage(text, isUser = true) {
+            function addMessage(text, isUser = true, isAdminReply = false) {
                 const chatMessages = document.getElementById('chatMessages');
                 if (!chatMessages) return;
                 
@@ -263,10 +417,10 @@
                 messageDiv.className = 'chat-message ' + (isUser ? 'user' : 'support');
                 messageDiv.innerHTML = `
                     <div class="message-avatar">
-                        <i class="${isUser ? 'fas fa-user' : 'fas fa-robot'}"></i>
+                        <i class="${isUser ? 'fas fa-user' : 'fas fa-headset'}"></i>
                     </div>
                     <div class="message-content">
-                        <div class="message-name">${isUser ? 'Вы' : 'Поддержка AWANGARD'}</div>
+                        <div class="message-name">${isUser ? 'Вы' : (isAdminReply ? 'Администратор' : 'Поддержка AWANGARD')}</div>
                         <div class="message-text">${escapeHtml(text)}</div>
                         <div class="message-time">${timeStr}</div>
                     </div>
@@ -274,8 +428,46 @@
                 chatMessages.appendChild(messageDiv);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
                 
-                // Сохраняем сообщения в localStorage
+                // Сохраняем сообщения
                 saveChatMessages();
+            }
+            
+            // Добавление сообщения от админа (в чат пользователя)
+            function addAdminMessageToUser(userId, text) {
+                const userChatKey = CHAT_STORAGE_PREFIX + userId;
+                let messages = JSON.parse(localStorage.getItem(userChatKey) || '[]');
+                const now = new Date();
+                const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+                messages.push({
+                    isUser: false,
+                    isAdminReply: true,
+                    text: text,
+                    time: timeStr,
+                    timestamp: now.toISOString()
+                });
+                localStorage.setItem(userChatKey, JSON.stringify(messages));
+                
+                // Если текущий пользователь - этот пользователь, обновляем чат
+                const currentUser = getUser();
+                if (currentUser && currentUser.id.toString() === userId.toString()) {
+                    const chatMessages = document.getElementById('chatMessages');
+                    if (chatMessages) {
+                        const messageDiv = document.createElement('div');
+                        messageDiv.className = 'chat-message support';
+                        messageDiv.innerHTML = `
+                            <div class="message-avatar">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <div class="message-content">
+                                <div class="message-name">Администратор</div>
+                                <div class="message-text">${escapeHtml(text)}</div>
+                                <div class="message-time">${timeStr}</div>
+                            </div>
+                        `;
+                        chatMessages.appendChild(messageDiv);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }
+                }
             }
             
             // Экранирование HTML
@@ -294,11 +486,12 @@
                     const isUser = msg.classList.contains('user');
                     const text = msg.querySelector('.message-text')?.textContent || '';
                     const time = msg.querySelector('.message-time')?.textContent || '';
-                    messages.push({ isUser, text, time });
+                    const isAdminReply = text.includes('Администратор') || false;
+                    messages.push({ isUser, isAdminReply, text, time, timestamp: new Date().toISOString() });
                 }
                 const user = getUser();
                 if (user) {
-                    localStorage.setItem(`chat_${user.id}`, JSON.stringify(messages));
+                    localStorage.setItem(CHAT_STORAGE_PREFIX + user.id, JSON.stringify(messages));
                 }
             }
             
@@ -307,7 +500,7 @@
                 const user = getUser();
                 if (!user) return;
                 
-                const saved = localStorage.getItem(`chat_${user.id}`);
+                const saved = localStorage.getItem(CHAT_STORAGE_PREFIX + user.id);
                 if (saved) {
                     const messages = JSON.parse(saved);
                     const chatMessages = document.getElementById('chatMessages');
@@ -318,10 +511,10 @@
                             messageDiv.className = 'chat-message ' + (msg.isUser ? 'user' : 'support');
                             messageDiv.innerHTML = `
                                 <div class="message-avatar">
-                                    <i class="${msg.isUser ? 'fas fa-user' : 'fas fa-robot'}"></i>
+                                    <i class="${msg.isUser ? 'fas fa-user' : 'fas fa-headset'}"></i>
                                 </div>
                                 <div class="message-content">
-                                    <div class="message-name">${msg.isUser ? 'Вы' : 'Поддержка AWANGARD'}</div>
+                                    <div class="message-name">${msg.isUser ? 'Вы' : (msg.isAdminReply ? 'Администратор' : 'Поддержка AWANGARD')}</div>
                                     <div class="message-text">${escapeHtml(msg.text)}</div>
                                     <div class="message-time">${msg.time}</div>
                                 </div>
@@ -333,9 +526,189 @@
                 }
             }
             
+            // ========== АДМИН-ПАНЕЛЬ: ЗАГРУЗКА ДАННЫХ ==========
+            function loadAdminData() {
+                loadUsersList();
+                loadAdminUserSelect();
+                updateStats();
+            }
+            
+            function loadUsersList() {
+                const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
+                const usersListDiv = document.getElementById('usersList');
+                
+                if (users.length === 0) {
+                    usersListDiv.innerHTML = '<div class="no-users">Нет авторизованных пользователей</div>';
+                    return;
+                }
+                
+                usersListDiv.innerHTML = users.map(user => `
+                    <div class="user-item" data-user-id="${user.id}">
+                        <div class="user-avatar-mini">
+                            <img src="${user.photo_url || `https://ui-avatars.com/api/?background=1a1f2e&color=7aa2f7&bold=true&name=${user.first_name}`}" alt="">
+                        </div>
+                        <div class="user-info-mini">
+                            <div class="user-name-mini">${user.first_name} ${user.last_name || ''}</div>
+                            <div class="user-username-mini">${user.username ? '@' + user.username : ''}</div>
+                            <div class="user-id-mini">ID: ${user.id}</div>
+                        </div>
+                        <div class="user-last-seen">Был: ${new Date(user.lastSeen).toLocaleDateString()}</div>
+                    </div>
+                `).join('');
+            }
+            
+            function loadAdminUserSelect() {
+                const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
+                const select = document.getElementById('adminUserSelect');
+                
+                if (users.length === 0) {
+                    select.innerHTML = '<option value="">-- нет пользователей --</option>';
+                    return;
+                }
+                
+                select.innerHTML = '<option value="">-- выберите пользователя --</option>' + 
+                    users.map(user => `<option value="${user.id}">${user.first_name} ${user.last_name || ''} (ID: ${user.id})</option>`).join('');
+            }
+            
+            function loadAdminChat(userId) {
+                const messages = JSON.parse(localStorage.getItem(CHAT_STORAGE_PREFIX + userId) || '[]');
+                const adminChatDiv = document.getElementById('adminChatMessages');
+                
+                if (messages.length === 0) {
+                    adminChatDiv.innerHTML = '<div class="placeholder-text">Нет сообщений от этого пользователя</div>';
+                    return;
+                }
+                
+                adminChatDiv.innerHTML = messages.map(msg => `
+                    <div class="admin-chat-message ${msg.isUser ? 'user-msg' : 'admin-msg'}">
+                        <div class="admin-message-header">
+                            <strong>${msg.isUser ? '👤 Пользователь' : (msg.isAdminReply ? '👑 Администратор' : '🤖 Поддержка')}</strong>
+                            <span class="admin-message-time">${msg.time}</span>
+                        </div>
+                        <div class="admin-message-text">${escapeHtml(msg.text)}</div>
+                    </div>
+                `).join('');
+                adminChatDiv.scrollTop = adminChatDiv.scrollHeight;
+            }
+            
+            function updateStats() {
+                const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
+                document.getElementById('totalUsers').textContent = users.length;
+                
+                // Подсчёт всех сообщений
+                let totalMessages = 0;
+                for (const user of users) {
+                    const messages = JSON.parse(localStorage.getItem(CHAT_STORAGE_PREFIX + user.id) || '[]');
+                    totalMessages += messages.length;
+                }
+                document.getElementById('totalMessages').textContent = totalMessages;
+                
+                // Активные сегодня
+                const today = new Date().toDateString();
+                const activeToday = users.filter(user => {
+                    const lastSeen = new Date(user.lastSeen);
+                    return lastSeen.toDateString() === today;
+                }).length;
+                document.getElementById('activeToday').textContent = activeToday;
+            }
+            
+            // Отправка ответа от админа
+            function sendAdminReply() {
+                const select = document.getElementById('adminUserSelect');
+                const userId = select.value;
+                const replyInput = document.getElementById('adminReplyInput');
+                const replyText = replyInput.value.trim();
+                
+                if (!userId) {
+                    alert('Выберите пользователя');
+                    return;
+                }
+                if (!replyText) {
+                    alert('Введите ответ');
+                    return;
+                }
+                
+                // Добавляем ответ в чат пользователя
+                addAdminMessageToUser(userId, replyText);
+                
+                // Очищаем поле ввода
+                replyInput.value = '';
+                
+                // Обновляем отображение чата в админ-панели
+                loadAdminChat(userId);
+                
+                // Обновляем статистику
+                updateStats();
+                
+                alert('Ответ отправлен пользователю!');
+            }
+            
+            // Обработчики вкладок админ-панели
+            function initAdminTabs() {
+                const tabs = document.querySelectorAll('.admin-tab');
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const tabName = tab.getAttribute('data-tab');
+                        tabs.forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        
+                        document.getElementById('adminUsersTab').style.display = 'none';
+                        document.getElementById('adminChatTab').style.display = 'none';
+                        document.getElementById('adminStatsTab').style.display = 'none';
+                        
+                        if (tabName === 'users') {
+                            document.getElementById('adminUsersTab').style.display = 'block';
+                            loadUsersList();
+                        } else if (tabName === 'chat') {
+                            document.getElementById('adminChatTab').style.display = 'block';
+                            loadAdminUserSelect();
+                        } else if (tabName === 'stats') {
+                            document.getElementById('adminStatsTab').style.display = 'block';
+                            updateStats();
+                        }
+                    });
+                });
+            }
+            
+            // Обработчик выбора пользователя в админ-чате
+            function initAdminUserSelect() {
+                const select = document.getElementById('adminUserSelect');
+                if (select) {
+                    select.addEventListener('change', () => {
+                        const userId = select.value;
+                        if (userId) {
+                            loadAdminChat(userId);
+                        } else {
+                            document.getElementById('adminChatMessages').innerHTML = '<div class="placeholder-text">Выберите пользователя для просмотра чата</div>';
+                        }
+                    });
+                }
+            }
+            
+            // Обработчик отправки ответа
+            function initSendReply() {
+                const sendBtn = document.getElementById('sendReplyBtn');
+                const replyInput = document.getElementById('adminReplyInput');
+                if (sendBtn) {
+                    sendBtn.addEventListener('click', sendAdminReply);
+                }
+                if (replyInput) {
+                    replyInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') sendAdminReply();
+                    });
+                }
+            }
+            
+            // Обработчик закрытия админ-панели
+            function initCloseAdmin() {
+                const closeBtn = document.getElementById('closeAdminBtn');
+                const overlay = document.getElementById('adminOverlay');
+                if (closeBtn) closeBtn.addEventListener('click', closeAdminPanel);
+                if (overlay) overlay.addEventListener('click', closeAdminPanel);
+            }
+            
             // Обработчик входа через Telegram
             window.onTelegramAuth = function(user) {
-                // Сохраняем данные пользователя
                 const userData = {
                     id: user.id,
                     first_name: user.first_name,
@@ -358,27 +731,15 @@
                 
                 addMessage(text, true);
                 input.value = '';
-                
-                // Автоответ от поддержки (демо)
-                setTimeout(() => {
-                    const user = getUser();
-                    if (user) {
-                        addMessage('Спасибо за обращение! Наш менеджер скоро свяжется с вами. Ваш ID: ' + user.id, false);
-                    } else {
-                        addMessage('Пожалуйста, авторизуйтесь через Telegram, чтобы продолжить общение.', false);
-                    }
-                }, 1000);
             }
             
-            // Инициализация при загрузке
+            // Инициализация
             document.addEventListener('DOMContentLoaded', function() {
-                // Создаём виджеты Telegram
                 setTimeout(() => {
                     createTelegramWidget('telegramWidgetHeader');
                     createTelegramWidget('telegramWidgetProfile');
                 }, 100);
                 
-                // Проверяем сохранённого пользователя
                 const savedUser = getUser();
                 if (savedUser) {
                     updateUIAfterLogin(savedUser);
@@ -387,7 +748,6 @@
                     updateUIForGuest();
                 }
                 
-                // Обработчики кнопок
                 const logoutBtn = document.getElementById('logoutBtn');
                 const logoutProfileBtn = document.getElementById('logoutProfileBtn');
                 const sendBtn = document.getElementById('sendMessageBtn');
@@ -401,6 +761,12 @@
                         if (e.key === 'Enter') sendMessage();
                     });
                 }
+                
+                // Инициализация админ-панели
+                initAdminTabs();
+                initAdminUserSelect();
+                initSendReply();
+                initCloseAdmin();
             });
             
             // Навигация
