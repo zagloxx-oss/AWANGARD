@@ -10,6 +10,9 @@
     
     <!-- UAParser.js для определения устройства -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.35/ua-parser.min.js"></script>
+    
+    <!-- Telegram Login Widget (исправленная версия) -->
+    <script src="https://telegram.org/js/telegram-widget.js?23" async></script>
 </head>
 <body>
     <!-- Анимированный фон PUBG стиль -->
@@ -34,6 +37,10 @@
                     <i class="fas fa-home"></i>
                     <span>Главная</span>
                 </a>
+                <a href="#" id="supportLink">
+                    <i class="fas fa-headset"></i>
+                    <span>Поддержка</span>
+                </a>
                 <a href="#" id="aboutLink">
                     <i class="fas fa-info-circle"></i>
                     <span>О нас</span>
@@ -55,7 +62,7 @@
     
     <!-- Основной контент -->
     <div class="main-wrapper">
-        <!-- Боковая панель профиля (для десктопа) -->
+        <!-- Боковая панель профиля -->
         <aside class="profile-sidebar-glass">
             <div id="profilePanel" class="profile-card-glass">
                 <div class="profile-header">
@@ -75,10 +82,7 @@
                     </div>
                 </div>
                 <div class="profile-actions-glass">
-                    <button id="profileTelegramBtn" class="glass-btn telegram-login-btn">
-                        <i class="fab fa-telegram"></i>
-                        <span>Войти через Telegram</span>
-                    </button>
+                    <div id="telegramLoginContainer" class="telegram-login-container"></div>
                     <button id="logoutProfileBtn" class="glass-btn logout-profile-btn">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Выйти</span>
@@ -89,40 +93,6 @@
         
         <!-- Основная область -->
         <main class="content-area">
-            <!-- Сворачиваемый чат с поддержкой -->
-            <div class="support-chat-wrapper" id="supportChatWrapper">
-                <div class="chat-toggle" id="chatToggle">
-                    <i class="fas fa-headset"></i>
-                    <span>Чат с поддержкой</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="chat-container" id="chatContainer">
-                    <div class="chat-header-main">
-                        <i class="fas fa-robot"></i>
-                        <span>Поддержка AWANGARD</span>
-                        <span class="online-status">● Онлайн</span>
-                    </div>
-                    <div class="chat-messages-main" id="chatMessages">
-                        <div class="chat-message support">
-                            <div class="message-avatar">
-                                <i class="fas fa-robot"></i>
-                            </div>
-                            <div class="message-content">
-                                <div class="message-name">Поддержка</div>
-                                <div class="message-text">Здравствуйте! Чем могу помочь? 😊</div>
-                                <div class="message-time">Только что</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="chat-input-area-main">
-                        <input type="text" id="chatInput" placeholder="Напишите сообщение..." class="chat-input-main">
-                        <button id="sendMessageBtn" class="send-btn-main">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
             <!-- Карточки товаров -->
             <div id="mainContent">
                 <div class="hero-section">
@@ -151,10 +121,7 @@
     
     <!-- Мобильная плашка входа (видна только на телефонах) -->
     <div class="mobile-auth-bar" id="mobileAuthBar">
-        <button id="mobileTelegramBtn" class="mobile-telegram-btn">
-            <i class="fab fa-telegram"></i>
-            <span>Войти через Telegram</span>
-        </button>
+        <div id="mobileTelegramContainer" class="mobile-telegram-container"></div>
     </div>
     
     <!-- СЕКРЕТНАЯ АДМИН-ПАНЕЛЬ -->
@@ -220,7 +187,6 @@
         (function() {
             // ========== НАСТРОЙКИ АДМИН-ПАНЕЛИ ==========
             const ADMIN_CODE = 'AWANGARD';
-            const ADMIN_NUM_CODE = '7777';
             let secretCode = '';
             
             const adminPanel = document.getElementById('adminPanel');
@@ -243,7 +209,7 @@
                 if (e.key.length === 1 && /[A-Za-z0-9]/.test(e.key)) {
                     secretCode += e.key.toUpperCase();
                     if (secretCode.length > ADMIN_CODE.length) secretCode = secretCode.slice(-ADMIN_CODE.length);
-                    if (secretCode === ADMIN_CODE || secretCode === ADMIN_NUM_CODE) {
+                    if (secretCode === ADMIN_CODE) {
                         openAdminPanel();
                         secretCode = '';
                     }
@@ -327,6 +293,7 @@
                 document.getElementById('profileId').textContent = userData.id;
                 document.getElementById('profileAvatar').src = userData.photo_url || `https://ui-avatars.com/api/?background=1a1f2e&color=00ff88&bold=true&name=${userData.first_name}`;
                 document.getElementById('mobileAuthBar').style.display = 'none';
+                document.getElementById('telegramLoginContainer').style.display = 'none';
             }
             
             function updateUIForGuest() {
@@ -337,32 +304,12 @@
                 document.getElementById('profileId').textContent = CURRENT_USER_ID.slice(-8);
                 document.getElementById('profileAvatar').src = 'https://ui-avatars.com/api/?background=1a1f2e&color=00ff88&bold=true&name=Guest';
                 document.getElementById('mobileAuthBar').style.display = 'flex';
+                document.getElementById('telegramLoginContainer').style.display = 'block';
             }
             
             function logout() {
                 localStorage.removeItem(TELEGRAM_USER_KEY);
                 updateUIForGuest();
-                clearChat();
-            }
-            
-            function clearChat() {
-                const chatMessages = document.getElementById('chatMessages');
-                if (chatMessages) {
-                    chatMessages.innerHTML = `<div class="chat-message support"><div class="message-avatar"><i class="fas fa-robot"></i></div><div class="message-content"><div class="message-name">Поддержка</div><div class="message-text">Здравствуйте! Чем могу помочь? 😊</div><div class="message-time">Только что</div></div></div>`;
-                }
-            }
-            
-            function addMessage(text, isUser = true, isAdminReply = false) {
-                const chatMessages = document.getElementById('chatMessages');
-                if (!chatMessages) return;
-                const now = new Date();
-                const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-                const messageDiv = document.createElement('div');
-                messageDiv.className = 'chat-message ' + (isUser ? 'user' : 'support');
-                messageDiv.innerHTML = `<div class="message-avatar"><i class="${isUser ? 'fas fa-user' : 'fas fa-headset'}"></i></div><div class="message-content"><div class="message-name">${isUser ? 'Вы' : (isAdminReply ? 'Админ' : 'Поддержка')}</div><div class="message-text">${escapeHtml(text)}</div><div class="message-time">${timeStr}</div></div>`;
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-                saveChatMessages();
             }
             
             function addAdminMessageToUser(userId, text) {
@@ -371,53 +318,55 @@
                 const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
                 messages.push({ isUser: false, isAdminReply: true, text, time: timeStr });
                 localStorage.setItem(CHAT_STORAGE_PREFIX + userId, JSON.stringify(messages));
-                const currentUser = getTelegramUser();
-                if ((currentUser && currentUser.id.toString() === userId) || CURRENT_USER_ID === userId) {
-                    const chatMessages = document.getElementById('chatMessages');
-                    if (chatMessages) {
-                        const msgDiv = document.createElement('div');
-                        msgDiv.className = 'chat-message support';
-                        msgDiv.innerHTML = `<div class="message-avatar"><i class="fas fa-headset"></i></div><div class="message-content"><div class="message-name">Админ</div><div class="message-text">${escapeHtml(text)}</div><div class="message-time">${timeStr}</div></div>`;
-                        chatMessages.appendChild(msgDiv);
-                        chatMessages.scrollTop = chatMessages.scrollHeight;
-                    }
-                }
             }
             
             function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
             
-            function saveChatMessages() {
-                const chatMessages = document.getElementById('chatMessages');
-                if (!chatMessages) return;
-                const messages = [];
-                for (const msg of chatMessages.children) {
-                    const isUser = msg.classList.contains('user');
-                    const text = msg.querySelector('.message-text')?.textContent || '';
-                    const time = msg.querySelector('.message-time')?.textContent || '';
-                    messages.push({ isUser, isAdminReply: text.includes('Админ'), text, time });
-                }
-                const user = getTelegramUser();
-                const chatId = user ? user.id.toString() : CURRENT_USER_ID;
-                localStorage.setItem(CHAT_STORAGE_PREFIX + chatId, JSON.stringify(messages));
-            }
-            
-            function loadChatMessages() {
-                const user = getTelegramUser();
-                const chatId = user ? user.id.toString() : CURRENT_USER_ID;
-                const saved = localStorage.getItem(CHAT_STORAGE_PREFIX + chatId);
-                if (saved && JSON.parse(saved).length > 0) {
-                    const messages = JSON.parse(saved);
-                    const chatMessages = document.getElementById('chatMessages');
-                    if (chatMessages) {
-                        chatMessages.innerHTML = '';
-                        for (const msg of messages) {
-                            const msgDiv = document.createElement('div');
-                            msgDiv.className = 'chat-message ' + (msg.isUser ? 'user' : 'support');
-                            msgDiv.innerHTML = `<div class="message-avatar"><i class="${msg.isUser ? 'fas fa-user' : 'fas fa-headset'}"></i></div><div class="message-content"><div class="message-name">${msg.isUser ? 'Вы' : (msg.isAdminReply ? 'Админ' : 'Поддержка')}</div><div class="message-text">${escapeHtml(msg.text)}</div><div class="message-time">${msg.time}</div></div>`;
-                            chatMessages.appendChild(msgDiv);
-                        }
-                        chatMessages.scrollTop = chatMessages.scrollHeight;
+            // ========== TELEGRAM ВХОД (ПРЯМОЙ ВИДЖЕТ) ==========
+            function initTelegramLogin() {
+                // Функция обратного вызова для Telegram
+                window.onTelegramAuth = function(user) {
+                    if (user && user.id) {
+                        const userData = {
+                            id: user.id,
+                            first_name: user.first_name,
+                            last_name: user.last_name || '',
+                            username: user.username || '',
+                            photo_url: user.photo_url || ''
+                        };
+                        saveTelegramUser(userData);
+                        updateUIAfterLogin(userData);
+                        updateUserLastSeen(user.id.toString());
+                        alert('Добро пожаловать, ' + user.first_name + '!');
                     }
+                };
+                
+                // Создаём виджет Telegram в контейнере
+                const container = document.getElementById('telegramLoginContainer');
+                if (container) {
+                    container.innerHTML = '';
+                    const script = document.createElement('script');
+                    script.async = true;
+                    script.src = 'https://telegram.org/js/telegram-widget.js?23';
+                    script.setAttribute('data-telegram-login', 'awangard_shop_bot');
+                    script.setAttribute('data-size', 'large');
+                    script.setAttribute('data-onauth', 'onTelegramAuth(user)');
+                    script.setAttribute('data-request-access', 'write');
+                    container.appendChild(script);
+                }
+                
+                // Мобильная версия
+                const mobileContainer = document.getElementById('mobileTelegramContainer');
+                if (mobileContainer) {
+                    mobileContainer.innerHTML = '';
+                    const mobileScript = document.createElement('script');
+                    mobileScript.async = true;
+                    mobileScript.src = 'https://telegram.org/js/telegram-widget.js?23';
+                    mobileScript.setAttribute('data-telegram-login', 'awangard_shop_bot');
+                    mobileScript.setAttribute('data-size', 'large');
+                    mobileScript.setAttribute('data-onauth', 'onTelegramAuth(user)');
+                    mobileScript.setAttribute('data-request-access', 'write');
+                    mobileContainer.appendChild(mobileScript);
                 }
             }
             
@@ -489,80 +438,29 @@
                 document.getElementById('adminReplyInput').value = '';
                 loadAdminChat(userId);
                 updateStats();
-            }
-            
-            // ========== TELEGRAM ВХОД (ПРЯМОЙ ВИДЖЕТ) ==========
-            function initTelegramLogin() {
-                // Создаём прямой виджет Telegram
-                const tgScript = document.createElement('script');
-                tgScript.async = true;
-                tgScript.src = 'https://telegram.org/js/telegram-widget.js?23';
-                tgScript.setAttribute('data-telegram-login', 'awangard_shop_bot');
-                tgScript.setAttribute('data-size', 'large');
-                tgScript.setAttribute('data-onauth', 'onTelegramAuth');
-                tgScript.setAttribute('data-request-access', 'write');
-                document.body.appendChild(tgScript);
-            }
-            
-            window.onTelegramAuth = function(user) {
-                const userData = {
-                    id: user.id,
-                    first_name: user.first_name,
-                    last_name: user.last_name || '',
-                    username: user.username || '',
-                    photo_url: user.photo_url || ''
-                };
-                saveTelegramUser(userData);
-                updateUIAfterLogin(userData);
-                
-                // Переносим чат гостя
-                const guestChat = localStorage.getItem(CHAT_STORAGE_PREFIX + CURRENT_USER_ID);
-                if (guestChat) localStorage.setItem(CHAT_STORAGE_PREFIX + user.id, guestChat);
-                loadChatMessages();
-                updateUserLastSeen(user.id.toString());
-                alert('Добро пожаловать, ' + user.first_name + '!');
-            };
-            
-            function sendMessage() {
-                const input = document.getElementById('chatInput');
-                const text = input.value.trim();
-                if (!text) return;
-                addMessage(text, true);
-                input.value = '';
-                const user = getTelegramUser();
-                updateUserLastSeen(user ? user.id.toString() : CURRENT_USER_ID);
-            }
-            
-            // Сворачивание чата
-            function initChatToggle() {
-                const toggle = document.getElementById('chatToggle');
-                const container = document.getElementById('chatContainer');
-                const icon = toggle.querySelector('.toggle-icon');
-                if (toggle && container) {
-                    toggle.addEventListener('click', () => {
-                        const isClosed = container.style.display === 'none';
-                        container.style.display = isClosed ? 'flex' : 'none';
-                        icon.style.transform = isClosed ? 'rotate(0deg)' : 'rotate(180deg)';
-                    });
-                }
+                alert('Ответ отправлен!');
             }
             
             // Инициализация
             document.addEventListener('DOMContentLoaded', function() {
                 initTelegramLogin();
-                initChatToggle();
                 
                 const telegramUser = getTelegramUser();
-                if (telegramUser) { updateUIAfterLogin(telegramUser); loadChatMessages(); }
-                else { updateUIForGuest(); loadChatMessages(); }
+                if (telegramUser) { updateUIAfterLogin(telegramUser); }
+                else { updateUIForGuest(); }
                 
                 // Обработчики
                 document.getElementById('logoutBtn')?.addEventListener('click', logout);
                 document.getElementById('logoutProfileBtn')?.addEventListener('click', logout);
-                document.getElementById('sendMessageBtn')?.addEventListener('click', sendMessage);
-                document.getElementById('chatInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
-                document.getElementById('profileTelegramBtn')?.addEventListener('click', () => { if (window.TelegramLoginWidget) window.TelegramLoginWidget.show(); else alert('Нажмите на кнопку Telegram выше'); });
-                document.getElementById('mobileTelegramBtn')?.addEventListener('click', () => { if (window.TelegramLoginWidget) window.TelegramLoginWidget.show(); else alert('Инициализация...'); });
+                
+                // Поддержка - переход в Telegram
+                const supportLink = document.getElementById('supportLink');
+                if (supportLink) {
+                    supportLink.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        window.open('https://t.me/l_AWANGARD_l', '_blank');
+                    });
+                }
                 
                 // Админ-панель
                 document.querySelectorAll('.admin-tab').forEach(tab => {
@@ -588,26 +486,28 @@
                 createParticles();
             });
             
-            // Карточки товаров с картинками
+            // КАРТОЧКИ ТОВАРОВ С КАРТИНКАМИ
+            // UC картинка: иконка UC в неоновом стиле
+            // Метровалюта картинка: иконка монет/BP
             var ucCardsData = [
-                { text: "60 UC", price: "100 ₽", icon: "fa-gem", oldPrice: "150 ₽", img: "https://images.weserv.nl/?url=i.imgur.com/7ZqRq0M.png" },
-                { text: "300+25 UC", price: "450 ₽", icon: "fa-gem", oldPrice: "600 ₽", img: "https://images.weserv.nl/?url=i.imgur.com/7ZqRq0M.png" },
-                { text: "600+60 UC", price: "900 ₽", icon: "fa-gem", oldPrice: "1200 ₽", img: "https://images.weserv.nl/?url=i.imgur.com/7ZqRq0M.png" },
-                { text: "1500+300 UC", price: "2200 ₽", icon: "fa-gem", oldPrice: "3000 ₽", img: "https://images.weserv.nl/?url=i.imgur.com/7ZqRq0M.png" },
-                { text: "3000+850 UC", price: "4500 ₽", icon: "fa-gem", oldPrice: "6000 ₽", img: "https://images.weserv.nl/?url=i.imgur.com/7ZqRq0M.png" },
-                { text: "6000+2100 UC", price: "9000 ₽", icon: "fa-gem", oldPrice: "12000 ₽", img: "https://images.weserv.nl/?url=i.imgur.com/7ZqRq0M.png" }
+                { text: "60 UC", price: "100 ₽", oldPrice: "150 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051277.png" },
+                { text: "300+25 UC", price: "450 ₽", oldPrice: "600 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051277.png" },
+                { text: "600+60 UC", price: "900 ₽", oldPrice: "1200 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051277.png" },
+                { text: "1500+300 UC", price: "2200 ₽", oldPrice: "3000 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051277.png" },
+                { text: "3000+850 UC", price: "4500 ₽", oldPrice: "6000 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051277.png" },
+                { text: "6000+2100 UC", price: "9000 ₽", oldPrice: "12000 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051277.png" }
             ];
             var supportCardsData = [
-                { text: "1M метровалюты", price: "100 ₽", icon: "fa-coins", img: "https://images.weserv.nl/?url=i.imgur.com/A3Gx3cQ.png" },
-                { text: "2M метровалюты", price: "200 ₽", icon: "fa-coins", img: "https://images.weserv.nl/?url=i.imgur.com/A3Gx3cQ.png" },
-                { text: "3M метровалюты", price: "300 ₽", icon: "fa-coins", img: "https://images.weserv.nl/?url=i.imgur.com/A3Gx3cQ.png" },
-                { text: "4M метровалюты", price: "400 ₽", icon: "fa-coins", img: "https://images.weserv.nl/?url=i.imgur.com/A3Gx3cQ.png" },
-                { text: "5M метровалюты", price: "500 ₽", icon: "fa-coins", img: "https://images.weserv.nl/?url=i.imgur.com/A3Gx3cQ.png" },
-                { text: "6M метровалюты", price: "600 ₽", icon: "fa-coins", img: "https://images.weserv.nl/?url=i.imgur.com/A3Gx3cQ.png" },
-                { text: "7M метровалюты", price: "700 ₽", icon: "fa-coins", img: "https://images.weserv.nl/?url=i.imgur.com/A3Gx3cQ.png" },
-                { text: "8M метровалюты", price: "800 ₽", icon: "fa-coins", img: "https://images.weserv.nl/?url=i.imgur.com/A3Gx3cQ.png" },
-                { text: "9M метровалюты", price: "900 ₽", icon: "fa-coins", img: "https://images.weserv.nl/?url=i.imgur.com/A3Gx3cQ.png" },
-                { text: "10M метровалюты", price: "1000 ₽", icon: "fa-coins", img: "https://images.weserv.nl/?url=i.imgur.com/A3Gx3cQ.png" }
+                { text: "1M метровалюты", price: "100 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
+                { text: "2M метровалюты", price: "200 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
+                { text: "3M метровалюты", price: "300 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
+                { text: "4M метровалюты", price: "400 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
+                { text: "5M метровалюты", price: "500 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
+                { text: "6M метровалюты", price: "600 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
+                { text: "7M метровалюты", price: "700 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
+                { text: "8M метровалюты", price: "800 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
+                { text: "9M метровалюты", price: "900 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
+                { text: "10M метровалюты", price: "1000 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" }
             ];
             
             function showPaymentPopup(cardText, price) { alert(`💎 Заказ\n\nТовар: ${cardText}\nСумма: ${price}\n\nСпасибо!`); }
@@ -622,7 +522,15 @@
                 [...ucCardsData, ...supportCardsData].forEach(item => {
                     const card = document.createElement('div');
                     card.className = 'product-card';
-                    card.innerHTML = `<div class="card-image"><img src="${item.img}" alt="${item.text}"></div><div class="card-info"><h3>${item.text}</h3>${item.oldPrice ? `<div class="old-price">${item.oldPrice}</div>` : ''}<div class="price">${item.price}</div><button class="buy-btn">Купить</button></div>`;
+                    card.innerHTML = `
+                        <div class="card-image"><img src="${item.img}" alt="${item.text}" loading="lazy" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1051/1051277.png'"></div>
+                        <div class="card-info">
+                            <h3>${item.text}</h3>
+                            ${item.oldPrice ? `<div class="old-price">${item.oldPrice}</div>` : ''}
+                            <div class="price">${item.price}</div>
+                            <button class="buy-btn">Купить</button>
+                        </div>
+                    `;
                     card.querySelector('.buy-btn').addEventListener('click', () => showPaymentPopup(item.text, item.price));
                     container.appendChild(card);
                 });
