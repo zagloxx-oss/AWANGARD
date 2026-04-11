@@ -3,32 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>AWANGARD | PUBG Mobile Store</title>
+    <title>AWANGARD | NEON PUBG Store</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- UAParser.js для определения устройства -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.35/ua-parser.min.js"></script>
-    
-    <!-- Telegram Login Widget -->
     <script src="https://telegram.org/js/telegram-widget.js?23" async></script>
 </head>
 <body>
-    <div class="pubg-bg">
-        <div class="neon-grid"></div>
+    <!-- Анимированный неоновый фон -->
+    <div class="neon-bg">
+        <div class="grid-overlay"></div>
         <div class="scan-line"></div>
         <div class="vignette"></div>
     </div>
     
-    <div class="particles"></div>
+    <!-- Множество частиц -->
+    <div class="particles-container" id="particlesContainer"></div>
     
-    <nav class="pubg-nav">
+    <!-- Летающие неоновые линии -->
+    <div class="floating-lines">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+    
+    <!-- Плавающие круги -->
+    <div class="floating-circles">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+    
+    <!-- Навигация -->
+    <nav class="neon-nav">
         <div class="nav-container">
             <div class="logo">
-                <i class="fas fa-skull"></i>
+                <i class="fas fa-crown"></i>
                 <span>AWANGARD</span>
-                <span class="pubg-badge">PUBG</span>
+                <span class="neon-badge">NEON</span>
             </div>
             <div class="nav-links">
                 <a href="#" id="homeLink" class="active">
@@ -45,9 +64,9 @@
                 </a>
             </div>
             <div class="auth-area">
-                <div id="userInfo" class="user-info-glass" style="display: none;">
-                    <span id="userName" class="user-name-glass"></span>
-                    <button id="logoutBtn" class="logout-btn-glass">
+                <div id="userInfo" class="user-info-neon" style="display: none;">
+                    <span id="userName" class="user-name-neon"></span>
+                    <button id="logoutBtn" class="logout-btn-neon">
                         <i class="fas fa-sign-out-alt"></i>
                     </button>
                 </div>
@@ -55,28 +74,30 @@
         </div>
     </nav>
     
+    <!-- Основной контент -->
     <div class="main-wrapper">
-        <aside class="profile-sidebar-glass">
-            <div id="profilePanel" class="profile-card-glass">
+        <!-- Боковая панель профиля -->
+        <aside class="profile-sidebar-neon">
+            <div id="profilePanel" class="profile-card-neon">
                 <div class="profile-header">
-                    <div class="profile-avatar-glass">
-                        <img id="profileAvatar" src="https://ui-avatars.com/api/?background=1a1f2e&color=00ff88&bold=true&name=Guest" alt="Avatar">
-                        <div class="avatar-glow"></div>
+                    <div class="profile-avatar-neon">
+                        <img id="profileAvatar" src="https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=Guest" alt="Avatar">
+                        <div class="avatar-pulse"></div>
                     </div>
                     <h3 id="profileName">Гость</h3>
                     <p id="profileUsername"></p>
-                    <div class="profile-id-badge">
+                    <div class="profile-id-neon">
                         <i class="fas fa-fingerprint"></i>
                         <span id="profileId">guest</span>
                     </div>
-                    <div class="profile-device-info" id="profileDeviceInfo">
+                    <div class="profile-device-neon" id="profileDeviceInfo">
                         <i class="fas fa-mobile-alt"></i>
                         <span id="deviceInfoText">Определение...</span>
                     </div>
                 </div>
-                <div class="profile-actions-glass">
+                <div class="profile-actions-neon">
                     <div id="telegramLoginContainer" class="telegram-login-container"></div>
-                    <button id="logoutProfileBtn" class="glass-btn logout-profile-btn">
+                    <button id="logoutProfileBtn" class="neon-btn logout-neon-btn">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Выйти</span>
                     </button>
@@ -84,23 +105,24 @@
             </div>
         </aside>
         
+        <!-- Контент -->
         <main class="content-area">
             <div id="mainContent">
                 <div class="hero-section">
-                    <h1 class="glitch-text" data-text="PUBG MARKET">PUBG MARKET</h1>
-                    <p class="hero-subtitle">UC | Метровалюта | Скины</p>
+                    <h1 class="neon-glitch" data-text="AWANGARD NEON">AWANGARD NEON</h1>
+                    <p class="hero-subtitle">PUBG Mobile | UC | Метровалюта</p>
                 </div>
-                <div id="cardsContainer" class="cards-grid"></div>
+                <div id="cardsContainer" class="cards-grid-neon"></div>
             </div>
             
             <div id="aboutContainer" style="display: none;">
-                <div class="about-card">
+                <div class="about-card-neon">
                     <div class="about-icon">
                         <i class="fas fa-store"></i>
                     </div>
                     <h2>О нас</h2>
                     <p>AWANGARD — это надёжный магазин игровых товаров для PUBG Mobile. Мы предлагаем лучшие цены и моментальную доставку.</p>
-                    <div id="infoBanner" class="info-banner">
+                    <div id="infoBanner" class="info-banner-neon">
                         <i class="fas fa-comment-dots"></i>
                         <span>Нажмите, чтобы узнать больше</span>
                     </div>
@@ -109,66 +131,66 @@
         </main>
     </div>
     
+    <!-- Мобильная панель входа -->
     <div class="mobile-auth-bar" id="mobileAuthBar">
         <div id="mobileTelegramContainer" class="mobile-telegram-container"></div>
     </div>
     
-    <div id="adminPanel" class="admin-panel" style="display: none;">
-        <div class="admin-header">
+    <!-- Админ-панель -->
+    <div id="adminPanel" class="admin-panel-neon" style="display: none;">
+        <div class="admin-header-neon">
             <h2><i class="fas fa-shield-alt"></i> ADMIN PANEL</h2>
-            <button id="closeAdminBtn" class="close-admin-btn"><i class="fas fa-times"></i></button>
+            <button id="closeAdminBtn" class="close-admin-neon"><i class="fas fa-times"></i></button>
         </div>
-        <div class="admin-tabs">
-            <button class="admin-tab active" data-tab="users"><i class="fas fa-users"></i> Users</button>
-            <button class="admin-tab" data-tab="chat"><i class="fas fa-comments"></i> Chats</button>
-            <button class="admin-tab" data-tab="stats"><i class="fas fa-chart-line"></i> Stats</button>
+        <div class="admin-tabs-neon">
+            <button class="admin-tab-neon active" data-tab="users"><i class="fas fa-users"></i> Users</button>
+            <button class="admin-tab-neon" data-tab="chat"><i class="fas fa-comments"></i> Chats</button>
+            <button class="admin-tab-neon" data-tab="stats"><i class="fas fa-chart-line"></i> Stats</button>
         </div>
         
-        <div id="adminUsersTab" class="admin-tab-content active">
+        <div id="adminUsersTab" class="admin-tab-content-neon active">
             <h3><i class="fas fa-users"></i> Все пользователи</h3>
             <div class="users-search">
-                <input type="text" id="usersSearchInput" placeholder="Поиск..." class="search-input">
+                <input type="text" id="usersSearchInput" placeholder="Поиск..." class="search-input-neon">
             </div>
-            <div id="usersList" class="users-list">
+            <div id="usersList" class="users-list-neon">
                 <div class="loading-users">Загрузка...</div>
             </div>
         </div>
         
-        <div id="adminChatTab" class="admin-tab-content" style="display: none;">
+        <div id="adminChatTab" class="admin-tab-content-neon" style="display: none;">
             <h3><i class="fas fa-comments"></i> Чаты пользователей</h3>
             <div class="admin-chat-selector">
                 <label>Выберите пользователя:</label>
-                <select id="adminUserSelect" class="admin-select">
+                <select id="adminUserSelect" class="admin-select-neon">
                     <option value="">-- выберите --</option>
                 </select>
             </div>
-            <div class="admin-chat-area">
-                <div id="adminSelectedUserInfo" class="admin-user-info"></div>
-                <div id="adminChatMessages" class="admin-chat-messages">
+            <div class="admin-chat-area-neon">
+                <div id="adminSelectedUserInfo" class="admin-user-info-neon"></div>
+                <div id="adminChatMessages" class="admin-chat-messages-neon">
                     <div class="placeholder-text">Выберите пользователя</div>
                 </div>
-                <div class="admin-chat-input-area">
-                    <input type="text" id="adminReplyInput" placeholder="Ответ пользователю..." class="admin-chat-input">
-                    <button id="sendReplyBtn" class="send-reply-btn"><i class="fas fa-paper-plane"></i></button>
+                <div class="admin-chat-input-area-neon">
+                    <input type="text" id="adminReplyInput" placeholder="Ответ пользователю..." class="admin-chat-input-neon">
+                    <button id="sendReplyBtn" class="send-reply-neon"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
         </div>
         
-        <div id="adminStatsTab" class="admin-tab-content" style="display: none;">
-            <h3><i class="fas fa-chart-line"></i> Статистика</h3>
-            <div class="stats-grid">
-                <div class="stat-card"><i class="fas fa-users"></i><div class="stat-info"><span class="stat-label">Всего</span><span id="totalUsers" class="stat-value">0</span></div></div>
-                <div class="stat-card"><i class="fab fa-telegram"></i><div class="stat-info"><span class="stat-label">Telegram</span><span id="telegramUsers" class="stat-value">0</span></div></div>
-                <div class="stat-card"><i class="fas fa-user"></i><div class="stat-info"><span class="stat-label">Гости</span><span id="guestUsers" class="stat-value">0</span></div></div>
-                <div class="stat-card"><i class="fas fa-comments"></i><div class="stat-info"><span class="stat-label">Сообщений</span><span id="totalMessages" class="stat-value">0</span></div></div>
+        <div id="adminStatsTab" class="admin-tab-content-neon" style="display: none;">
+            <div class="stats-grid-neon">
+                <div class="stat-card-neon"><i class="fas fa-users"></i><div class="stat-info-neon"><span class="stat-label">Всего</span><span id="totalUsers" class="stat-value-neon">0</span></div></div>
+                <div class="stat-card-neon"><i class="fab fa-telegram"></i><div class="stat-info-neon"><span class="stat-label">Telegram</span><span id="telegramUsers" class="stat-value-neon">0</span></div></div>
+                <div class="stat-card-neon"><i class="fas fa-user"></i><div class="stat-info-neon"><span class="stat-label">Гости</span><span id="guestUsers" class="stat-value-neon">0</span></div></div>
+                <div class="stat-card-neon"><i class="fas fa-comments"></i><div class="stat-info-neon"><span class="stat-label">Сообщений</span><span id="totalMessages" class="stat-value-neon">0</span></div></div>
             </div>
         </div>
     </div>
+    <div id="adminOverlay" class="admin-overlay-neon" style="display: none;"></div>
     
-    <div id="adminOverlay" class="admin-overlay" style="display: none;"></div>
-    
-    <footer class="pubg-footer">
-        <p>© 2026 AWANGARD | PUBG Mobile Store</p>
+    <footer class="neon-footer">
+        <p>© 2026 AWANGARD | NEON PUBG Mobile Store</p>
     </footer>
 
     <script>
@@ -181,7 +203,7 @@
             const adminOverlay = document.getElementById('adminOverlay');
             
             function openAdminPanel() {
-                adminPanel.style.display = 'block';
+                adminPanel.style.display = 'flex';
                 adminOverlay.style.display = 'block';
                 document.body.style.overflow = 'hidden';
                 loadAdminData();
@@ -197,10 +219,7 @@
                 if (e.key.length === 1 && /[A-Za-z0-9]/.test(e.key)) {
                     secretCode += e.key.toUpperCase();
                     if (secretCode.length > ADMIN_CODE.length) secretCode = secretCode.slice(-ADMIN_CODE.length);
-                    if (secretCode === ADMIN_CODE) {
-                        openAdminPanel();
-                        secretCode = '';
-                    }
+                    if (secretCode === ADMIN_CODE) { openAdminPanel(); secretCode = ''; }
                 }
             });
             
@@ -218,7 +237,7 @@
             const deviceInfo = getDeviceInfo();
             document.getElementById('deviceInfoText').textContent = deviceInfo.fullString;
             
-            // ========== УНИКАЛЬНЫЙ ID ДЛЯ ПОСЕТИТЕЛЕЙ ==========
+            // ========== УНИКАЛЬНЫЙ ID ==========
             function generateUniqueId() { return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9); }
             
             function getOrCreateUserId() {
@@ -278,7 +297,7 @@
                 document.getElementById('profileName').textContent = userData.first_name + ' ' + (userData.last_name || '');
                 document.getElementById('profileUsername').textContent = userData.username ? '@' + userData.username : '';
                 document.getElementById('profileId').textContent = userData.id;
-                document.getElementById('profileAvatar').src = userData.photo_url || `https://ui-avatars.com/api/?background=1a1f2e&color=00ff88&bold=true&name=${userData.first_name}`;
+                document.getElementById('profileAvatar').src = userData.photo_url || `https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=${userData.first_name}`;
                 document.getElementById('mobileAuthBar').style.display = 'none';
                 document.getElementById('telegramLoginContainer').style.display = 'none';
             }
@@ -289,7 +308,7 @@
                 document.getElementById('profileName').textContent = 'Гость';
                 document.getElementById('profileUsername').textContent = '';
                 document.getElementById('profileId').textContent = CURRENT_USER_ID.slice(-8);
-                document.getElementById('profileAvatar').src = 'https://ui-avatars.com/api/?background=1a1f2e&color=00ff88&bold=true&name=Guest';
+                document.getElementById('profileAvatar').src = 'https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=Guest';
                 document.getElementById('mobileAuthBar').style.display = 'flex';
                 document.getElementById('telegramLoginContainer').style.display = 'block';
             }
@@ -327,7 +346,6 @@
                     }
                 };
                 
-                // Десктоп версия
                 const container = document.getElementById('telegramLoginContainer');
                 if (container) {
                     container.innerHTML = '';
@@ -341,7 +359,6 @@
                     container.appendChild(script);
                 }
                 
-                // Мобильная версия
                 const mobileContainer = document.getElementById('mobileTelegramContainer');
                 if (mobileContainer) {
                     mobileContainer.innerHTML = '';
@@ -357,31 +374,27 @@
             }
             
             // ========== АДМИН-ПАНЕЛЬ ==========
-            function loadAdminData() {
-                loadUsersList();
-                loadAdminUserSelect();
-                updateStats();
-            }
+            function loadAdminData() { loadUsersList(); loadAdminUserSelect(); updateStats(); }
             
             function loadUsersList() {
                 const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
                 const search = document.getElementById('usersSearchInput')?.value.toLowerCase() || '';
                 const filtered = users.filter(u => u.name?.toLowerCase().includes(search) || u.id.toString().includes(search));
                 document.getElementById('usersList').innerHTML = filtered.map(u => `
-                    <div class="user-item" onclick="window.selectUserForChat?.('${u.chatId || u.id}')">
-                        <img src="${u.photo || `https://ui-avatars.com/api/?background=1a1f2e&color=00ff88&bold=true&name=${u.name || 'Guest'}`}" onerror="this.src='https://ui-avatars.com/api/?background=1a1f2e&color=00ff88&bold=true&name=User'">
-                        <div class="user-info-mini">
-                            <div class="user-name-mini">${u.name || 'Гость'}</div>
-                            <div class="user-id-mini">ID: ${typeof u.id === 'number' ? u.id : u.id.slice(-8)}</div>
-                            <div class="user-device-mini"><i class="fas fa-mobile-alt"></i> ${u.deviceInfo || '?'}</div>
+                    <div class="user-item-neon" onclick="window.selectUserForChat?.('${u.chatId || u.id}')">
+                        <img src="${u.photo || `https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=${u.name || 'Guest'}`}" onerror="this.src='https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=User'">
+                        <div class="user-info-mini-neon">
+                            <div class="user-name-mini-neon">${u.name || 'Гость'}</div>
+                            <div class="user-id-mini-neon">ID: ${typeof u.id === 'number' ? u.id : u.id.slice(-8)}</div>
+                            <div class="user-device-mini-neon"><i class="fas fa-mobile-alt"></i> ${u.deviceInfo || '?'}</div>
                         </div>
-                        <div class="user-type-badge ${u.type === 'telegram' ? 'telegram-badge' : 'guest-badge'}">${u.type === 'telegram' ? '<i class="fab fa-telegram"></i> TG' : '<i class="fas fa-user"></i> Guest'}</div>
+                        <div class="user-type-badge-neon ${u.type === 'telegram' ? 'telegram-badge-neon' : 'guest-badge-neon'}">${u.type === 'telegram' ? '<i class="fab fa-telegram"></i> TG' : '<i class="fas fa-user"></i> Guest'}</div>
                     </div>
                 `).join('');
             }
             
             window.selectUserForChat = function(userId) {
-                document.querySelector('.admin-tab[data-tab="chat"]').click();
+                document.querySelector('.admin-tab-neon[data-tab="chat"]').click();
                 const select = document.getElementById('adminUserSelect');
                 if (select) { select.value = userId; loadAdminChat(userId); loadAdminUserInfo(userId); }
             };
@@ -389,7 +402,7 @@
             function loadAdminUserInfo(userId) {
                 const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
                 const user = users.find(u => (u.chatId || u.id).toString() === userId);
-                document.getElementById('adminSelectedUserInfo').innerHTML = user ? `<div class="admin-user-info-card"><img src="${user.photo || 'https://ui-avatars.com/api/?background=1a1f2e&color=00ff88&bold=true&name=User'}"><div><strong>${user.name || 'Гость'}</strong><br><small>${user.type === 'telegram' ? 'Telegram ID: ' + user.id : 'Гость'}</small><br><small>📱 ${user.deviceInfo || '?'}</small></div></div>` : '';
+                document.getElementById('adminSelectedUserInfo').innerHTML = user ? `<div class="admin-user-info-card-neon"><img src="${user.photo || 'https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=User'}"><div><strong>${user.name || 'Гость'}</strong><br><small>${user.type === 'telegram' ? 'Telegram ID: ' + user.id : 'Гость'}</small><br><small>📱 ${user.deviceInfo || '?'}</small></div></div>` : '';
             }
             
             function loadAdminUserSelect() {
@@ -402,7 +415,7 @@
                 const messages = JSON.parse(localStorage.getItem(CHAT_STORAGE_PREFIX + userId) || '[]');
                 const container = document.getElementById('adminChatMessages');
                 if (!messages.length) { container.innerHTML = '<div class="placeholder-text">Нет сообщений</div>'; return; }
-                container.innerHTML = messages.map(m => `<div class="admin-chat-message ${m.isUser ? 'user-msg' : 'admin-msg'}"><div class="admin-message-header"><strong>${m.isUser ? '👤 User' : (m.isAdminReply ? '👑 Admin' : '🤖 Bot')}</strong><span>${m.time}</span></div><div class="admin-message-text">${escapeHtml(m.text)}</div></div>`).join('');
+                container.innerHTML = messages.map(m => `<div class="admin-chat-message-neon ${m.isUser ? 'user-msg-neon' : 'admin-msg-neon'}"><div class="admin-message-header-neon"><strong>${m.isUser ? '👤 User' : (m.isAdminReply ? '👑 Admin' : '🤖 Bot')}</strong><span>${m.time}</span></div><div class="admin-message-text-neon">${escapeHtml(m.text)}</div></div>`).join('');
                 container.scrollTop = container.scrollHeight;
             }
             
@@ -411,8 +424,7 @@
                 document.getElementById('totalUsers').textContent = users.length;
                 document.getElementById('telegramUsers').textContent = users.filter(u => u.type === 'telegram').length;
                 document.getElementById('guestUsers').textContent = users.filter(u => u.type !== 'telegram').length;
-                let totalMsg = 0;
-                users.forEach(u => { const msgs = JSON.parse(localStorage.getItem(CHAT_STORAGE_PREFIX + (u.chatId || u.id)) || '[]'); totalMsg += msgs.length; });
+                let totalMsg = 0; users.forEach(u => { const msgs = JSON.parse(localStorage.getItem(CHAT_STORAGE_PREFIX + (u.chatId || u.id)) || '[]'); totalMsg += msgs.length; });
                 document.getElementById('totalMessages').textContent = totalMsg;
             }
             
@@ -427,31 +439,138 @@
                 alert('Ответ отправлен!');
             }
             
-            // ИНИЦИАЛИЗАЦИЯ
+            // ========== ТОВАРЫ С БУКВАМИ UC И M ==========
+            var ucCardsData = [
+                { text: "60 UC", price: "100 ₽", oldPrice: "150 ₽", letter: "UC" },
+                { text: "300+25 UC", price: "450 ₽", oldPrice: "600 ₽", letter: "UC" },
+                { text: "600+60 UC", price: "900 ₽", oldPrice: "1200 ₽", letter: "UC" },
+                { text: "1500+300 UC", price: "2200 ₽", oldPrice: "3000 ₽", letter: "UC" },
+                { text: "3000+850 UC", price: "4500 ₽", oldPrice: "6000 ₽", letter: "UC" },
+                { text: "6000+2100 UC", price: "9000 ₽", oldPrice: "12000 ₽", letter: "UC" }
+            ];
+            
+            var supportCardsData = [
+                { text: "1 000 000 метровалюты", price: "100 ₽", letter: "M" },
+                { text: "2 000 000 метровалюты", price: "200 ₽", letter: "M" },
+                { text: "3 000 000 метровалюты", price: "300 ₽", letter: "M" },
+                { text: "4 000 000 метровалюты", price: "400 ₽", letter: "M" },
+                { text: "5 000 000 метровалюты", price: "500 ₽", letter: "M" },
+                { text: "6 000 000 метровалюты", price: "600 ₽", letter: "M" },
+                { text: "7 000 000 метровалюты", price: "700 ₽", letter: "M" },
+                { text: "8 000 000 метровалюты", price: "800 ₽", letter: "M" },
+                { text: "9 000 000 метровалюты", price: "900 ₽", letter: "M" },
+                { text: "10 000 000 метровалюты", price: "1000 ₽", letter: "M" }
+            ];
+            
+            function showPaymentPopup(cardText, price) { alert(`💎 Заказ\n\nТовар: ${cardText}\nСумма: ${price}\n\nСпасибо!`); }
+            function openInfoWindow() { alert("🔥 AWANGARD NEON STORE\n\n✅ Моментальная доставка\n✅ Лучшие цены\n✅ Поддержка 24/7"); }
+            
+            document.getElementById('infoBanner')?.addEventListener('click', openInfoWindow);
+            
+            function createCards() {
+                const container = document.getElementById('cardsContainer');
+                if (!container) return;
+                container.innerHTML = '';
+                
+                [...ucCardsData, ...supportCardsData].forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card-neon';
+                    card.innerHTML = `
+                        <div class="card-letter-neon ${item.letter === 'UC' ? 'uc-letter' : 'm-letter'}">${item.letter}</div>
+                        <div class="card-info-neon">
+                            <h3>${item.text}</h3>
+                            ${item.oldPrice ? `<div class="old-price-neon">${item.oldPrice}</div>` : ''}
+                            <div class="price-neon">${item.price}</div>
+                            <button class="buy-btn-neon">Купить</button>
+                        </div>
+                    `;
+                    card.querySelector('.buy-btn-neon').addEventListener('click', () => showPaymentPopup(item.text, item.price));
+                    container.appendChild(card);
+                });
+            }
+            
+            // ========== ЧАСТИЦЫ И АНИМАЦИЯ ==========
+            function createParticles() {
+                const container = document.getElementById('particlesContainer');
+                if (!container) return;
+                for (let i = 0; i < 100; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle-neon';
+                    const size = Math.random() * 4 + 1;
+                    particle.style.width = size + 'px';
+                    particle.style.height = size + 'px';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.top = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 8 + 's';
+                    particle.style.animationDuration = 3 + Math.random() * 5 + 's';
+                    particle.style.background = `radial-gradient(circle, ${Math.random() > 0.5 ? '#bf4bf6' : '#9b30ff'}, transparent)`;
+                    container.appendChild(particle);
+                }
+            }
+            
+            // ========== НАВИГАЦИЯ ==========
+            const homeLink = document.getElementById('homeLink');
+            const aboutLink = document.getElementById('aboutLink');
+            const cardsContainer = document.getElementById('cardsContainer');
+            const aboutContainer = document.getElementById('aboutContainer');
+            const supportLink = document.getElementById('supportLink');
+            
+            if (supportLink) {
+                supportLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.open('https://t.me/l_AWANGARD_l', '_blank');
+                });
+            }
+            
+            function showAbout() {
+                if (cardsContainer) cardsContainer.style.display = 'none';
+                if (aboutContainer) aboutContainer.style.display = 'block';
+                document.querySelector('.hero-section')?.classList.add('hidden');
+            }
+            
+            function showHome() {
+                if (cardsContainer) {
+                    cardsContainer.style.display = 'grid';
+                    createCards();
+                }
+                if (aboutContainer) aboutContainer.style.display = 'none';
+                document.querySelector('.hero-section')?.classList.remove('hidden');
+            }
+            
+            if (homeLink) {
+                homeLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    homeLink.classList.add('active');
+                    aboutLink.classList.remove('active');
+                    showHome();
+                });
+            }
+            
+            if (aboutLink) {
+                aboutLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    aboutLink.classList.add('active');
+                    homeLink.classList.remove('active');
+                    showAbout();
+                });
+            }
+            
+            // ========== ЗАПУСК ==========
             document.addEventListener('DOMContentLoaded', function() {
                 initTelegramLogin();
+                createParticles();
                 
                 const telegramUser = getTelegramUser();
-                if (telegramUser) { updateUIAfterLogin(telegramUser); }
-                else { updateUIForGuest(); }
+                if (telegramUser) updateUIAfterLogin(telegramUser);
+                else updateUIForGuest();
                 
-                // Обработчики
                 document.getElementById('logoutBtn')?.addEventListener('click', logout);
                 document.getElementById('logoutProfileBtn')?.addEventListener('click', logout);
                 
-                // Поддержка
-                const supportLink = document.getElementById('supportLink');
-                if (supportLink) {
-                    supportLink.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        window.open('https://t.me/l_AWANGARD_l', '_blank');
-                    });
-                }
-                
-                // Админ-панель
-                document.querySelectorAll('.admin-tab').forEach(tab => {
+                // Админ-панель табы
+                document.querySelectorAll('.admin-tab-neon').forEach(tab => {
                     tab.addEventListener('click', () => {
-                        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                        document.querySelectorAll('.admin-tab-neon').forEach(t => t.classList.remove('active'));
                         tab.classList.add('active');
                         document.getElementById('adminUsersTab').style.display = 'none';
                         document.getElementById('adminChatTab').style.display = 'none';
@@ -461,6 +580,7 @@
                         else if (tab.getAttribute('data-tab') === 'stats') { document.getElementById('adminStatsTab').style.display = 'block'; updateStats(); }
                     });
                 });
+                
                 document.getElementById('adminUserSelect')?.addEventListener('change', (e) => { if (e.target.value) { loadAdminChat(e.target.value); loadAdminUserInfo(e.target.value); } });
                 document.getElementById('sendReplyBtn')?.addEventListener('click', sendAdminReply);
                 document.getElementById('adminReplyInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendAdminReply(); });
@@ -469,87 +589,7 @@
                 document.getElementById('usersSearchInput')?.addEventListener('input', () => loadUsersList());
                 
                 createCards();
-                createParticles();
             });
-            
-            // ========== КАРТОЧКИ ТОВАРОВ ==========
-            // ⚠️ ЗДЕСЬ ЗАМЕНИТЕ ССЫЛКУ НА ВАШУ КАРТИНКУ UC ⚠️
-            // ВСТАВЬТЕ ВАШУ ПРЯМУЮ ССЫЛКУ ВМЕСТО ТЕКУЩЕЙ
-            const UC_IMAGE_URL = "https://iili.io/BVmgADQ.png";
-            
-            var ucCardsData = [
-                { text: "60 UC", price: "100 ₽", oldPrice: "150 ₽", img: UC_IMAGE_URL },
-                { text: "300+25 UC", price: "450 ₽", oldPrice: "600 ₽", img: UC_IMAGE_URL },
-                { text: "600+60 UC", price: "900 ₽", oldPrice: "1200 ₽", img: UC_IMAGE_URL },
-                { text: "1500+300 UC", price: "2200 ₽", oldPrice: "3000 ₽", img: UC_IMAGE_URL },
-                { text: "3000+850 UC", price: "4500 ₽", oldPrice: "6000 ₽", img: UC_IMAGE_URL },
-                { text: "6000+2100 UC", price: "9000 ₽", oldPrice: "12000 ₽", img: UC_IMAGE_URL }
-            ];
-            
-            var supportCardsData = [
-                { text: "1M метровалюты", price: "100 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
-                { text: "2M метровалюты", price: "200 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
-                { text: "3M метровалюты", price: "300 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
-                { text: "4M метровалюты", price: "400 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
-                { text: "5M метровалюты", price: "500 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
-                { text: "6M метровалюты", price: "600 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
-                { text: "7M метровалюты", price: "700 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
-                { text: "8M метровалюты", price: "800 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
-                { text: "9M метровалюты", price: "900 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
-                { text: "10M метровалюты", price: "1000 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" }
-            ];
-            
-            function showPaymentPopup(cardText, price) { alert(`💎 Заказ\n\nТовар: ${cardText}\nСумма: ${price}\n\nСпасибо!`); }
-            function openInfoWindow() { alert("🔥 AWANGARD PUBG Store\n\n✅ Моментальная доставка\n✅ Лучшие цены\n✅ Поддержка 24/7"); }
-            
-            document.getElementById('infoBanner')?.addEventListener('click', openInfoWindow);
-            
-            function createCards() {
-                const container = document.getElementById('cardsContainer');
-                if (!container) return;
-                container.innerHTML = '';
-                [...ucCardsData, ...supportCardsData].forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'product-card';
-                    card.innerHTML = `
-                        <div class="card-image"><img src="${item.img}" alt="${item.text}" loading="lazy" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1051/1051277.png'"></div>
-                        <div class="card-info">
-                            <h3>${item.text}</h3>
-                            ${item.oldPrice ? `<div class="old-price">${item.oldPrice}</div>` : ''}
-                            <div class="price">${item.price}</div>
-                            <button class="buy-btn">Купить</button>
-                        </div>
-                    `;
-                    card.querySelector('.buy-btn').addEventListener('click', () => showPaymentPopup(item.text, item.price));
-                    container.appendChild(card);
-                });
-            }
-            
-            function createParticles() {
-                const particles = document.querySelector('.particles');
-                if (particles) {
-                    for (let i = 0; i < 30; i++) {
-                        const p = document.createElement('div');
-                        p.className = 'particle';
-                        p.style.left = Math.random() * 100 + '%';
-                        p.style.top = Math.random() * 100 + '%';
-                        p.style.animationDelay = Math.random() * 5 + 's';
-                        p.style.animationDuration = 2 + Math.random() * 4 + 's';
-                        particles.appendChild(p);
-                    }
-                }
-            }
-            
-            // Навигация
-            var homeLink = document.getElementById('homeLink');
-            var aboutLink = document.getElementById('aboutLink');
-            var cardsContainer = document.getElementById('cardsContainer');
-            var aboutContainer = document.getElementById('aboutContainer');
-            
-            function showAbout() { if (cardsContainer) cardsContainer.style.display = 'none'; if (aboutContainer) aboutContainer.style.display = 'block'; document.querySelector('.hero-section')?.classList.add('hidden'); }
-            function showHome() { if (cardsContainer) { cardsContainer.style.display = 'grid'; createCards(); } if (aboutContainer) aboutContainer.style.display = 'none'; document.querySelector('.hero-section')?.classList.remove('hidden'); }
-            if (homeLink) homeLink.addEventListener('click', (e) => { e.preventDefault(); homeLink.classList.add('active'); aboutLink.classList.remove('active'); showHome(); });
-            if (aboutLink) aboutLink.addEventListener('click', (e) => { e.preventDefault(); aboutLink.classList.add('active'); homeLink.classList.remove('active'); showAbout(); });
         })();
     </script>
 </body>
