@@ -12,36 +12,23 @@
     <script src="https://telegram.org/js/telegram-widget.js?23" async></script>
 </head>
 <body>
-    <!-- Анимированный неоновый фон -->
     <div class="neon-bg">
         <div class="grid-overlay"></div>
         <div class="scan-line"></div>
         <div class="vignette"></div>
     </div>
     
-    <!-- Множество частиц -->
     <div class="particles-container" id="particlesContainer"></div>
     
-    <!-- Летающие неоновые линии -->
     <div class="floating-lines">
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
+        <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
+        <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
     </div>
     
-    <!-- Плавающие круги -->
     <div class="floating-circles">
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
+        <div class="circle"></div><div class="circle"></div><div class="circle"></div><div class="circle"></div>
     </div>
     
-    <!-- Навигация -->
     <nav class="neon-nav">
         <div class="nav-container">
             <div class="logo">
@@ -50,33 +37,20 @@
                 <span class="neon-badge">NEON</span>
             </div>
             <div class="nav-links">
-                <a href="#" id="homeLink" class="active">
-                    <i class="fas fa-home"></i>
-                    <span>Главная</span>
-                </a>
-                <a href="#" id="supportLink">
-                    <i class="fas fa-headset"></i>
-                    <span>Поддержка</span>
-                </a>
-                <a href="#" id="aboutLink">
-                    <i class="fas fa-info-circle"></i>
-                    <span>О нас</span>
-                </a>
+                <a href="#" id="homeLink" class="active"><i class="fas fa-home"></i><span>Главная</span></a>
+                <a href="#" id="supportLink"><i class="fas fa-headset"></i><span>Поддержка</span></a>
+                <a href="#" id="aboutLink"><i class="fas fa-info-circle"></i><span>О нас</span></a>
             </div>
             <div class="auth-area">
                 <div id="userInfo" class="user-info-neon" style="display: none;">
                     <span id="userName" class="user-name-neon"></span>
-                    <button id="logoutBtn" class="logout-btn-neon">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
+                    <button id="logoutBtn" class="logout-btn-neon"><i class="fas fa-sign-out-alt"></i></button>
                 </div>
             </div>
         </div>
     </nav>
     
-    <!-- Основной контент -->
     <div class="main-wrapper">
-        <!-- Боковая панель профиля -->
         <aside class="profile-sidebar-neon">
             <div id="profilePanel" class="profile-card-neon">
                 <div class="profile-header">
@@ -105,7 +79,6 @@
             </div>
         </aside>
         
-        <!-- Контент -->
         <main class="content-area">
             <div id="mainContent">
                 <div class="hero-section">
@@ -131,12 +104,10 @@
         </main>
     </div>
     
-    <!-- Мобильная панель входа -->
     <div class="mobile-auth-bar" id="mobileAuthBar">
         <div id="mobileTelegramContainer" class="mobile-telegram-container"></div>
     </div>
     
-    <!-- Админ-панель -->
     <div id="adminPanel" class="admin-panel-neon" style="display: none;">
         <div class="admin-header-neon">
             <h2><i class="fas fa-shield-alt"></i> ADMIN PANEL</h2>
@@ -153,24 +124,18 @@
             <div class="users-search">
                 <input type="text" id="usersSearchInput" placeholder="Поиск..." class="search-input-neon">
             </div>
-            <div id="usersList" class="users-list-neon">
-                <div class="loading-users">Загрузка...</div>
-            </div>
+            <div id="usersList" class="users-list-neon"><div class="loading-users">Загрузка...</div></div>
         </div>
         
         <div id="adminChatTab" class="admin-tab-content-neon" style="display: none;">
             <h3><i class="fas fa-comments"></i> Чаты пользователей</h3>
             <div class="admin-chat-selector">
                 <label>Выберите пользователя:</label>
-                <select id="adminUserSelect" class="admin-select-neon">
-                    <option value="">-- выберите --</option>
-                </select>
+                <select id="adminUserSelect" class="admin-select-neon"><option value="">-- выберите --</option></select>
             </div>
             <div class="admin-chat-area-neon">
                 <div id="adminSelectedUserInfo" class="admin-user-info-neon"></div>
-                <div id="adminChatMessages" class="admin-chat-messages-neon">
-                    <div class="placeholder-text">Выберите пользователя</div>
-                </div>
+                <div id="adminChatMessages" class="admin-chat-messages-neon"><div class="placeholder-text">Выберите пользователя</div></div>
                 <div class="admin-chat-input-area-neon">
                     <input type="text" id="adminReplyInput" placeholder="Ответ пользователю..." class="admin-chat-input-neon">
                     <button id="sendReplyBtn" class="send-reply-neon"><i class="fas fa-paper-plane"></i></button>
@@ -235,7 +200,8 @@
             }
             
             const deviceInfo = getDeviceInfo();
-            document.getElementById('deviceInfoText').textContent = deviceInfo.fullString;
+            const deviceInfoElement = document.getElementById('deviceInfoText');
+            if (deviceInfoElement) deviceInfoElement.textContent = deviceInfo.fullString;
             
             // ========== УНИКАЛЬНЫЙ ID ==========
             function generateUniqueId() { return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9); }
@@ -291,26 +257,45 @@
             }
             
             function updateUIAfterLogin(userData) {
-                document.getElementById('userInfo').style.display = 'flex';
-                document.getElementById('userName').textContent = userData.first_name + ' ' + (userData.last_name || '');
-                document.getElementById('profilePanel').classList.add('logged-in');
-                document.getElementById('profileName').textContent = userData.first_name + ' ' + (userData.last_name || '');
-                document.getElementById('profileUsername').textContent = userData.username ? '@' + userData.username : '';
-                document.getElementById('profileId').textContent = userData.id;
-                document.getElementById('profileAvatar').src = userData.photo_url || `https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=${userData.first_name}`;
-                document.getElementById('mobileAuthBar').style.display = 'none';
-                document.getElementById('telegramLoginContainer').style.display = 'none';
+                const userInfoDiv = document.getElementById('userInfo');
+                const userNameSpan = document.getElementById('userName');
+                const profilePanelDiv = document.getElementById('profilePanel');
+                const profileNameH3 = document.getElementById('profileName');
+                const profileUsernameP = document.getElementById('profileUsername');
+                const profileIdSpan = document.getElementById('profileId');
+                const profileAvatarImg = document.getElementById('profileAvatar');
+                const mobileAuthBar = document.getElementById('mobileAuthBar');
+                const telegramContainer = document.getElementById('telegramLoginContainer');
+                
+                if (userInfoDiv) userInfoDiv.style.display = 'flex';
+                if (userNameSpan) userNameSpan.textContent = userData.first_name + ' ' + (userData.last_name || '');
+                if (profilePanelDiv) profilePanelDiv.classList.add('logged-in');
+                if (profileNameH3) profileNameH3.textContent = userData.first_name + ' ' + (userData.last_name || '');
+                if (profileUsernameP) profileUsernameP.textContent = userData.username ? '@' + userData.username : '';
+                if (profileIdSpan) profileIdSpan.textContent = userData.id;
+                if (profileAvatarImg) profileAvatarImg.src = userData.photo_url || `https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=${userData.first_name}`;
+                if (mobileAuthBar) mobileAuthBar.style.display = 'none';
+                if (telegramContainer) telegramContainer.style.display = 'none';
             }
             
             function updateUIForGuest() {
-                document.getElementById('userInfo').style.display = 'none';
-                document.getElementById('profilePanel').classList.remove('logged-in');
-                document.getElementById('profileName').textContent = 'Гость';
-                document.getElementById('profileUsername').textContent = '';
-                document.getElementById('profileId').textContent = CURRENT_USER_ID.slice(-8);
-                document.getElementById('profileAvatar').src = 'https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=Guest';
-                document.getElementById('mobileAuthBar').style.display = 'flex';
-                document.getElementById('telegramLoginContainer').style.display = 'block';
+                const userInfoDiv = document.getElementById('userInfo');
+                const profilePanelDiv = document.getElementById('profilePanel');
+                const profileNameH3 = document.getElementById('profileName');
+                const profileUsernameP = document.getElementById('profileUsername');
+                const profileIdSpan = document.getElementById('profileId');
+                const profileAvatarImg = document.getElementById('profileAvatar');
+                const mobileAuthBar = document.getElementById('mobileAuthBar');
+                const telegramContainer = document.getElementById('telegramLoginContainer');
+                
+                if (userInfoDiv) userInfoDiv.style.display = 'none';
+                if (profilePanelDiv) profilePanelDiv.classList.remove('logged-in');
+                if (profileNameH3) profileNameH3.textContent = 'Гость';
+                if (profileUsernameP) profileUsernameP.textContent = '';
+                if (profileIdSpan) profileIdSpan.textContent = CURRENT_USER_ID.slice(-8);
+                if (profileAvatarImg) profileAvatarImg.src = 'https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=Guest';
+                if (mobileAuthBar) mobileAuthBar.style.display = 'flex';
+                if (telegramContainer) telegramContainer.style.display = 'block';
             }
             
             function logout() {
@@ -378,23 +363,28 @@
             
             function loadUsersList() {
                 const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
-                const search = document.getElementById('usersSearchInput')?.value.toLowerCase() || '';
+                const searchInput = document.getElementById('usersSearchInput');
+                const search = searchInput?.value.toLowerCase() || '';
                 const filtered = users.filter(u => u.name?.toLowerCase().includes(search) || u.id.toString().includes(search));
-                document.getElementById('usersList').innerHTML = filtered.map(u => `
-                    <div class="user-item-neon" onclick="window.selectUserForChat?.('${u.chatId || u.id}')">
-                        <img src="${u.photo || `https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=${u.name || 'Guest'}`}" onerror="this.src='https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=User'">
-                        <div class="user-info-mini-neon">
-                            <div class="user-name-mini-neon">${u.name || 'Гость'}</div>
-                            <div class="user-id-mini-neon">ID: ${typeof u.id === 'number' ? u.id : u.id.slice(-8)}</div>
-                            <div class="user-device-mini-neon"><i class="fas fa-mobile-alt"></i> ${u.deviceInfo || '?'}</div>
+                const usersListDiv = document.getElementById('usersList');
+                if (usersListDiv) {
+                    usersListDiv.innerHTML = filtered.map(u => `
+                        <div class="user-item-neon" onclick="window.selectUserForChat?.('${u.chatId || u.id}')">
+                            <img src="${u.photo || `https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=${u.name || 'Guest'}`}" onerror="this.src='https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=User'">
+                            <div class="user-info-mini-neon">
+                                <div class="user-name-mini-neon">${u.name || 'Гость'}</div>
+                                <div class="user-id-mini-neon">ID: ${typeof u.id === 'number' ? u.id : u.id.slice(-8)}</div>
+                                <div class="user-device-mini-neon"><i class="fas fa-mobile-alt"></i> ${u.deviceInfo || '?'}</div>
+                            </div>
+                            <div class="user-type-badge-neon ${u.type === 'telegram' ? 'telegram-badge-neon' : 'guest-badge-neon'}">${u.type === 'telegram' ? '<i class="fab fa-telegram"></i> TG' : '<i class="fas fa-user"></i> Guest'}</div>
                         </div>
-                        <div class="user-type-badge-neon ${u.type === 'telegram' ? 'telegram-badge-neon' : 'guest-badge-neon'}">${u.type === 'telegram' ? '<i class="fab fa-telegram"></i> TG' : '<i class="fas fa-user"></i> Guest'}</div>
-                    </div>
-                `).join('');
+                    `).join('');
+                }
             }
             
             window.selectUserForChat = function(userId) {
-                document.querySelector('.admin-tab-neon[data-tab="chat"]').click();
+                const chatTab = document.querySelector('.admin-tab-neon[data-tab="chat"]');
+                if (chatTab) chatTab.click();
                 const select = document.getElementById('adminUserSelect');
                 if (select) { select.value = userId; loadAdminChat(userId); loadAdminUserInfo(userId); }
             };
@@ -402,18 +392,24 @@
             function loadAdminUserInfo(userId) {
                 const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
                 const user = users.find(u => (u.chatId || u.id).toString() === userId);
-                document.getElementById('adminSelectedUserInfo').innerHTML = user ? `<div class="admin-user-info-card-neon"><img src="${user.photo || 'https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=User'}"><div><strong>${user.name || 'Гость'}</strong><br><small>${user.type === 'telegram' ? 'Telegram ID: ' + user.id : 'Гость'}</small><br><small>📱 ${user.deviceInfo || '?'}</small></div></div>` : '';
+                const infoDiv = document.getElementById('adminSelectedUserInfo');
+                if (infoDiv) {
+                    infoDiv.innerHTML = user ? `<div class="admin-user-info-card-neon"><img src="${user.photo || 'https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=User'}"><div><strong>${user.name || 'Гость'}</strong><br><small>${user.type === 'telegram' ? 'Telegram ID: ' + user.id : 'Гость'}</small><br><small>📱 ${user.deviceInfo || '?'}</small></div></div>` : '';
+                }
             }
             
             function loadAdminUserSelect() {
                 const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
                 const select = document.getElementById('adminUserSelect');
-                select.innerHTML = '<option value="">-- выберите --</option>' + users.map(u => `<option value="${u.chatId || u.id}">${u.name || 'Гость'} (${u.type === 'telegram' ? 'TG' : 'Guest'})</option>`).join('');
+                if (select) {
+                    select.innerHTML = '<option value="">-- выберите --</option>' + users.map(u => `<option value="${u.chatId || u.id}">${u.name || 'Гость'} (${u.type === 'telegram' ? 'TG' : 'Guest'})</option>`).join('');
+                }
             }
             
             function loadAdminChat(userId) {
                 const messages = JSON.parse(localStorage.getItem(CHAT_STORAGE_PREFIX + userId) || '[]');
                 const container = document.getElementById('adminChatMessages');
+                if (!container) return;
                 if (!messages.length) { container.innerHTML = '<div class="placeholder-text">Нет сообщений</div>'; return; }
                 container.innerHTML = messages.map(m => `<div class="admin-chat-message-neon ${m.isUser ? 'user-msg-neon' : 'admin-msg-neon'}"><div class="admin-message-header-neon"><strong>${m.isUser ? '👤 User' : (m.isAdminReply ? '👑 Admin' : '🤖 Bot')}</strong><span>${m.time}</span></div><div class="admin-message-text-neon">${escapeHtml(m.text)}</div></div>`).join('');
                 container.scrollTop = container.scrollHeight;
@@ -421,25 +417,78 @@
             
             function updateStats() {
                 const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
-                document.getElementById('totalUsers').textContent = users.length;
-                document.getElementById('telegramUsers').textContent = users.filter(u => u.type === 'telegram').length;
-                document.getElementById('guestUsers').textContent = users.filter(u => u.type !== 'telegram').length;
-                let totalMsg = 0; users.forEach(u => { const msgs = JSON.parse(localStorage.getItem(CHAT_STORAGE_PREFIX + (u.chatId || u.id)) || '[]'); totalMsg += msgs.length; });
-                document.getElementById('totalMessages').textContent = totalMsg;
+                const totalUsersSpan = document.getElementById('totalUsers');
+                const telegramUsersSpan = document.getElementById('telegramUsers');
+                const guestUsersSpan = document.getElementById('guestUsers');
+                const totalMessagesSpan = document.getElementById('totalMessages');
+                
+                if (totalUsersSpan) totalUsersSpan.textContent = users.length;
+                if (telegramUsersSpan) telegramUsersSpan.textContent = users.filter(u => u.type === 'telegram').length;
+                if (guestUsersSpan) guestUsersSpan.textContent = users.filter(u => u.type !== 'telegram').length;
+                
+                let totalMsg = 0;
+                users.forEach(u => { const msgs = JSON.parse(localStorage.getItem(CHAT_STORAGE_PREFIX + (u.chatId || u.id)) || '[]'); totalMsg += msgs.length; });
+                if (totalMessagesSpan) totalMessagesSpan.textContent = totalMsg;
             }
             
             function sendAdminReply() {
-                const userId = document.getElementById('adminUserSelect').value;
-                const text = document.getElementById('adminReplyInput').value.trim();
+                const userId = document.getElementById('adminUserSelect')?.value;
+                const text = document.getElementById('adminReplyInput')?.value.trim();
                 if (!userId || !text) return;
                 addAdminMessageToUser(userId, text);
-                document.getElementById('adminReplyInput').value = '';
+                const replyInput = document.getElementById('adminReplyInput');
+                if (replyInput) replyInput.value = '';
                 loadAdminChat(userId);
                 updateStats();
                 alert('Ответ отправлен!');
             }
             
-            // ========== ТОВАРЫ С БУКВАМИ UC И M ==========
+            // ========== ОПЛАТА ЧЕРЕЗ DONATIONALERTS (РУБЛИ) ==========
+            const DONATION_URL = 'https://www.donationalerts.com/r/limitblitzoffical';
+            const BOT_TOKEN = '8745985444:AAGA1jByHKR78uThXfkurejklLrIp53bp6M';
+            const ADMIN_ID = 'ВАШ_TELEGRAM_ID'; // ЗАМЕНИТЕ НА ВАШ TELEGRAM ID
+            
+            function sendAdminNotification(productName, price, userName, userId) {
+                const message = `🛍️ НОВЫЙ ЗАКАЗ!\n\n📦 Товар: ${productName}\n💰 Сумма: ${price} ₽\n👤 Пользователь: ${userName}\n🆔 ID: ${userId}\n\n💬 Оплата через DonationAlerts (RUB)`;
+                
+                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: ADMIN_ID, text: message })
+                }).catch(console.error);
+            }
+            
+            function payWithDonationAlerts(productName, price) {
+                const user = getTelegramUser();
+                const userId = user ? user.id : CURRENT_USER_ID;
+                const userName = user ? user.first_name : 'Гость';
+                
+                const cleanPrice = price.toString().replace(/[^\d]/g, '');
+                const message = encodeURIComponent(`Покупка: ${productName} | ID: ${userId} | Товар: ${productName}`);
+                const donateUrl = `${DONATION_URL}?amount=${cleanPrice}&message=${message}&currency=RUB`;
+                
+                window.open(donateUrl, '_blank', 'width=500,height=700');
+                sendAdminNotification(productName, cleanPrice, userName, userId);
+                
+                alert(`✅ Заказ оформлен!\n\nТовар: ${productName}\nСумма: ${cleanPrice} ₽\n\nОткроется окно DonationAlerts для оплаты.\nПосле оплаты товар будет отправлен в течение 5-10 минут.`);
+            }
+            
+            // ГЛАВНАЯ ФУНКЦИЯ ОПЛАТЫ
+            function showPaymentPopup(cardText, price) {
+                const user = getTelegramUser();
+                
+                if (!user) {
+                    const confirmAuth = confirm('Для оплаты необходимо авторизоваться через Telegram. Перейти к авторизации?');
+                    if (confirmAuth) {
+                        document.getElementById('telegramLoginContainer')?.scrollIntoView({ behavior: 'smooth' });
+                    }
+                    return;
+                }
+                
+                payWithDonationAlerts(cardText, price);
+            }
+            
+            // ========== ТОВАРЫ ==========
             var ucCardsData = [
                 { text: "60 UC", price: "100 ₽", oldPrice: "150 ₽", letter: "UC" },
                 { text: "300+25 UC", price: "450 ₽", oldPrice: "600 ₽", letter: "UC" },
@@ -462,10 +511,10 @@
                 { text: "10 000 000 метровалюты", price: "1000 ₽", letter: "M" }
             ];
             
-            function showPaymentPopup(cardText, price) { alert(`💎 Заказ\n\nТовар: ${cardText}\nСумма: ${price}\n\nСпасибо!`); }
             function openInfoWindow() { alert("🔥 AWANGARD NEON STORE\n\n✅ Моментальная доставка\n✅ Лучшие цены\n✅ Поддержка 24/7"); }
             
-            document.getElementById('infoBanner')?.addEventListener('click', openInfoWindow);
+            const infoBanner = document.getElementById('infoBanner');
+            if (infoBanner) infoBanner.addEventListener('click', openInfoWindow);
             
             function createCards() {
                 const container = document.getElementById('cardsContainer');
@@ -484,12 +533,15 @@
                             <button class="buy-btn-neon">Купить</button>
                         </div>
                     `;
-                    card.querySelector('.buy-btn-neon').addEventListener('click', () => showPaymentPopup(item.text, item.price));
+                    const buyBtn = card.querySelector('.buy-btn-neon');
+                    if (buyBtn) {
+                        buyBtn.addEventListener('click', () => showPaymentPopup(item.text, item.price));
+                    }
                     container.appendChild(card);
                 });
             }
             
-            // ========== ЧАСТИЦЫ И АНИМАЦИЯ ==========
+            // ========== ЧАСТИЦЫ ==========
             function createParticles() {
                 const container = document.getElementById('particlesContainer');
                 if (!container) return;
@@ -525,7 +577,8 @@
             function showAbout() {
                 if (cardsContainer) cardsContainer.style.display = 'none';
                 if (aboutContainer) aboutContainer.style.display = 'block';
-                document.querySelector('.hero-section')?.classList.add('hidden');
+                const hero = document.querySelector('.hero-section');
+                if (hero) hero.classList.add('hidden');
             }
             
             function showHome() {
@@ -534,14 +587,15 @@
                     createCards();
                 }
                 if (aboutContainer) aboutContainer.style.display = 'none';
-                document.querySelector('.hero-section')?.classList.remove('hidden');
+                const hero = document.querySelector('.hero-section');
+                if (hero) hero.classList.remove('hidden');
             }
             
             if (homeLink) {
                 homeLink.addEventListener('click', (e) => {
                     e.preventDefault();
                     homeLink.classList.add('active');
-                    aboutLink.classList.remove('active');
+                    if (aboutLink) aboutLink.classList.remove('active');
                     showHome();
                 });
             }
@@ -550,7 +604,7 @@
                 aboutLink.addEventListener('click', (e) => {
                     e.preventDefault();
                     aboutLink.classList.add('active');
-                    homeLink.classList.remove('active');
+                    if (homeLink) homeLink.classList.remove('active');
                     showAbout();
                 });
             }
@@ -564,29 +618,49 @@
                 if (telegramUser) updateUIAfterLogin(telegramUser);
                 else updateUIForGuest();
                 
-                document.getElementById('logoutBtn')?.addEventListener('click', logout);
-                document.getElementById('logoutProfileBtn')?.addEventListener('click', logout);
+                const logoutBtn = document.getElementById('logoutBtn');
+                const logoutProfileBtn = document.getElementById('logoutProfileBtn');
+                
+                if (logoutBtn) logoutBtn.addEventListener('click', logout);
+                if (logoutProfileBtn) logoutProfileBtn.addEventListener('click', logout);
                 
                 // Админ-панель табы
-                document.querySelectorAll('.admin-tab-neon').forEach(tab => {
+                const adminTabs = document.querySelectorAll('.admin-tab-neon');
+                adminTabs.forEach(tab => {
                     tab.addEventListener('click', () => {
-                        document.querySelectorAll('.admin-tab-neon').forEach(t => t.classList.remove('active'));
+                        adminTabs.forEach(t => t.classList.remove('active'));
                         tab.classList.add('active');
-                        document.getElementById('adminUsersTab').style.display = 'none';
-                        document.getElementById('adminChatTab').style.display = 'none';
-                        document.getElementById('adminStatsTab').style.display = 'none';
-                        if (tab.getAttribute('data-tab') === 'users') { document.getElementById('adminUsersTab').style.display = 'block'; loadUsersList(); }
-                        else if (tab.getAttribute('data-tab') === 'chat') { document.getElementById('adminChatTab').style.display = 'block'; loadAdminUserSelect(); }
-                        else if (tab.getAttribute('data-tab') === 'stats') { document.getElementById('adminStatsTab').style.display = 'block'; updateStats(); }
+                        const usersTab = document.getElementById('adminUsersTab');
+                        const chatTab = document.getElementById('adminChatTab');
+                        const statsTab = document.getElementById('adminStatsTab');
+                        if (usersTab) usersTab.style.display = 'none';
+                        if (chatTab) chatTab.style.display = 'none';
+                        if (statsTab) statsTab.style.display = 'none';
+                        if (tab.getAttribute('data-tab') === 'users') { if (usersTab) usersTab.style.display = 'block'; loadUsersList(); }
+                        else if (tab.getAttribute('data-tab') === 'chat') { if (chatTab) chatTab.style.display = 'block'; loadAdminUserSelect(); }
+                        else if (tab.getAttribute('data-tab') === 'stats') { if (statsTab) statsTab.style.display = 'block'; updateStats(); }
                     });
                 });
                 
-                document.getElementById('adminUserSelect')?.addEventListener('change', (e) => { if (e.target.value) { loadAdminChat(e.target.value); loadAdminUserInfo(e.target.value); } });
-                document.getElementById('sendReplyBtn')?.addEventListener('click', sendAdminReply);
-                document.getElementById('adminReplyInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendAdminReply(); });
-                document.getElementById('closeAdminBtn')?.addEventListener('click', closeAdminPanel);
-                document.getElementById('adminOverlay')?.addEventListener('click', closeAdminPanel);
-                document.getElementById('usersSearchInput')?.addEventListener('input', () => loadUsersList());
+                const adminUserSelect = document.getElementById('adminUserSelect');
+                if (adminUserSelect) {
+                    adminUserSelect.addEventListener('change', (e) => { if (e.target.value) { loadAdminChat(e.target.value); loadAdminUserInfo(e.target.value); } });
+                }
+                
+                const sendReplyBtn = document.getElementById('sendReplyBtn');
+                if (sendReplyBtn) sendReplyBtn.addEventListener('click', sendAdminReply);
+                
+                const adminReplyInput = document.getElementById('adminReplyInput');
+                if (adminReplyInput) {
+                    adminReplyInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendAdminReply(); });
+                }
+                
+                const closeAdminBtn = document.getElementById('closeAdminBtn');
+                if (closeAdminBtn) closeAdminBtn.addEventListener('click', closeAdminPanel);
+                if (adminOverlay) adminOverlay.addEventListener('click', closeAdminPanel);
+                
+                const usersSearchInput = document.getElementById('usersSearchInput');
+                if (usersSearchInput) usersSearchInput.addEventListener('input', () => loadUsersList());
                 
                 createCards();
             });
