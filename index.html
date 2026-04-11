@@ -6,10 +6,10 @@
     <title>AWANGARD.COM | Dark Edition</title>
     <link rel="stylesheet" href="style.css">
     
-    <!-- Firebase SDK -->
+    <!-- Firebase SDK (только для Google входа) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
         
         // Ваши данные Firebase
         const firebaseConfig = {
@@ -27,9 +27,6 @@
         const auth = getAuth(app);
         const googleProvider = new GoogleAuthProvider();
         
-        // Провайдер для Telegram через OIDC
-        const telegramProvider = new OAuthProvider('oidc.telegram');
-        
         // Элементы DOM
         const authButtons = document.getElementById('authButtons');
         const userInfo = document.getElementById('userInfo');
@@ -37,7 +34,6 @@
         const userEmail = document.getElementById('userEmail');
         const userAvatar = document.getElementById('userAvatar');
         const loginBtn = document.getElementById('loginBtn');
-        const telegramLoginBtn = document.getElementById('telegramLoginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
         const profilePanel = document.getElementById('profilePanel');
         
@@ -46,41 +42,49 @@
             try {
                 const result = await signInWithPopup(auth, googleProvider);
                 console.log("Успешный вход через Google:", result.user);
+                // Очищаем Telegram данные при входе через Google
+                localStorage.removeItem('telegram_user');
             } catch (error) {
                 console.error("Ошибка входа:", error);
                 alert("Ошибка входа: " + error.message);
             }
         }
         
-        // Функция входа через Telegram
-        async function loginWithTelegram() {
-            try {
-                const result = await signInWithPopup(auth, telegramProvider);
-                console.log("Успешный вход через Telegram:", result.user);
-                alert("Добро пожаловать, " + (result.user.displayName || "пользователь Telegram") + "!");
-            } catch (error) {
-                console.error("Ошибка входа через Telegram:", error);
-                if (error.code === 'auth/operation-not-supported') {
-                    alert("Для входа через Telegram требуется дополнительная настройка в Firebase Console. Пожалуйста, настройте OIDC провайдера Telegram.");
-                } else {
-                    alert("Ошибка входа через Telegram: " + error.message);
-                }
-            }
-        }
-        
-        // Функция выхода
+        // Функция выхода (выход из Google и Telegram)
         async function logout() {
             try {
-                await signOut(auth);
+                // Выход из Google (если был)
+                if (auth.currentUser) {
+                    await signOut(auth);
+                }
+                // Очищаем данные Telegram
+                localStorage.removeItem('telegram_user');
                 console.log("Выход выполнен");
+                // Обновляем интерфейс
+                updateUIForLogout();
             } catch (error) {
                 console.error("Ошибка выхода:", error);
             }
         }
         
+        // Функция обновления интерфейса при выходе
+        function updateUIForLogout() {
+            authButtons.style.display = 'flex';
+            userInfo.style.display = 'none';
+            profilePanel.classList.remove('logged-in');
+            document.getElementById('profileName').textContent = 'Гость';
+            document.getElementById('profileEmail').textContent = 'войдите для доступа к профилю';
+            document.getElementById('profileAvatar').src = 'https://ui-avatars.com/api/?background=2c3e66&color=fff&bold=true&name=Guest';
+            document.getElementById('profileId').textContent = 'guest';
+        }
+        
         // Функция обновления профиля в боковой панели
         function updateProfilePanel(user) {
+            // Проверяем, есть ли Telegram пользователь в localStorage
+            const telegramUser = localStorage.getItem('telegram_user');
+            
             if (user) {
+                // Google пользователь
                 profilePanel.classList.add('logged-in');
                 document.getElementById('profileName').textContent = user.displayName || "Пользователь";
                 document.getElementById('profileEmail').textContent = user.email || "email не указан";
@@ -93,33 +97,80 @@
                 document.getElementById('profileId').textContent = userId;
                 
                 localStorage.setItem('lastUser', JSON.stringify({
+                    type: 'google',
                     displayName: user.displayName,
                     email: user.email,
                     photoURL: user.photoURL,
                     uid: user.uid
                 }));
+            } else if (telegramUser) {
+                // Telegram пользователь
+                const tgUser = JSON.parse(telegramUser);
+                profilePanel.classList.add('logged-in');
+                document.getElementById('profileName').textContent = tgUser.first_name + ' ' + (tgUser.last_name || '');
+                document.getElementById('profileEmail').textContent = tgUser.username ? '@' + tgUser.username : 'telegram пользователь';
+                if (tgUser.photo_url) {
+                    document.getElementById('profileAvatar').src = tgUser.photo_url;
+                } else {
+                    document.getElementById('profileAvatar').src = 'https://ui-avatars.com/api/?background=2c3e66&color=fff&bold=true&name=' + encodeURIComponent(tgUser.first_name);
+                }
+                document.getElementById('profileId').textContent = tgUser.id;
+                
+                // Скрываем кнопки авторизации в шапке, показываем информацию о пользователе
+                authButtons.style.display = 'none';
+                userInfo.style.display = 'flex';
+                userName.textContent = tgUser.first_name + ' ' + (tgUser.last_name || '');
+                userEmail.textContent = tgUser.username ? '@' + tgUser.username : '';
+                if (tgUser.photo_url) {
+                    userAvatar.src = tgUser.photo_url;
+                    userAvatar.style.display = 'block';
+                } else {
+                    userAvatar.style.display = 'none';
+                }
+                
+                localStorage.setItem('lastUser', JSON.stringify({
+                    type: 'telegram',
+                    displayName: tgUser.first_name + ' ' + (tgUser.last_name || ''),
+                    username: tgUser.username,
+                    photoURL: tgUser.photo_url,
+                    id: tgUser.id
+                }));
             } else {
+                // Гость - проверяем, есть ли сохранённый последний пользователь
                 const lastUser = localStorage.getItem('lastUser');
-                if (lastUser) {
+                if (lastUser && !telegramUser && !user) {
                     const userData = JSON.parse(lastUser);
                     profilePanel.classList.add('logged-in');
                     document.getElementById('profileName').textContent = userData.displayName || "Пользователь";
-                    document.getElementById('profileEmail').textContent = userData.email || "email не указан";
+                    document.getElementById('profileEmail').textContent = userData.email || userData.username || "пользователь";
                     if (userData.photoURL) {
                         document.getElementById('profileAvatar').src = userData.photoURL;
                     } else {
                         document.getElementById('profileAvatar').src = 'https://ui-avatars.com/api/?background=2c3e66&color=fff&bold=true&name=' + encodeURIComponent(userData.displayName || 'User');
                     }
-                    document.getElementById('profileId').textContent = userData.uid ? userData.uid.substring(0, 8) : 'guest';
+                    document.getElementById('profileId').textContent = userData.id || userData.uid?.substring(0, 8) || 'guest';
                 } else {
                     profilePanel.classList.remove('logged-in');
                 }
             }
         }
         
-        // Отслеживание состояния авторизации
+        // Функция для обработки входа через Telegram
+        window.onTelegramAuth = function(user) {
+            // Сохраняем данные пользователя в localStorage
+            localStorage.setItem('telegram_user', JSON.stringify(user));
+            alert('Добро пожаловать, ' + user.first_name + ' ' + (user.last_name || '') + '!');
+            // Обновляем интерфейс
+            updateProfilePanel(null);
+            location.reload(); // Перезагружаем страницу для обновления интерфейса
+        };
+        
+        // Отслеживание состояния авторизации Google
         onAuthStateChanged(auth, (user) => {
+            const telegramUser = localStorage.getItem('telegram_user');
+            
             if (user) {
+                // Google пользователь
                 authButtons.style.display = 'none';
                 userInfo.style.display = 'flex';
                 userName.textContent = user.displayName || user.email || "Пользователь";
@@ -130,7 +181,21 @@
                 } else {
                     userAvatar.style.display = 'none';
                 }
+            } else if (telegramUser) {
+                // Telegram пользователь
+                const tgUser = JSON.parse(telegramUser);
+                authButtons.style.display = 'none';
+                userInfo.style.display = 'flex';
+                userName.textContent = tgUser.first_name + ' ' + (tgUser.last_name || '');
+                userEmail.textContent = tgUser.username ? '@' + tgUser.username : '';
+                if (tgUser.photo_url) {
+                    userAvatar.src = tgUser.photo_url;
+                    userAvatar.style.display = 'block';
+                } else {
+                    userAvatar.style.display = 'none';
+                }
             } else {
+                // Не авторизован никто
                 authButtons.style.display = 'flex';
                 userInfo.style.display = 'none';
             }
@@ -138,12 +203,18 @@
         });
         
         // Назначаем обработчики кнопок
-        loginBtn.addEventListener('click', loginWithGoogle);
-        if (telegramLoginBtn) telegramLoginBtn.addEventListener('click', loginWithTelegram);
-        logoutBtn.addEventListener('click', logout);
+        if (loginBtn) loginBtn.addEventListener('click', loginWithGoogle);
+        if (logoutBtn) logoutBtn.addEventListener('click', logout);
         
         window.loginWithGoogle = loginWithGoogle;
-        window.loginWithTelegram = loginWithTelegram;
+    </script>
+    
+    <!-- Telegram Login Widget -->
+    <script async src="https://telegram.org/js/telegram-widget.js?23" 
+            data-telegram-login="awangard_shop_bot" 
+            data-size="large" 
+            data-onauth="onTelegramAuth(user)" 
+            data-request-access="write">
     </script>
 </head>
 <body class="dark-theme">
@@ -158,7 +229,8 @@
         <!-- Блок авторизации (показывается неавторизованным) -->
         <div id="authButtons" class="auth-buttons-header">
             <button id="loginBtn" class="auth-btn-small google-btn-small">🔐 Google</button>
-            <button id="telegramLoginBtn" class="auth-btn-small telegram-btn-small">✈️ Telegram</button>
+            <!-- Кнопка Telegram встроена через виджет, но добавим отдельную -->
+            <div id="telegramWidgetContainer" class="telegram-widget-container"></div>
         </div>
         
         <!-- Блок информации о пользователе (показывается авторизованным) -->
@@ -185,8 +257,8 @@
                     </div>
                 </div>
                 <div class="profile-actions">
-                    <button id="profileLoginBtn" class="profile-login-btn">Войти через Google</button>
-                    <button id="profileTelegramBtn" class="profile-telegram-btn">Войти через Telegram</button>
+                    <button id="profileLoginBtn" class="profile-login-btn">🔐 Войти через Google</button>
+                    <div id="profileTelegramWidget" class="profile-telegram-widget"></div>
                 </div>
             </div>
         </aside>
@@ -207,28 +279,63 @@
         <p>© 2026 AWANGARD | <a href="https://vk.com/vip_kotik_1" target="_blank">ВКонтакте</a></p>
     </footer>
 
+    <!-- Скрипт для размещения Telegram виджета в нужных местах -->
     <script>
         (function() {
+            // Функция для создания Telegram виджета в контейнере
+            function createTelegramWidget(containerId) {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                
+                // Очищаем контейнер
+                container.innerHTML = '';
+                
+                // Создаём скрипт виджета
+                const script = document.createElement('script');
+                script.async = true;
+                script.src = 'https://telegram.org/js/telegram-widget.js?23';
+                script.setAttribute('data-telegram-login', 'awangard_shop_bot');
+                script.setAttribute('data-size', 'large');
+                script.setAttribute('data-onauth', 'onTelegramAuth(user)');
+                script.setAttribute('data-request-access', 'write');
+                container.appendChild(script);
+            }
+            
+            // Создаём виджеты после загрузки страницы
+            setTimeout(() => {
+                // Создаём контейнер для Telegram кнопки в шапке
+                const headerContainer = document.createElement('div');
+                headerContainer.id = 'telegramWidgetHeader';
+                headerContainer.style.display = 'inline-block';
+                headerContainer.style.marginLeft = '0.5rem';
+                const authButtonsDiv = document.getElementById('authButtons');
+                if (authButtonsDiv) {
+                    authButtonsDiv.appendChild(headerContainer);
+                    createTelegramWidget('telegramWidgetHeader');
+                }
+                
+                // Создаём контейнер для Telegram кнопки в профиле
+                const profileContainer = document.createElement('div');
+                profileContainer.id = 'telegramWidgetProfile';
+                profileContainer.style.marginTop = '0.5rem';
+                const profileWidgetDiv = document.getElementById('profileTelegramWidget');
+                if (profileWidgetDiv) {
+                    profileWidgetDiv.appendChild(profileContainer);
+                    createTelegramWidget('telegramWidgetProfile');
+                }
+            }, 100);
+            
             var homeLink = document.getElementById('homeLink');
             var aboutLink = document.getElementById('aboutLink');
             var cardsContainer = document.getElementById('cardsContainer');
             var aboutContainer = document.getElementById('aboutContainer');
             var infoBanner = document.getElementById('infoBanner');
             var profileLoginBtn = document.getElementById('profileLoginBtn');
-            var profileTelegramBtn = document.getElementById('profileTelegramBtn');
             
             if (profileLoginBtn) {
                 profileLoginBtn.addEventListener('click', function() {
                     if (typeof window.loginWithGoogle === 'function') {
                         window.loginWithGoogle();
-                    }
-                });
-            }
-            
-            if (profileTelegramBtn) {
-                profileTelegramBtn.addEventListener('click', function() {
-                    if (typeof window.loginWithTelegram === 'function') {
-                        window.loginWithTelegram();
                     }
                 });
             }

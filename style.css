@@ -447,3 +447,31 @@ footer a:hover {
     gap: 0.5rem;
     align-items: center;
 }
+/* Telegram виджет */
+.telegram-widget-container {
+    display: inline-block;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+}
+
+.profile-telegram-widget {
+    margin-top: 0.5rem;
+}
+
+.profile-telegram-widget iframe,
+.telegram-widget-container iframe {
+    border-radius: 40px !important;
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 650px) {
+    .telegram-widget-container {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+    
+    .auth-buttons-header {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
