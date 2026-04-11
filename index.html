@@ -24,33 +24,50 @@
 
     <script>
         (function() {
-            // Элементы
             var homeLink = document.getElementById('homeLink');
             var aboutLink = document.getElementById('aboutLink');
             var cardsContainer = document.getElementById('cardsContainer');
 
-            // Функция создания карточек
+            // Данные для UC карточек (6 с бонусами, остальные 4 обычные)
+            var ucCardsData = [
+                { text: "60 UC" },
+                { text: "300+25 UC" },
+                { text: "600+60 UC" },
+                { text: "1500+300 UC" },
+                { text: "3000+850 UC" },
+                { text: "6000+2100 UC" },
+                { text: "UC" },
+                { text: "UC" },
+                { text: "UC" },
+                { text: "UC" }
+            ];
+
+            // Данные для карточек Сопровождение (10 штук, без изменений)
+            var supportCardsData = [
+                "Сопровождение", "Сопровождение", "Сопровождение", "Сопровождение", "Сопровождение",
+                "Сопровождение", "Сопровождение", "Сопровождение", "Сопровождение", "Сопровождение"
+            ];
+
             function createCards() {
                 cardsContainer.innerHTML = '';
                 
-                // 10 карточек UC
-                for (var i = 0; i < 10; i++) {
+                // Создаём 10 карточек UC (первые 6 с бонусами, остальные 4 обычные)
+                for (var i = 0; i < ucCardsData.length; i++) {
                     var card = document.createElement('div');
                     card.className = 'card';
-                    card.textContent = 'UC';
+                    card.textContent = ucCardsData[i].text;
                     cardsContainer.appendChild(card);
                 }
                 
-                // 10 карточек Сопровождение
-                for (var i = 0; i < 10; i++) {
+                // Создаём 10 карточек Сопровождение
+                for (var i = 0; i < supportCardsData.length; i++) {
                     var card = document.createElement('div');
                     card.className = 'card';
-                    card.textContent = 'Сопровождение';
+                    card.textContent = supportCardsData[i];
                     cardsContainer.appendChild(card);
                 }
             }
 
-            // Функция для страницы "О нас"
             function showAbout() {
                 cardsContainer.innerHTML = '';
                 var message = document.createElement('div');
@@ -59,7 +76,6 @@
                 cardsContainer.appendChild(message);
             }
 
-            // Обработчики кликов
             if (homeLink) {
                 homeLink.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -78,7 +94,6 @@
                 });
             }
 
-            // При загрузке страницы показываем карточки
             createCards();
         })();
     </script>
