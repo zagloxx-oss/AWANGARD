@@ -11,11 +11,10 @@
     <!-- UAParser.js для определения устройства -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.35/ua-parser.min.js"></script>
     
-    <!-- Telegram Login Widget (исправленная версия) -->
+    <!-- Telegram Login Widget -->
     <script src="https://telegram.org/js/telegram-widget.js?23" async></script>
 </head>
 <body>
-    <!-- Анимированный фон PUBG стиль -->
     <div class="pubg-bg">
         <div class="neon-grid"></div>
         <div class="scan-line"></div>
@@ -24,7 +23,6 @@
     
     <div class="particles"></div>
     
-    <!-- Верхняя панель -->
     <nav class="pubg-nav">
         <div class="nav-container">
             <div class="logo">
@@ -48,10 +46,7 @@
             </div>
             <div class="auth-area">
                 <div id="userInfo" class="user-info-glass" style="display: none;">
-                    <img id="userAvatar" class="user-avatar-glass" src="">
-                    <div class="user-info-text">
-                        <span id="userName" class="user-name-glass"></span>
-                    </div>
+                    <span id="userName" class="user-name-glass"></span>
                     <button id="logoutBtn" class="logout-btn-glass">
                         <i class="fas fa-sign-out-alt"></i>
                     </button>
@@ -60,9 +55,7 @@
         </div>
     </nav>
     
-    <!-- Основной контент -->
     <div class="main-wrapper">
-        <!-- Боковая панель профиля -->
         <aside class="profile-sidebar-glass">
             <div id="profilePanel" class="profile-card-glass">
                 <div class="profile-header">
@@ -91,9 +84,7 @@
             </div>
         </aside>
         
-        <!-- Основная область -->
         <main class="content-area">
-            <!-- Карточки товаров -->
             <div id="mainContent">
                 <div class="hero-section">
                     <h1 class="glitch-text" data-text="PUBG MARKET">PUBG MARKET</h1>
@@ -102,7 +93,6 @@
                 <div id="cardsContainer" class="cards-grid"></div>
             </div>
             
-            <!-- Страница "О нас" -->
             <div id="aboutContainer" style="display: none;">
                 <div class="about-card">
                     <div class="about-icon">
@@ -119,12 +109,10 @@
         </main>
     </div>
     
-    <!-- Мобильная плашка входа (видна только на телефонах) -->
     <div class="mobile-auth-bar" id="mobileAuthBar">
         <div id="mobileTelegramContainer" class="mobile-telegram-container"></div>
     </div>
     
-    <!-- СЕКРЕТНАЯ АДМИН-ПАНЕЛЬ -->
     <div id="adminPanel" class="admin-panel" style="display: none;">
         <div class="admin-header">
             <h2><i class="fas fa-shield-alt"></i> ADMIN PANEL</h2>
@@ -285,8 +273,7 @@
             
             function updateUIAfterLogin(userData) {
                 document.getElementById('userInfo').style.display = 'flex';
-                document.getElementById('userName').textContent = userData.first_name;
-                document.getElementById('userAvatar').src = userData.photo_url || `https://ui-avatars.com/api/?background=1a1f2e&color=00ff88&bold=true&name=${userData.first_name}`;
+                document.getElementById('userName').textContent = userData.first_name + ' ' + (userData.last_name || '');
                 document.getElementById('profilePanel').classList.add('logged-in');
                 document.getElementById('profileName').textContent = userData.first_name + ' ' + (userData.last_name || '');
                 document.getElementById('profileUsername').textContent = userData.username ? '@' + userData.username : '';
@@ -322,9 +309,8 @@
             
             function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
             
-            // ========== TELEGRAM ВХОД (ПРЯМОЙ ВИДЖЕТ) ==========
+            // ========== TELEGRAM ВХОД ==========
             function initTelegramLogin() {
-                // Функция обратного вызова для Telegram
                 window.onTelegramAuth = function(user) {
                     if (user && user.id) {
                         const userData = {
@@ -341,7 +327,7 @@
                     }
                 };
                 
-                // Создаём виджет Telegram в контейнере
+                // Десктоп версия
                 const container = document.getElementById('telegramLoginContainer');
                 if (container) {
                     container.innerHTML = '';
@@ -441,7 +427,7 @@
                 alert('Ответ отправлен!');
             }
             
-            // Инициализация
+            // ИНИЦИАЛИЗАЦИЯ
             document.addEventListener('DOMContentLoaded', function() {
                 initTelegramLogin();
                 
@@ -453,7 +439,7 @@
                 document.getElementById('logoutBtn')?.addEventListener('click', logout);
                 document.getElementById('logoutProfileBtn')?.addEventListener('click', logout);
                 
-                // Поддержка - переход в Telegram
+                // Поддержка
                 const supportLink = document.getElementById('supportLink');
                 if (supportLink) {
                     supportLink.addEventListener('click', function(e) {
@@ -486,17 +472,20 @@
                 createParticles();
             });
             
-            // КАРТОЧКИ ТОВАРОВ С КАРТИНКАМИ
-            // UC картинка: иконка UC в неоновом стиле
-            // Метровалюта картинка: иконка монет/BP
+            // ========== КАРТОЧКИ ТОВАРОВ ==========
+            // ⚠️ ЗДЕСЬ ЗАМЕНИТЕ ССЫЛКУ НА ВАШУ КАРТИНКУ UC ⚠️
+            // ВСТАВЬТЕ ВАШУ ПРЯМУЮ ССЫЛКУ ВМЕСТО ТЕКУЩЕЙ
+            const UC_IMAGE_URL = "https://freeimage.host/i/BVDz512";
+            
             var ucCardsData = [
-                { text: "60 UC", price: "100 ₽", oldPrice: "150 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051277.png" },
-                { text: "300+25 UC", price: "450 ₽", oldPrice: "600 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051277.png" },
-                { text: "600+60 UC", price: "900 ₽", oldPrice: "1200 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051277.png" },
-                { text: "1500+300 UC", price: "2200 ₽", oldPrice: "3000 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051277.png" },
-                { text: "3000+850 UC", price: "4500 ₽", oldPrice: "6000 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051277.png" },
-                { text: "6000+2100 UC", price: "9000 ₽", oldPrice: "12000 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051277.png" }
+                { text: "60 UC", price: "100 ₽", oldPrice: "150 ₽", img: UC_IMAGE_URL },
+                { text: "300+25 UC", price: "450 ₽", oldPrice: "600 ₽", img: UC_IMAGE_URL },
+                { text: "600+60 UC", price: "900 ₽", oldPrice: "1200 ₽", img: UC_IMAGE_URL },
+                { text: "1500+300 UC", price: "2200 ₽", oldPrice: "3000 ₽", img: UC_IMAGE_URL },
+                { text: "3000+850 UC", price: "4500 ₽", oldPrice: "6000 ₽", img: UC_IMAGE_URL },
+                { text: "6000+2100 UC", price: "9000 ₽", oldPrice: "12000 ₽", img: UC_IMAGE_URL }
             ];
+            
             var supportCardsData = [
                 { text: "1M метровалюты", price: "100 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
                 { text: "2M метровалюты", price: "200 ₽", img: "https://cdn-icons-png.flaticon.com/512/1051/1051271.png" },
