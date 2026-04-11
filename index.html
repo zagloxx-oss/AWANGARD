@@ -9,7 +9,7 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
         
         // Ваши данные Firebase
         const firebaseConfig = {
@@ -27,6 +27,9 @@
         const auth = getAuth(app);
         const googleProvider = new GoogleAuthProvider();
         
+        // Провайдер для Telegram через OIDC
+        const telegramProvider = new OAuthProvider('oidc.telegram');
+        
         // Элементы DOM
         const authButtons = document.getElementById('authButtons');
         const userInfo = document.getElementById('userInfo');
@@ -34,6 +37,7 @@
         const userEmail = document.getElementById('userEmail');
         const userAvatar = document.getElementById('userAvatar');
         const loginBtn = document.getElementById('loginBtn');
+        const telegramLoginBtn = document.getElementById('telegramLoginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
         const profilePanel = document.getElementById('profilePanel');
         
@@ -41,10 +45,26 @@
         async function loginWithGoogle() {
             try {
                 const result = await signInWithPopup(auth, googleProvider);
-                console.log("Успешный вход:", result.user);
+                console.log("Успешный вход через Google:", result.user);
             } catch (error) {
                 console.error("Ошибка входа:", error);
                 alert("Ошибка входа: " + error.message);
+            }
+        }
+        
+        // Функция входа через Telegram
+        async function loginWithTelegram() {
+            try {
+                const result = await signInWithPopup(auth, telegramProvider);
+                console.log("Успешный вход через Telegram:", result.user);
+                alert("Добро пожаловать, " + (result.user.displayName || "пользователь Telegram") + "!");
+            } catch (error) {
+                console.error("Ошибка входа через Telegram:", error);
+                if (error.code === 'auth/operation-not-supported') {
+                    alert("Для входа через Telegram требуется дополнительная настройка в Firebase Console. Пожалуйста, настройте OIDC провайдера Telegram.");
+                } else {
+                    alert("Ошибка входа через Telegram: " + error.message);
+                }
             }
         }
         
@@ -61,7 +81,6 @@
         // Функция обновления профиля в боковой панели
         function updateProfilePanel(user) {
             if (user) {
-                // Пользователь авторизован
                 profilePanel.classList.add('logged-in');
                 document.getElementById('profileName').textContent = user.displayName || "Пользователь";
                 document.getElementById('profileEmail').textContent = user.email || "email не указан";
@@ -70,11 +89,9 @@
                 } else {
                     document.getElementById('profileAvatar').src = 'https://ui-avatars.com/api/?background=2c3e66&color=fff&bold=true&name=' + encodeURIComponent(user.displayName || 'User');
                 }
-                // Генерируем уникальный ID пользователя (первые 8 символов)
                 const userId = user.uid.substring(0, 8);
                 document.getElementById('profileId').textContent = userId;
                 
-                // Сохраняем данные пользователя в localStorage для отображения при следующем визите
                 localStorage.setItem('lastUser', JSON.stringify({
                     displayName: user.displayName,
                     email: user.email,
@@ -82,7 +99,6 @@
                     uid: user.uid
                 }));
             } else {
-                // Пользователь не авторизован - пробуем загрузить последнего пользователя из localStorage
                 const lastUser = localStorage.getItem('lastUser');
                 if (lastUser) {
                     const userData = JSON.parse(lastUser);
@@ -96,7 +112,6 @@
                     }
                     document.getElementById('profileId').textContent = userData.uid ? userData.uid.substring(0, 8) : 'guest';
                 } else {
-                    // Гость
                     profilePanel.classList.remove('logged-in');
                 }
             }
@@ -105,7 +120,6 @@
         // Отслеживание состояния авторизации
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Пользователь авторизован
                 authButtons.style.display = 'none';
                 userInfo.style.display = 'flex';
                 userName.textContent = user.displayName || user.email || "Пользователь";
@@ -117,20 +131,19 @@
                     userAvatar.style.display = 'none';
                 }
             } else {
-                // Пользователь не авторизован
-                authButtons.style.display = 'block';
+                authButtons.style.display = 'flex';
                 userInfo.style.display = 'none';
             }
-            // Обновляем боковую панель профиля
             updateProfilePanel(user);
         });
         
         // Назначаем обработчики кнопок
         loginBtn.addEventListener('click', loginWithGoogle);
+        if (telegramLoginBtn) telegramLoginBtn.addEventListener('click', loginWithTelegram);
         logoutBtn.addEventListener('click', logout);
         
-        // Экспортируем функцию в глобальную область
         window.loginWithGoogle = loginWithGoogle;
+        window.loginWithTelegram = loginWithTelegram;
     </script>
 </head>
 <body class="dark-theme">
@@ -144,7 +157,8 @@
         
         <!-- Блок авторизации (показывается неавторизованным) -->
         <div id="authButtons" class="auth-buttons-header">
-            <button id="loginBtn" class="auth-btn-small google-btn-small">🔐 Войти через Google</button>
+            <button id="loginBtn" class="auth-btn-small google-btn-small">🔐 Google</button>
+            <button id="telegramLoginBtn" class="auth-btn-small telegram-btn-small">✈️ Telegram</button>
         </div>
         
         <!-- Блок информации о пользователе (показывается авторизованным) -->
@@ -172,17 +186,15 @@
                 </div>
                 <div class="profile-actions">
                     <button id="profileLoginBtn" class="profile-login-btn">Войти через Google</button>
+                    <button id="profileTelegramBtn" class="profile-telegram-btn">Войти через Telegram</button>
                 </div>
             </div>
         </aside>
         
         <main>
-            <!-- Основной контент (виден всем) -->
             <div id="mainContent">
                 <div id="cardsContainer" class="cards-container"></div>
             </div>
-            
-            <!-- Контейнер для страницы "О нас" (изначально скрыт) -->
             <div id="aboutContainer" style="display: none;">
                 <div id="infoBanner" class="center-text interactive-banner">
                     Купить сопровождение или UC в плашке главная
@@ -203,8 +215,8 @@
             var aboutContainer = document.getElementById('aboutContainer');
             var infoBanner = document.getElementById('infoBanner');
             var profileLoginBtn = document.getElementById('profileLoginBtn');
+            var profileTelegramBtn = document.getElementById('profileTelegramBtn');
             
-            // Привязываем кнопку входа в профиле к глобальной функции
             if (profileLoginBtn) {
                 profileLoginBtn.addEventListener('click', function() {
                     if (typeof window.loginWithGoogle === 'function') {
@@ -212,8 +224,15 @@
                     }
                 });
             }
+            
+            if (profileTelegramBtn) {
+                profileTelegramBtn.addEventListener('click', function() {
+                    if (typeof window.loginWithTelegram === 'function') {
+                        window.loginWithTelegram();
+                    }
+                });
+            }
 
-            // Данные для UC карточек (6 с бонусами и ценами)
             var ucCardsData = [
                 { text: "60 UC", price: "100 руб." },
                 { text: "300+25 UC", price: "450 руб." },
@@ -223,7 +242,6 @@
                 { text: "6000+2100 UC", price: "9000 руб." }
             ];
 
-            // Данные для карточек Сопровождение (10 штук с метровалютой и ценой)
             var supportCardsData = [
                 { text: "1 000 000 метровалюты", price: "100 руб." },
                 { text: "2 000 000 метровалюты", price: "200 руб." },
@@ -312,7 +330,6 @@
                 });
             }
 
-            // Создаём карточки при загрузке (сразу, без авторизации)
             createCards();
         })();
     </script>

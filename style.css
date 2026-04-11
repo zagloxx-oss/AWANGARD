@@ -413,3 +413,37 @@ footer a:hover {
         padding: 1.5rem;
     }
 }
+/* Кнопка Telegram */
+.telegram-btn-small {
+    background: linear-gradient(135deg, #0088cc, #006699);
+}
+
+.telegram-btn-small:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 136, 204, 0.4);
+}
+
+.profile-telegram-btn {
+    background: linear-gradient(135deg, #0088cc, #006699);
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 40px;
+    color: white;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.profile-telegram-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 136, 204, 0.4);
+}
+
+.auth-buttons-header {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
