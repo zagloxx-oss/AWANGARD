@@ -78,6 +78,7 @@
                         </div>
                     </div>
                     <div class="profile-page-actions">
+                        <!-- Кнопка входа через Telegram для ПК -->
                         <div id="telegramLoginPage" class="telegram-login-page"></div>
                         <button id="logoutPageBtn" class="neon-btn logout-neon-btn" style="display: none;">
                             <i class="fas fa-sign-out-alt"></i>
@@ -182,12 +183,12 @@
 
     <script>
         (function() {
-            // ========== TELEGRAM ВХОД (ИСПРАВЛЕННЫЙ) ==========
-            const BOT_TOKEN = '8745985444:AAGA1jByHKR78uThXfkurejklLrIp53bp6M';
+            // ========== НАСТРОЙКИ ==========
             const DONATION_URL = 'https://www.donationalerts.com/r/limitblitzoffical';
+            const BOT_TOKEN = '8745985444:AAGA1jByHKR78uThXfkurejklLrIp53bp6M';
             const ADMIN_ID = 'ВАШ_TELEGRAM_ID'; // ЗАМЕНИТЕ НА ВАШ TELEGRAM ID
             
-            // Глобальная функция для Telegram
+            // ========== TELEGRAM ВХОД ==========
             window.onTelegramAuth = function(user) {
                 if (user && user.id) {
                     const userData = {
@@ -201,12 +202,10 @@
                     updateUIAfterLogin(userData);
                     updateUserLastSeen(user.id.toString());
                     alert('Добро пожаловать, ' + user.first_name + '!');
-                    // Закрываем профиль и показываем главную
                     document.getElementById('profileLink').click();
                 }
             };
             
-            // Функция создания виджета Telegram
             function initTelegramLogin() {
                 const container = document.getElementById('telegramLoginPage');
                 if (container) {
@@ -423,26 +422,17 @@
                 });
             }
             
-            // ========== ОПЛАТА (ТОЛЬКО DONATIONALERTS) ==========
+            // ========== ОПЛАТА (ПРОСТО ПЕРЕХОД ПО ССЫЛКЕ) ==========
+            // БЕЗ ПРОВЕРКИ АВТОРИЗАЦИИ
             function showPaymentPopup(cardText, price) {
-                const user = getTelegramUser();
-                if (!user) {
-                    const confirmAuth = confirm('Для оплаты необходимо авторизоваться через Telegram. Перейти к авторизации?');
-                    if (confirmAuth) { document.getElementById('profileLink').click(); }
-                    return;
-                }
+                // Просто открываем DonationAlerts в новой вкладке
+                window.open(DONATION_URL, '_blank');
                 
-                const cleanPrice = price.toString().replace(/[^\d]/g, '');
-                const message = encodeURIComponent(`Покупка: ${cardText} | ID: ${user.id}`);
-                const donateUrl = `${DONATION_URL}?amount=${cleanPrice}&message=${message}&currency=RUB`;
-                window.open(donateUrl, '_blank', 'width=500,height=700');
-                
+                // Отправляем уведомление админу (опционально)
                 fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: ADMIN_ID, text: `🛍️ НОВЫЙ ЗАКАЗ!\n\n📦 Товар: ${cardText}\n💰 Сумма: ${cleanPrice} ₽\n👤 Пользователь: ${user.first_name}\n🆔 ID: ${user.id}\n\n💬 Оплата через DonationAlerts` })
+                    body: JSON.stringify({ chat_id: ADMIN_ID, text: `🛍️ КЛИК ПО ТОВАРУ!\n\n📦 Товар: ${cardText}\n💰 Цена: ${price}\n\nПользователь перешёл к оплате на DonationAlerts` })
                 }).catch(console.error);
-                
-                alert(`✅ Заказ оформлен!\n\nТовар: ${cardText}\nСумма: ${cleanPrice} ₽\n\nОткроется окно DonationAlerts для оплаты.\nПосле оплаты товар будет отправлен в течение 5-10 минут.`);
             }
             
             // ========== ТОВАРЫ ==========
