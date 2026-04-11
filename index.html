@@ -5,6 +5,138 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AWANGARD.COM | Dark Edition</title>
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCjtfl17qW0uB-L2BZ61l7RQLByeWRoIqM",
+  authDomain: "awangard-shop.firebaseapp.com",
+  projectId: "awangard-shop",
+  storageBucket: "awangard-shop.firebasestorage.app",
+  messagingSenderId: "782791636313",
+  appId: "1:782791636313:web:82f0658de4853e31a4c848",
+  measurementId: "G-KPMXMFCTGS"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+        
+        // Инициализация Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
+        
+        // Элементы DOM
+        const authSection = document.getElementById('authSection');
+        const userInfo = document.getElementById('userInfo');
+        const userName = document.getElementById('userName');
+        const userAvatar = document.getElementById('userAvatar');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const vkLoginBtn = document.getElementById('vkLoginBtn');
+        const telegramLoginBtn = document.getElementById('telegramLoginBtn');
+        const mainContent = document.getElementById('mainContent');
+        
+        // Функция входа через Google
+        async function loginWithGoogle() {
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                console.log("Успешный вход:", result.user);
+            } catch (error) {
+                console.error("Ошибка входа:", error);
+                alert("Ошибка входа: " + error.message);
+            }
+        }
+        
+        // Функция входа через ВК (через попап)
+        function loginWithVK() {
+            // VK ID SDK нужно подключить отдельно
+            if (typeof VKID !== 'undefined') {
+                VKID.Config.set({
+                    appId: 12345678, // Замените на ваш ID приложения VK
+                    redirectUrl: window.location.href,
+                    state: 'vk_login'
+                });
+                VKID.Auth.login();
+            } else {
+                alert("Вход через ВК требует настройки. Пока используйте Google.");
+            }
+        }
+        
+        // Функция входа через Telegram
+        function loginWithTelegram() {
+            // Telegram Login Widget
+            window.open('https://oauth.telegram.org/auth?bot_id=ВАШ_BOT_ID&origin=' + window.location.origin + '&return_to=' + window.location.href, '_blank');
+        }
+        
+        // Функция выхода
+        async function logout() {
+            try {
+                await signOut(auth);
+                console.log("Выход выполнен");
+            } catch (error) {
+                console.error("Ошибка выхода:", error);
+            }
+        }
+        
+        // Отслеживание состояния авторизации
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Пользователь авторизован
+                authSection.style.display = 'none';
+                userInfo.style.display = 'flex';
+                mainContent.style.display = 'block';
+                
+                // Отображаем информацию о пользователе
+                const displayName = user.displayName || user.email || user.phoneNumber || "Пользователь";
+                userName.textContent = displayName;
+                
+                if (user.photoURL) {
+                    userAvatar.src = user.photoURL;
+                    userAvatar.style.display = 'block';
+                } else {
+                    userAvatar.style.display = 'none';
+                }
+            } else {
+                // Пользователь не авторизован
+                authSection.style.display = 'block';
+                userInfo.style.display = 'none';
+                mainContent.style.display = 'none';
+            }
+        });
+        
+        // Назначаем обработчики кнопок
+        loginBtn.addEventListener('click', loginWithGoogle);
+        if (vkLoginBtn) vkLoginBtn.addEventListener('click', loginWithVK);
+        if (telegramLoginBtn) telegramLoginBtn.addEventListener('click', loginWithTelegram);
+        logoutBtn.addEventListener('click', logout);
+        
+        // Экспортируем функции в глобальную область для кнопок входа
+        window.loginWithGoogle = loginWithGoogle;
+        window.loginWithVK = loginWithVK;
+        window.loginWithTelegram = loginWithTelegram;
+    </script>
+    
+    <!-- VK ID SDK (подключается отдельно) -->
+    <script src="https://vk.com/js/api/openapi.js?169" type="text/javascript"></script>
+    <script type="text/javascript">
+        window.VKID = window.VKID || {};
+        // Инициализация VK ID
+        setTimeout(() => {
+            if (typeof VKID !== 'undefined') {
+                VKID.Config.init();
+            }
+        }, 100);
+    </script>
 </head>
 <body class="dark-theme">
     <header>
@@ -14,10 +146,30 @@
             <a href="#" id="aboutLink">О нас</a>
             <a href="https://vk.com/vip_kotik_1" target="_blank">📱 Мой ВК</a>
         </nav>
+        
+        <!-- Блок авторизации (показывается неавторизованным) -->
+        <div id="authSection" class="auth-section">
+            <h3>Войдите, чтобы продолжить</h3>
+            <div class="auth-buttons">
+                <button id="loginBtn" class="auth-btn google-btn">🔐 Войти через Google</button>
+                <button id="vkLoginBtn" class="auth-btn vk-btn">📱 Войти через ВК</button>
+                <button id="telegramLoginBtn" class="auth-btn telegram-btn">✈️ Войти через Telegram</button>
+            </div>
+        </div>
+        
+        <!-- Блок информации о пользователе (показывается авторизованным) -->
+        <div id="userInfo" class="user-info" style="display: none;">
+            <img id="userAvatar" class="user-avatar" src="" alt="Avatar">
+            <span id="userName" class="user-name"></span>
+            <button id="logoutBtn" class="logout-btn">Выйти</button>
+        </div>
     </header>
+    
     <main>
-        <!-- Контейнер для карточек на главной странице -->
-        <div id="cardsContainer" class="cards-container"></div>
+        <!-- Основной контент (показывается только после авторизации) -->
+        <div id="mainContent" style="display: none;">
+            <div id="cardsContainer" class="cards-container"></div>
+        </div>
         
         <!-- Контейнер для страницы "О нас" (изначально скрыт) -->
         <div id="aboutContainer" style="display: none;">
@@ -26,6 +178,7 @@
             </div>
         </div>
     </main>
+    
     <footer>
         <p>© 2026 AWANGARD | <a href="https://vk.com/vip_kotik_1" target="_blank">ВКонтакте</a></p>
     </footer>
@@ -62,12 +215,10 @@
                 { text: "10 000 000 метровалюты", price: "1000 руб." }
             ];
 
-            // Функция показа всплывающего окна для карточек
             function showPaymentPopup(cardText, price) {
                 alert("Оплатить " + cardText + " - " + price);
             }
 
-            // Функция для открытия отдельного окна с сообщением (при клике на плашку)
             function openInfoWindow() {
                 var message = "Привет! Я создал этот сайт сам, и пока он сырой, но вы можете что-нибудь купить и поддержать меня, а также оставьте отзыв, пж!";
                 var newWindow = window.open('', '_blank', 'width=500,height=300,resizable=yes,scrollbars=yes');
@@ -75,60 +226,57 @@
                 newWindow.document.close();
             }
 
-            // Добавляем обработчик клика на плашку (если она существует)
             if (infoBanner) {
                 infoBanner.addEventListener('click', openInfoWindow);
             }
 
             function createCards() {
+                if (!cardsContainer) return;
                 cardsContainer.innerHTML = '';
                 
-                // Создаём 6 карточек UC (с ценами)
                 for (var i = 0; i < ucCardsData.length; i++) {
                     var card = document.createElement('div');
                     card.className = 'card';
                     card.textContent = ucCardsData[i].text;
-                    
                     (function(cardText, price) {
                         card.addEventListener('click', function() {
                             showPaymentPopup(cardText, price);
                         });
                     })(ucCardsData[i].text, ucCardsData[i].price);
-                    
                     cardsContainer.appendChild(card);
                 }
                 
-                // Создаём 10 карточек Сопровождение (с метровалютой и ценой)
                 for (var i = 0; i < supportCardsData.length; i++) {
                     var card = document.createElement('div');
                     card.className = 'card';
                     card.textContent = supportCardsData[i].text;
-                    
                     (function(cardText, price) {
                         card.addEventListener('click', function() {
                             showPaymentPopup(cardText, price);
                         });
                     })(supportCardsData[i].text, supportCardsData[i].price);
-                    
                     cardsContainer.appendChild(card);
                 }
             }
 
             function showAbout() {
-                cardsContainer.style.display = 'none';
-                aboutContainer.style.display = 'block';
+                if (cardsContainer) cardsContainer.style.display = 'none';
+                if (aboutContainer) aboutContainer.style.display = 'block';
             }
 
             function showHome() {
-                cardsContainer.style.display = 'grid';
-                aboutContainer.style.display = 'none';
+                if (cardsContainer) {
+                    cardsContainer.style.display = 'grid';
+                    createCards();
+                }
+                if (aboutContainer) aboutContainer.style.display = 'none';
             }
 
             if (homeLink) {
                 homeLink.addEventListener('click', function(e) {
                     e.preventDefault();
                     homeLink.classList.add('active');
-                    aboutLink.classList.remove('active');
+                    if (aboutLink) aboutLink.classList.remove('active');
                     showHome();
                 });
             }
@@ -137,13 +285,25 @@
                 aboutLink.addEventListener('click', function(e) {
                     e.preventDefault();
                     aboutLink.classList.add('active');
-                    homeLink.classList.remove('active');
+                    if (homeLink) homeLink.classList.remove('active');
                     showAbout();
                 });
             }
 
-            showHome();
-            createCards();
+            // Инициализация (карточки создадутся после авторизации)
+            window.initCards = function() {
+                if (cardsContainer && document.getElementById('mainContent').style.display === 'block') {
+                    createCards();
+                }
+            };
+            
+            // Наблюдатель за появлением контента
+            const observer = new MutationObserver(function() {
+                if (document.getElementById('mainContent').style.display === 'block' && cardsContainer && cardsContainer.children.length === 0) {
+                    createCards();
+                }
+            });
+            observer.observe(document.getElementById('mainContent'), { attributes: true });
         })();
     </script>
 </body>

@@ -193,3 +193,121 @@ footer a:hover {
         padding: 1.5rem;
     }
 }
+/* ===== Стили для авторизации ===== */
+.auth-section {
+    background: rgba(18, 22, 33, 0.8);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin: 1rem auto;
+    max-width: 400px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    border: 1px solid #2c3142;
+}
+
+.auth-section h3 {
+    color: #c0caf5;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.auth-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 40px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.google-btn {
+    background: linear-gradient(135deg, #4285f4, #34a853);
+}
+
+.google-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(66, 133, 244, 0.4);
+}
+
+.vk-btn {
+    background: linear-gradient(135deg, #4c75a3, #2c3e66);
+}
+
+.vk-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(76, 117, 163, 0.4);
+}
+
+.telegram-btn {
+    background: linear-gradient(135deg, #0088cc, #006699);
+}
+
+.telegram-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 136, 204, 0.4);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    background: rgba(18, 22, 33, 0.6);
+    border-radius: 50px;
+    margin-top: 0.5rem;
+    max-width: 300px;
+    margin-left: auto;
+}
+
+.user-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-name {
+    color: #c0caf5;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.logout-btn {
+    background: #dc2626;
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 30px;
+    color: white;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: #b91c1c;
+    transform: scale(1.02);
+}
+
+@media (max-width: 650px) {
+    .auth-section {
+        margin: 0.5rem;
+        padding: 1rem;
+    }
+    .auth-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+    }
+    .user-info {
+        margin: 0.5rem auto;
+        justify-content: center;
+    }
+}
