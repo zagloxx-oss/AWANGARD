@@ -28,38 +28,53 @@
             var aboutLink = document.getElementById('aboutLink');
             var cardsContainer = document.getElementById('cardsContainer');
 
-            // Данные для UC карточек (6 с бонусами, остальные 4 обычные)
+            // Данные для UC карточек с ценами (первые 6 с бонусами и ценами, остальные 4 обычные без клика)
             var ucCardsData = [
-                { text: "60 UC" },
-                { text: "300+25 UC" },
-                { text: "600+60 UC" },
-                { text: "1500+300 UC" },
-                { text: "3000+850 UC" },
-                { text: "6000+2100 UC" },
-                { text: "UC" },
-                { text: "UC" },
-                { text: "UC" },
-                { text: "UC" }
+                { text: "60 UC", price: "100 руб." },
+                { text: "300+25 UC", price: "450 руб." },
+                { text: "600+60 UC", price: "900 руб." },
+                { text: "1500+300 UC", price: "2200 руб." },
+                { text: "3000+850 UC", price: "4500 руб." },
+                { text: "6000+2100 UC", price: "9000 руб." },
+                { text: "UC", price: null },
+                { text: "UC", price: null },
+                { text: "UC", price: null },
+                { text: "UC", price: null }
             ];
 
-            // Данные для карточек Сопровождение (10 штук, без изменений)
+            // Данные для карточек Сопровождение (10 штук, без изменений, без клика)
             var supportCardsData = [
                 "Сопровождение", "Сопровождение", "Сопровождение", "Сопровождение", "Сопровождение",
                 "Сопровождение", "Сопровождение", "Сопровождение", "Сопровождение", "Сопровождение"
             ];
 
+            // Функция показа всплывающего окна
+            function showPaymentPopup(cardText, price) {
+                alert("Оплатить " + cardText + " - " + price);
+            }
+
             function createCards() {
                 cardsContainer.innerHTML = '';
                 
-                // Создаём 10 карточек UC (первые 6 с бонусами, остальные 4 обычные)
+                // Создаём 10 карточек UC
                 for (var i = 0; i < ucCardsData.length; i++) {
                     var card = document.createElement('div');
                     card.className = 'card';
                     card.textContent = ucCardsData[i].text;
+                    
+                    // Если у карточки есть цена - добавляем обработчик клика
+                    if (ucCardsData[i].price !== null) {
+                        (function(cardText, price) {
+                            card.addEventListener('click', function() {
+                                showPaymentPopup(cardText, price);
+                            });
+                        })(ucCardsData[i].text, ucCardsData[i].price);
+                    }
+                    
                     cardsContainer.appendChild(card);
                 }
                 
-                // Создаём 10 карточек Сопровождение
+                // Создаём 10 карточек Сопровождение (без клика)
                 for (var i = 0; i < supportCardsData.length; i++) {
                     var card = document.createElement('div');
                     card.className = 'card';
