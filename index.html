@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>AWANGARD | NEON PUBG Store</title>
+    <title>AWANGARD | ACID GREEN NEON</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -11,29 +11,31 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.35/ua-parser.min.js"></script>
 </head>
 <body>
-    <div class="neon-bg">
-        <div class="grid-overlay"></div>
-        <div class="scan-line"></div>
-        <div class="vignette"></div>
+    <!-- АНИМИРОВАННЫЙ КИСЛОТНО-ЗЕЛЕНЫЙ ФОН -->
+    <div class="acid-bg">
+        <div class="acid-grid"></div>
+        <div class="acid-scan-line"></div>
+        <div class="acid-vignette"></div>
     </div>
     
-    <div class="particles-container" id="particlesContainer"></div>
+    <div class="acid-particles" id="particlesContainer"></div>
     
-    <div class="floating-lines">
-        <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
-        <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
+    <div class="acid-floating-lines">
+        <div class="acid-line"></div><div class="acid-line"></div><div class="acid-line"></div><div class="acid-line"></div>
+        <div class="acid-line"></div><div class="acid-line"></div><div class="acid-line"></div><div class="acid-line"></div>
     </div>
     
-    <div class="floating-circles">
-        <div class="circle"></div><div class="circle"></div><div class="circle"></div><div class="circle"></div>
+    <div class="acid-floating-circles">
+        <div class="acid-circle"></div><div class="acid-circle"></div><div class="acid-circle"></div><div class="acid-circle"></div>
     </div>
     
-    <nav class="neon-nav">
+    <!-- НАВИГАЦИЯ -->
+    <nav class="acid-nav">
         <div class="nav-container">
             <div class="logo">
-                <i class="fas fa-crown"></i>
+                <i class="fas fa-skull"></i>
                 <span>AWANGARD</span>
-                <span class="neon-badge">NEON</span>
+                <span class="acid-badge">ACID</span>
             </div>
             <div class="nav-links">
                 <a href="#" id="homeLink" class="active"><i class="fas fa-home"></i><span>Главная</span></a>
@@ -48,79 +50,93 @@
     
     <div class="main-wrapper">
         <main class="content-area">
-            <!-- Главная страница -->
+            <!-- ГЛАВНАЯ СТРАНИЦА -->
             <div id="mainContent">
-                <div class="hero-section">
-                    <h1 class="neon-glitch" data-text="AWANGARD NEON">AWANGARD NEON</h1>
-                    <p class="hero-subtitle">PUBG Mobile | UC | Метровалюта</p>
-                    <div class="info-text-under-title">
-                        🔥 Привет! Здесь ты можешь купить UC, а также метровалюту. Пока работает оплата только по DonationAlerts, но позже добавятся другие способы оплаты. Также ты можешь оплатить напрямую — просто нажми на иконку "Поддержка". Если ты хочешь стать сопровождающим — перейди в раздел "Сопровождающие". УДАЧНЫХ ПОКУПОК! 🔥
+                <div class="acid-hero">
+                    <h1 class="acid-glitch" data-text="AWANGARD ACID">AWANGARD ACID</h1>
+                    <p class="acid-subtitle">PUBG Mobile | UC | Метровалюта</p>
+                    <div class="acid-info-text">
+                        <i class="fas fa-bolt"></i> ПРИВЕТ! Здесь ты можешь купить UC, а также метровалюту. Пока работает оплата только по DonationAlerts. Нажми на "Поддержка" для связи. Чтобы стать сопровождающим — перейди в раздел "Сопровождающие". УДАЧНЫХ ПОКУПОК! <i class="fas fa-bolt"></i>
                     </div>
                 </div>
-                <div id="cardsContainer" class="cards-grid-neon"></div>
                 
-                <!-- Блок принятых сопровождающих -->
-                <div class="accepted-supporters-section">
-                    <h3><i class="fas fa-user-check"></i> Наши сопровождающие</h3>
-                    <div id="acceptedSupportersList" class="accepted-supporters-list">
-                        <div class="no-supporters">Пока нет принятых сопровождающих</div>
-                    </div>
+                <!-- БЛОК ТОВАРОВ -->
+                <div class="acid-section-title">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h2>ТОВАРЫ</h2>
+                </div>
+                <div id="cardsContainer" class="acid-cards-grid"></div>
+                
+                <!-- БЛОК ПРИНЯТЫХ СОПРОВОЖДАЮЩИХ -->
+                <div class="acid-section-title">
+                    <i class="fas fa-user-shield"></i>
+                    <h2>НАШИ СОПРОВОЖДАЮЩИЕ</h2>
+                </div>
+                <div id="acceptedSupportersList" class="acid-supporters-list">
+                    <div class="acid-no-data">Пока нет принятых сопровождающих</div>
                 </div>
             </div>
             
-            <!-- Страница сопровождающих (заявка) -->
+            <!-- СТРАНИЦА СОПРОВОЖДАЮЩИХ (ЗАЯВКА) -->
             <div id="supportersContent" style="display: none;">
-                <div class="supporters-page-card">
-                    <h2><i class="fas fa-users"></i> Стать сопровождающим</h2>
+                <div class="acid-card">
+                    <div class="acid-card-header">
+                        <i class="fas fa-users"></i>
+                        <h2>СТАТЬ СОПРОВОЖДАЮЩИМ</h2>
+                    </div>
                     <p>Заполните форму ниже, чтобы отправить заявку на участие в программе сопровождения.</p>
                     
-                    <div class="application-form">
-                        <div class="form-group">
+                    <div class="acid-form">
+                        <div class="acid-form-group">
                             <label><i class="fas fa-user"></i> Ваш ник в игре</label>
-                            <input type="text" id="supporterNick" placeholder="Введите ваш ник..." class="form-input">
+                            <input type="text" id="supporterNick" placeholder="Введите ваш ник..." class="acid-input">
                         </div>
-                        <div class="form-group">
+                        <div class="acid-form-group">
                             <label><i class="fas fa-id-card"></i> Ваш ID в игре</label>
-                            <input type="text" id="supporterId" placeholder="Введите ваш ID..." class="form-input">
+                            <input type="text" id="supporterId" placeholder="Введите ваш ID..." class="acid-input">
                         </div>
-                        <div class="form-group">
+                        <div class="acid-form-group">
                             <label><i class="fas fa-chart-line"></i> Статистика текущего сезона</label>
-                            <textarea id="supporterStats" placeholder="Опишите вашу статистику (ранг, K/D, процент побед и т.д.)..." class="form-textarea" rows="4"></textarea>
+                            <textarea id="supporterStats" placeholder="Опишите вашу статистику (ранг, K/D, процент побед и т.д.)..." class="acid-textarea" rows="4"></textarea>
                         </div>
-                        <div class="form-group">
+                        <div class="acid-form-group">
                             <label><i class="fas fa-image"></i> Скриншот статистики</label>
-                            <input type="file" id="supporterScreenshot" accept="image/*" class="form-file">
-                            <div id="screenshotPreview" class="screenshot-preview"></div>
+                            <input type="file" id="supporterScreenshot" accept="image/*" class="acid-file">
+                            <div id="screenshotPreview" class="acid-preview"></div>
                         </div>
-                        <button id="submitApplicationBtn" class="neon-btn submit-application-btn">📝 Отправить заявку</button>
+                        <button id="submitApplicationBtn" class="acid-btn acid-btn-glow">📝 ОТПРАВИТЬ ЗАЯВКУ</button>
                     </div>
                 </div>
             </div>
             
-            <!-- Страница профиля -->
+            <!-- СТРАНИЦА ПРОФИЛЯ -->
             <div id="profileContent" style="display: none;">
-                <div class="profile-page-card">
-                    <div class="profile-page-header">
-                        <div class="profile-page-avatar">
-                            <img id="profilePageAvatar" src="https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=Guest" alt="Avatar">
-                            <div class="avatar-pulse"></div>
+                <div class="acid-card">
+                    <div class="acid-card-header">
+                        <i class="fas fa-user-circle"></i>
+                        <h2>ПРОФИЛЬ</h2>
+                    </div>
+                    <div class="acid-profile-info">
+                        <div class="acid-profile-avatar">
+                            <img id="profilePageAvatar" src="https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=Guest" alt="Avatar">
+                            <div class="acid-avatar-pulse"></div>
                         </div>
-                        <div class="profile-page-info">
-                            <h2 id="profilePageName">Гость</h2>
+                        <div class="acid-profile-details">
+                            <h3 id="profilePageName">Гость</h3>
                             <p id="profilePageUsername"></p>
-                            <div class="profile-page-id">
+                            <div class="acid-profile-id">
                                 <i class="fas fa-fingerprint"></i>
                                 <span id="profilePageId">guest</span>
                             </div>
-                            <div class="profile-page-device" id="profilePageDeviceInfo">
+                            <div class="acid-profile-device" id="profilePageDeviceInfo">
                                 <i class="fas fa-mobile-alt"></i>
                                 <span id="deviceInfoTextPage">Определение...</span>
                             </div>
                         </div>
                     </div>
-                    <div class="profile-page-actions">
-                        <div id="telegramLoginPage" class="telegram-login-page"></div>
-                        <button id="logoutPageBtn" class="neon-btn logout-neon-btn" style="display: none;">
+                    <div class="acid-profile-actions">
+                        <div id="telegramLoginPage" class="acid-telegram-login"></div>
+                        <button id="logoutPageBtn" class="acid-btn acid-logout-btn" style="display: none;">
                             <i class="fas fa-sign-out-alt"></i>
                             <span>Выйти</span>
                         </button>
@@ -128,25 +144,28 @@
                 </div>
             </div>
             
-            <!-- Страница отзывов -->
+            <!-- СТРАНИЦА ОТЗЫВОВ -->
             <div id="reviewsContent" style="display: none;">
-                <div class="reviews-page-card">
-                    <h2><i class="fas fa-star"></i> Отзывы наших клиентов</h2>
-                    <div class="reviews-stats">
-                        <div class="average-rating">
-                            <span class="average-value" id="averageRating">0</span>
-                            <div class="stars-display" id="averageStars"></div>
-                            <span class="reviews-count">(<span id="reviewsCount">0</span> отзывов)</span>
+                <div class="acid-card">
+                    <div class="acid-card-header">
+                        <i class="fas fa-star"></i>
+                        <h2>ОТЗЫВЫ КЛИЕНТОВ</h2>
+                    </div>
+                    <div class="acid-reviews-stats">
+                        <div class="acid-average-rating">
+                            <span class="acid-average-value" id="averageRating">0</span>
+                            <div class="acid-stars-display" id="averageStars"></div>
+                            <span class="acid-reviews-count">(<span id="reviewsCount">0</span> отзывов)</span>
                         </div>
                     </div>
-                    <div id="reviewsList" class="reviews-list">
-                        <div class="no-reviews">Пока нет отзывов. Будьте первым!</div>
+                    <div id="reviewsList" class="acid-reviews-list">
+                        <div class="acid-no-data">Пока нет отзывов. Будьте первым!</div>
                     </div>
-                    <div class="add-review-form">
-                        <h3>Оставить отзыв</h3>
-                        <div class="rating-input">
+                    <div class="acid-review-form">
+                        <h3><i class="fas fa-edit"></i> Оставить отзыв</h3>
+                        <div class="acid-rating-input">
                             <span>Ваша оценка:</span>
-                            <div class="stars-input" id="starsInput">
+                            <div class="acid-stars-input" id="starsInput">
                                 <i class="far fa-star" data-value="1"></i>
                                 <i class="far fa-star" data-value="2"></i>
                                 <i class="far fa-star" data-value="3"></i>
@@ -154,84 +173,86 @@
                                 <i class="far fa-star" data-value="5"></i>
                             </div>
                         </div>
-                        <input type="text" id="reviewName" placeholder="Ваше имя (для отображения)" class="review-name-input" maxlength="50">
-                        <textarea id="reviewText" placeholder="Напишите ваш отзыв..." maxlength="500" class="review-textarea"></textarea>
-                        <div class="review-actions">
-                            <span class="char-counter">0/500</span>
-                            <button id="submitReviewBtn" class="neon-btn submit-review-btn">Отправить отзыв</button>
+                        <input type="text" id="reviewName" placeholder="Ваше имя (для отображения)" class="acid-input" maxlength="50">
+                        <textarea id="reviewText" placeholder="Напишите ваш отзыв..." maxlength="500" class="acid-textarea"></textarea>
+                        <div class="acid-review-actions">
+                            <span class="acid-char-counter">0/500</span>
+                            <button id="submitReviewBtn" class="acid-btn acid-btn-glow">ОТПРАВИТЬ ОТЗЫВ</button>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Страница "О нас" -->
+            <!-- СТРАНИЦА "О НАС" -->
             <div id="aboutContainer" style="display: none;">
-                <div class="about-card-neon">
-                    <div class="about-icon"><i class="fas fa-store"></i></div>
-                    <h2>О нас</h2>
+                <div class="acid-card">
+                    <div class="acid-card-header">
+                        <i class="fas fa-info-circle"></i>
+                        <h2>О НАС</h2>
+                    </div>
+                    <div class="acid-about-icon"><i class="fas fa-store"></i></div>
                     <p>AWANGARD — это надёжный магазин игровых товаров для PUBG Mobile. Мы предлагаем лучшие цены и моментальную доставку.</p>
                 </div>
             </div>
         </main>
     </div>
     
-    <!-- Админ-панель -->
-    <div id="adminPanel" class="admin-panel-neon" style="display: none;">
-        <div class="admin-header-neon">
+    <!-- АДМИН-ПАНЕЛЬ -->
+    <div id="adminPanel" class="acid-admin-panel" style="display: none;">
+        <div class="acid-admin-header">
             <h2><i class="fas fa-shield-alt"></i> ADMIN PANEL</h2>
-            <button id="closeAdminBtn" class="close-admin-neon"><i class="fas fa-times"></i></button>
+            <button id="closeAdminBtn" class="acid-admin-close"><i class="fas fa-times"></i></button>
         </div>
-        <div class="admin-tabs-neon">
-            <button class="admin-tab-neon active" data-tab="users"><i class="fas fa-users"></i> Users</button>
-            <button class="admin-tab-neon" data-tab="chat"><i class="fas fa-comments"></i> Chats</button>
-            <button class="admin-tab-neon" data-tab="supporters"><i class="fas fa-user-plus"></i> Сопровождение</button>
-            <button class="admin-tab-neon" data-tab="reviews"><i class="fas fa-star"></i> Reviews</button>
-            <button class="admin-tab-neon" data-tab="stats"><i class="fas fa-chart-line"></i> Stats</button>
+        <div class="acid-admin-tabs">
+            <button class="acid-admin-tab active" data-tab="users"><i class="fas fa-users"></i> Users</button>
+            <button class="acid-admin-tab" data-tab="chat"><i class="fas fa-comments"></i> Chats</button>
+            <button class="acid-admin-tab" data-tab="supporters"><i class="fas fa-user-plus"></i> Сопровождение</button>
+            <button class="acid-admin-tab" data-tab="reviews"><i class="fas fa-star"></i> Reviews</button>
+            <button class="acid-admin-tab" data-tab="stats"><i class="fas fa-chart-line"></i> Stats</button>
         </div>
         
-        <div id="adminUsersTab" class="admin-tab-content-neon active">
+        <div id="adminUsersTab" class="acid-admin-content active">
             <h3><i class="fas fa-users"></i> Все пользователи</h3>
-            <div class="users-search"><input type="text" id="usersSearchInput" placeholder="Поиск..." class="search-input-neon"></div>
-            <div id="usersList" class="users-list-neon"><div class="loading-users">Загрузка...</div></div>
+            <div class="acid-search"><input type="text" id="usersSearchInput" placeholder="Поиск..." class="acid-search-input"></div>
+            <div id="usersList" class="acid-users-list"><div class="acid-loading">Загрузка...</div></div>
         </div>
         
-        <div id="adminChatTab" class="admin-tab-content-neon" style="display: none;">
+        <div id="adminChatTab" class="acid-admin-content" style="display: none;">
             <h3><i class="fas fa-comments"></i> Чаты пользователей</h3>
-            <div class="admin-chat-selector"><label>Выберите пользователя:</label><select id="adminUserSelect" class="admin-select-neon"><option value="">-- выберите --</option></select></div>
-            <div class="admin-chat-area-neon">
-                <div id="adminSelectedUserInfo" class="admin-user-info-neon"></div>
-                <div id="adminChatMessages" class="admin-chat-messages-neon"><div class="placeholder-text">Выберите пользователя</div></div>
-                <div class="admin-chat-input-area-neon"><input type="text" id="adminReplyInput" placeholder="Ответ пользователю..." class="admin-chat-input-neon"><button id="sendReplyBtn" class="send-reply-neon"><i class="fas fa-paper-plane"></i></button></div>
+            <div class="acid-chat-selector"><label>Выберите пользователя:</label><select id="adminUserSelect" class="acid-select"><option value="">-- выберите --</option></select></div>
+            <div class="acid-chat-area">
+                <div id="adminSelectedUserInfo" class="acid-user-info"></div>
+                <div id="adminChatMessages" class="acid-chat-messages"><div class="acid-placeholder">Выберите пользователя</div></div>
+                <div class="acid-chat-input-area"><input type="text" id="adminReplyInput" placeholder="Ответ пользователю..." class="acid-chat-input"><button id="sendReplyBtn" class="acid-send-btn"><i class="fas fa-paper-plane"></i></button></div>
             </div>
         </div>
         
-        <div id="adminSupportersTab" class="admin-tab-content-neon" style="display: none;">
+        <div id="adminSupportersTab" class="acid-admin-content" style="display: none;">
             <h3><i class="fas fa-user-plus"></i> Заявки на сопровождение</h3>
-            <div id="applicationsList" class="applications-list"><div class="loading-users">Загрузка...</div></div>
-            
+            <div id="applicationsList" class="acid-applications-list"><div class="acid-loading">Загрузка...</div></div>
             <h3 style="margin-top: 2rem;"><i class="fas fa-user-check"></i> Принятые сопровождающие</h3>
-            <div id="adminAcceptedList" class="accepted-list"><div class="loading-users">Загрузка...</div></div>
+            <div id="adminAcceptedList" class="acid-accepted-list"><div class="acid-loading">Загрузка...</div></div>
         </div>
         
-        <div id="adminReviewsTab" class="admin-tab-content-neon" style="display: none;">
+        <div id="adminReviewsTab" class="acid-admin-content" style="display: none;">
             <h3><i class="fas fa-star"></i> Управление отзывами</h3>
-            <div id="adminReviewsList" class="admin-reviews-list"><div class="loading-users">Загрузка...</div></div>
+            <div id="adminReviewsList" class="acid-reviews-admin-list"><div class="acid-loading">Загрузка...</div></div>
         </div>
         
-        <div id="adminStatsTab" class="admin-tab-content-neon" style="display: none;">
-            <div class="stats-grid-neon">
-                <div class="stat-card-neon"><i class="fas fa-users"></i><div class="stat-info-neon"><span class="stat-label">Всего</span><span id="totalUsers" class="stat-value-neon">0</span></div></div>
-                <div class="stat-card-neon"><i class="fab fa-telegram"></i><div class="stat-info-neon"><span class="stat-label">Telegram</span><span id="telegramUsers" class="stat-value-neon">0</span></div></div>
-                <div class="stat-card-neon"><i class="fas fa-user"></i><div class="stat-info-neon"><span class="stat-label">Гости</span><span id="guestUsers" class="stat-value-neon">0</span></div></div>
-                <div class="stat-card-neon"><i class="fas fa-star"></i><div class="stat-info-neon"><span class="stat-label">Отзывов</span><span id="totalReviews" class="stat-value-neon">0</span></div></div>
-                <div class="stat-card-neon"><i class="fas fa-user-plus"></i><div class="stat-info-neon"><span class="stat-label">Заявок</span><span id="totalApplications" class="stat-value-neon">0</span></div></div>
-                <div class="stat-card-neon"><i class="fas fa-user-check"></i><div class="stat-info-neon"><span class="stat-label">Принято</span><span id="totalAccepted" class="stat-value-neon">0</span></div></div>
+        <div id="adminStatsTab" class="acid-admin-content" style="display: none;">
+            <div class="acid-stats-grid">
+                <div class="acid-stat-card"><i class="fas fa-users"></i><div class="acid-stat-info"><span class="acid-stat-label">Всего</span><span id="totalUsers" class="acid-stat-value">0</span></div></div>
+                <div class="acid-stat-card"><i class="fab fa-telegram"></i><div class="acid-stat-info"><span class="acid-stat-label">Telegram</span><span id="telegramUsers" class="acid-stat-value">0</span></div></div>
+                <div class="acid-stat-card"><i class="fas fa-user"></i><div class="acid-stat-info"><span class="acid-stat-label">Гости</span><span id="guestUsers" class="acid-stat-value">0</span></div></div>
+                <div class="acid-stat-card"><i class="fas fa-star"></i><div class="acid-stat-info"><span class="acid-stat-label">Отзывов</span><span id="totalReviews" class="acid-stat-value">0</span></div></div>
+                <div class="acid-stat-card"><i class="fas fa-user-plus"></i><div class="acid-stat-info"><span class="acid-stat-label">Заявок</span><span id="totalApplications" class="acid-stat-value">0</span></div></div>
+                <div class="acid-stat-card"><i class="fas fa-user-check"></i><div class="acid-stat-info"><span class="acid-stat-label">Принято</span><span id="totalAccepted" class="acid-stat-value">0</span></div></div>
             </div>
         </div>
     </div>
-    <div id="adminOverlay" class="admin-overlay-neon" style="display: none;"></div>
+    <div id="adminOverlay" class="acid-admin-overlay" style="display: none;"></div>
     
-    <footer class="neon-footer"><p>© 2026 AWANGARD | NEON PUBG Mobile Store</p></footer>
+    <footer class="acid-footer"><p>© 2026 AWANGARD | ACID GREEN NEON PUBG STORE</p></footer>
 
     <script>
         (function() {
@@ -351,7 +372,7 @@
                 document.getElementById('profilePageName').textContent = userData.first_name + ' ' + (userData.last_name || '');
                 document.getElementById('profilePageUsername').textContent = userData.username ? '@' + userData.username : '';
                 document.getElementById('profilePageId').textContent = userData.id;
-                document.getElementById('profilePageAvatar').src = userData.photo_url || `https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=${userData.first_name}`;
+                document.getElementById('profilePageAvatar').src = userData.photo_url || `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${userData.first_name}`;
                 document.getElementById('telegramLoginPage').style.display = 'none';
                 document.getElementById('logoutPageBtn').style.display = 'flex';
                 loadUsersList();
@@ -361,7 +382,7 @@
                 document.getElementById('profilePageName').textContent = 'Гость';
                 document.getElementById('profilePageUsername').textContent = '';
                 document.getElementById('profilePageId').textContent = CURRENT_USER_ID.slice(-8);
-                document.getElementById('profilePageAvatar').src = 'https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=Guest';
+                document.getElementById('profilePageAvatar').src = 'https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=Guest';
                 document.getElementById('telegramLoginPage').style.display = 'block';
                 document.getElementById('logoutPageBtn').style.display = 'none';
             }
@@ -378,7 +399,7 @@
             
             function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
             
-            // ========== СОПРОВОЖДЕНИЕ (ЗАЯВКИ И ПРИНЯТЫЕ) ==========
+            // ========== ЗАЯВКИ И СОПРОВОЖДЕНИЕ ==========
             function getApplications() { return JSON.parse(localStorage.getItem(APPLICATIONS_STORAGE_KEY) || '[]'); }
             function saveApplications(apps) { localStorage.setItem(APPLICATIONS_STORAGE_KEY, JSON.stringify(apps)); }
             
@@ -400,7 +421,6 @@
                 renderApplicationsAdmin();
                 updateStats();
                 
-                // Отправка в Telegram админу
                 const message = `📝 НОВАЯ ЗАЯВКА НА СОПРОВОЖДЕНИЕ!\n\n🎮 Ник: ${nick}\n🆔 ID: ${userId}\n📊 Статистика: ${stats}\n📅 Дата: ${new Date().toLocaleString()}`;
                 fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -451,24 +471,24 @@
                 const apps = getApplications();
                 const container = document.getElementById('applicationsList');
                 if (!container) return;
-                if (apps.length === 0) { container.innerHTML = '<div class="no-applications">Нет новых заявок</div>'; return; }
+                if (apps.length === 0) { container.innerHTML = '<div class="acid-no-data">Нет новых заявок</div>'; return; }
                 container.innerHTML = apps.map(app => `
-                    <div class="application-item">
-                        <div class="application-info">
+                    <div class="acid-application-item">
+                        <div class="acid-application-info">
                             <strong>${escapeHtml(app.nick)}</strong>
                             <span>ID: ${escapeHtml(app.userId)}</span>
                             <span>📊 ${escapeHtml(app.stats.substring(0, 100))}${app.stats.length > 100 ? '...' : ''}</span>
                             <small>${new Date(app.date).toLocaleString()}</small>
-                            ${app.screenshot ? `<div class="screenshot-thumb"><img src="${app.screenshot}" alt="Скриншот" onclick="window.open(this.src)"></div>` : ''}
+                            ${app.screenshot ? `<div class="acid-screenshot-thumb"><img src="${app.screenshot}" alt="Скриншот" onclick="window.open(this.src)"></div>` : ''}
                         </div>
-                        <div class="application-actions">
-                            <button class="accept-btn" data-id="${app.id}" data-nick="${escapeHtml(app.nick)}" data-userid="${escapeHtml(app.userId)}" data-stats="${escapeHtml(app.stats)}" data-screenshot="${app.screenshot || ''}">✅ Принять</button>
-                            <button class="reject-btn" data-id="${app.id}">❌ Отклонить</button>
+                        <div class="acid-application-actions">
+                            <button class="acid-accept-btn" data-id="${app.id}" data-nick="${escapeHtml(app.nick)}" data-userid="${escapeHtml(app.userId)}" data-stats="${escapeHtml(app.stats)}" data-screenshot="${app.screenshot || ''}">✅ Принять</button>
+                            <button class="acid-reject-btn" data-id="${app.id}">❌ Отклонить</button>
                         </div>
                     </div>
                 `).join('');
                 
-                container.querySelectorAll('.accept-btn').forEach(btn => {
+                container.querySelectorAll('.acid-accept-btn').forEach(btn => {
                     btn.addEventListener('click', () => {
                         const id = parseInt(btn.dataset.id);
                         const nick = btn.dataset.nick;
@@ -478,7 +498,7 @@
                         acceptApplication(id, nick, userId, stats, screenshot);
                     });
                 });
-                container.querySelectorAll('.reject-btn').forEach(btn => {
+                container.querySelectorAll('.acid-reject-btn').forEach(btn => {
                     btn.addEventListener('click', () => rejectApplication(parseInt(btn.dataset.id)));
                 });
             }
@@ -487,20 +507,20 @@
                 const supporters = getAcceptedSupporters();
                 const container = document.getElementById('adminAcceptedList');
                 if (!container) return;
-                if (supporters.length === 0) { container.innerHTML = '<div class="no-accepted">Нет принятых сопровождающих</div>'; return; }
+                if (supporters.length === 0) { container.innerHTML = '<div class="acid-no-data">Нет принятых сопровождающих</div>'; return; }
                 container.innerHTML = supporters.map(s => `
-                    <div class="accepted-item">
-                        <div class="accepted-info">
+                    <div class="acid-accepted-item">
+                        <div class="acid-accepted-info">
                             <strong>${escapeHtml(s.nick)}</strong>
                             <span>ID: ${escapeHtml(s.userId)}</span>
                             <span>📊 ${escapeHtml(s.stats.substring(0, 100))}${s.stats.length > 100 ? '...' : ''}</span>
                             <small>Принят: ${new Date(s.acceptedDate).toLocaleString()}</small>
-                            ${s.screenshot ? `<div class="screenshot-thumb"><img src="${s.screenshot}" alt="Скриншот" onclick="window.open(this.src)"></div>` : ''}
+                            ${s.screenshot ? `<div class="acid-screenshot-thumb"><img src="${s.screenshot}" alt="Скриншот" onclick="window.open(this.src)"></div>` : ''}
                         </div>
-                        <button class="remove-accepted-btn" data-id="${s.id}">🗑️ Удалить</button>
+                        <button class="acid-remove-btn" data-id="${s.id}">🗑️ Удалить</button>
                     </div>
                 `).join('');
-                container.querySelectorAll('.remove-accepted-btn').forEach(btn => {
+                container.querySelectorAll('.acid-remove-btn').forEach(btn => {
                     btn.addEventListener('click', () => removeAcceptedSupporter(parseInt(btn.dataset.id)));
                 });
             }
@@ -509,14 +529,14 @@
                 const supporters = getAcceptedSupporters();
                 const container = document.getElementById('acceptedSupportersList');
                 if (!container) return;
-                if (supporters.length === 0) { container.innerHTML = '<div class="no-supporters">Пока нет принятых сопровождающих</div>'; return; }
+                if (supporters.length === 0) { container.innerHTML = '<div class="acid-no-data">Пока нет принятых сопровождающих</div>'; return; }
                 container.innerHTML = supporters.map(s => `
-                    <div class="supporter-card">
-                        <div class="supporter-avatar"><i class="fas fa-user-shield"></i></div>
-                        <div class="supporter-info">
-                            <div class="supporter-nick">${escapeHtml(s.nick)}</div>
-                            <div class="supporter-id">ID: ${escapeHtml(s.userId)}</div>
-                            <div class="supporter-stats">📊 ${escapeHtml(s.stats.substring(0, 80))}${s.stats.length > 80 ? '...' : ''}</div>
+                    <div class="acid-supporter-card">
+                        <div class="acid-supporter-avatar"><i class="fas fa-user-shield"></i></div>
+                        <div class="acid-supporter-info">
+                            <div class="acid-supporter-nick">${escapeHtml(s.nick)}</div>
+                            <div class="acid-supporter-id">ID: ${escapeHtml(s.userId)}</div>
+                            <div class="acid-supporter-stats">📊 ${escapeHtml(s.stats.substring(0, 80))}${s.stats.length > 80 ? '...' : ''}</div>
                         </div>
                     </div>
                 `).join('');
@@ -528,7 +548,7 @@
             
             function addReview(userName, rating, text) {
                 const reviews = getReviews();
-                reviews.unshift({ id: Date.now(), userName: userName || 'Аноним', rating: rating, text: text, date: new Date().toISOString(), avatar: `https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=${userName || 'Аноним'}` });
+                reviews.unshift({ id: Date.now(), userName: userName || 'Аноним', rating: rating, text: text, date: new Date().toISOString(), avatar: `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${userName || 'Аноним'}` });
                 saveReviews(reviews);
                 renderReviews();
                 updateStats();
@@ -564,18 +584,18 @@
                     }
                 }
                 if (!container) return;
-                if (reviews.length === 0) { container.innerHTML = '<div class="no-reviews">Пока нет отзывов. Будьте первым!</div>'; return; }
+                if (reviews.length === 0) { container.innerHTML = '<div class="acid-no-data">Пока нет отзывов. Будьте первым!</div>'; return; }
                 container.innerHTML = reviews.map(r => `
-                    <div class="review-item">
-                        <div class="review-header">
-                            <img src="${r.avatar}" class="review-avatar" alt="">
-                            <div class="review-user-info">
-                                <span class="review-user-name">${escapeHtml(r.userName)}</span>
-                                <div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}${'<i class="far fa-star"></i>'.repeat(5 - r.rating)}</div>
+                    <div class="acid-review-item">
+                        <div class="acid-review-header">
+                            <img src="${r.avatar}" class="acid-review-avatar" alt="">
+                            <div class="acid-review-user-info">
+                                <span class="acid-review-user-name">${escapeHtml(r.userName)}</span>
+                                <div class="acid-review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}${'<i class="far fa-star"></i>'.repeat(5 - r.rating)}</div>
                             </div>
-                            <span class="review-date">${new Date(r.date).toLocaleDateString()}</span>
+                            <span class="acid-review-date">${new Date(r.date).toLocaleDateString()}</span>
                         </div>
-                        <div class="review-text">${escapeHtml(r.text)}</div>
+                        <div class="acid-review-text">${escapeHtml(r.text)}</div>
                     </div>
                 `).join('');
             }
@@ -584,19 +604,19 @@
                 const reviews = getReviews();
                 const container = document.getElementById('adminReviewsList');
                 if (!container) return;
-                if (reviews.length === 0) { container.innerHTML = '<div class="no-reviews">Нет отзывов</div>'; return; }
+                if (reviews.length === 0) { container.innerHTML = '<div class="acid-no-data">Нет отзывов</div>'; return; }
                 container.innerHTML = reviews.map(r => `
-                    <div class="admin-review-item">
-                        <div class="admin-review-info">
+                    <div class="acid-admin-review-item">
+                        <div class="acid-admin-review-info">
                             <strong>${escapeHtml(r.userName)}</strong>
-                            <div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div>
+                            <div class="acid-review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div>
                             <span>${escapeHtml(r.text.substring(0, 100))}${r.text.length > 100 ? '...' : ''}</span>
                             <small>${new Date(r.date).toLocaleString()}</small>
                         </div>
-                        <button class="delete-review-btn" data-id="${r.id}"><i class="fas fa-trash"></i> Удалить</button>
+                        <button class="acid-delete-review-btn" data-id="${r.id}"><i class="fas fa-trash"></i> Удалить</button>
                     </div>
                 `).join('');
-                container.querySelectorAll('.delete-review-btn').forEach(btn => {
+                container.querySelectorAll('.acid-delete-review-btn').forEach(btn => {
                     btn.addEventListener('click', () => deleteReview(parseInt(btn.dataset.id)));
                 });
             }
@@ -629,7 +649,7 @@
                 }).catch(console.error);
             }
             
-            // ========== ТОВАРЫ (UC + МЕТРОВАЛЮТА) ==========
+            // ========== ТОВАРЫ ==========
             var ucCardsData = [
                 { text: "60 UC", price: "100 ₽", oldPrice: "150 ₽", letter: "UC" },
                 { text: "300+25 UC", price: "450 ₽", oldPrice: "600 ₽", letter: "UC" },
@@ -638,7 +658,6 @@
                 { text: "3000+850 UC", price: "4500 ₽", oldPrice: "6000 ₽", letter: "UC" },
                 { text: "6000+2100 UC", price: "9000 ₽", oldPrice: "12000 ₽", letter: "UC" }
             ];
-            // Метровалюта (сопровождение) - исправлено на количество метровалюты
             var supportCardsData = [
                 { text: "1 000 000 метровалюты", price: "100 ₽", letter: "M" },
                 { text: "2 000 000 метровалюты", price: "200 ₽", letter: "M" },
@@ -658,17 +677,17 @@
                 container.innerHTML = '';
                 [...ucCardsData, ...supportCardsData].forEach(item => {
                     const card = document.createElement('div');
-                    card.className = 'product-card-neon';
+                    card.className = 'acid-product-card';
                     card.innerHTML = `
-                        <div class="card-letter-neon ${item.letter === 'UC' ? 'uc-letter' : 'm-letter'}">${item.letter}</div>
-                        <div class="card-info-neon">
+                        <div class="acid-card-letter ${item.letter === 'UC' ? 'acid-uc-letter' : 'acid-m-letter'}">${item.letter}</div>
+                        <div class="acid-card-info">
                             <h3>${item.text}</h3>
-                            ${item.oldPrice ? `<div class="old-price-neon">${item.oldPrice}</div>` : ''}
-                            <div class="price-neon">${item.price}</div>
-                            <button class="buy-btn-neon">Купить</button>
+                            ${item.oldPrice ? `<div class="acid-old-price">${item.oldPrice}</div>` : ''}
+                            <div class="acid-price">${item.price}</div>
+                            <button class="acid-buy-btn">Купить</button>
                         </div>
                     `;
-                    card.querySelector('.buy-btn-neon').addEventListener('click', () => showPaymentPopup(item.text, item.price));
+                    card.querySelector('.acid-buy-btn').addEventListener('click', () => showPaymentPopup(item.text, item.price));
                     container.appendChild(card);
                 });
             }
@@ -683,21 +702,21 @@
                 const usersListDiv = document.getElementById('usersList');
                 if (usersListDiv) {
                     usersListDiv.innerHTML = filtered.map(u => `
-                        <div class="user-item-neon" onclick="window.selectUserForChat?.('${u.chatId || u.id}')">
-                            <img src="${u.photo || `https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=${u.name || 'Guest'}`}" onerror="this.src='https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=User'">
-                            <div class="user-info-mini-neon">
-                                <div class="user-name-mini-neon">${u.name || 'Гость'}</div>
-                                <div class="user-id-mini-neon">ID: ${typeof u.id === 'number' ? u.id : u.id.slice(-8)}</div>
-                                <div class="user-device-mini-neon"><i class="fas fa-mobile-alt"></i> ${u.deviceInfo || '?'}</div>
+                        <div class="acid-user-item" onclick="window.selectUserForChat?.('${u.chatId || u.id}')">
+                            <img src="${u.photo || `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${u.name || 'Guest'}`}" onerror="this.src='https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=User'">
+                            <div class="acid-user-info-mini">
+                                <div class="acid-user-name-mini">${u.name || 'Гость'}</div>
+                                <div class="acid-user-id-mini">ID: ${typeof u.id === 'number' ? u.id : u.id.slice(-8)}</div>
+                                <div class="acid-user-device-mini"><i class="fas fa-mobile-alt"></i> ${u.deviceInfo || '?'}</div>
                             </div>
-                            <div class="user-type-badge-neon ${u.type === 'telegram' ? 'telegram-badge-neon' : 'guest-badge-neon'}">${u.type === 'telegram' ? '<i class="fab fa-telegram"></i> TG' : '<i class="fas fa-user"></i> Guest'}</div>
+                            <div class="acid-user-type-badge ${u.type === 'telegram' ? 'acid-telegram-badge' : 'acid-guest-badge'}">${u.type === 'telegram' ? '<i class="fab fa-telegram"></i> TG' : '<i class="fas fa-user"></i> Guest'}</div>
                         </div>
                     `).join('');
                 }
             }
             
             window.selectUserForChat = function(userId) {
-                document.querySelector('.admin-tab-neon[data-tab="chat"]').click();
+                document.querySelector('.acid-admin-tab[data-tab="chat"]').click();
                 const select = document.getElementById('adminUserSelect');
                 if (select) { select.value = userId; loadAdminChat(userId); loadAdminUserInfo(userId); }
             };
@@ -707,7 +726,7 @@
                 const user = users.find(u => (u.chatId || u.id).toString() === userId);
                 const infoDiv = document.getElementById('adminSelectedUserInfo');
                 if (infoDiv) {
-                    infoDiv.innerHTML = user ? `<div class="admin-user-info-card-neon"><img src="${user.photo || 'https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=User'}"><div><strong>${user.name || 'Гость'}</strong><br><small>${user.type === 'telegram' ? 'Telegram ID: ' + user.id : 'Гость'}</small><br><small>📱 ${user.deviceInfo || '?'}</small></div></div>` : '';
+                    infoDiv.innerHTML = user ? `<div class="acid-admin-user-card"><img src="${user.photo || 'https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=User'}"><div><strong>${user.name || 'Гость'}</strong><br><small>${user.type === 'telegram' ? 'Telegram ID: ' + user.id : 'Гость'}</small><br><small>📱 ${user.deviceInfo || '?'}</small></div></div>` : '';
                 }
             }
             
@@ -723,8 +742,8 @@
                 const messages = JSON.parse(localStorage.getItem(CHAT_STORAGE_PREFIX + userId) || '[]');
                 const container = document.getElementById('adminChatMessages');
                 if (!container) return;
-                if (!messages.length) { container.innerHTML = '<div class="placeholder-text">Нет сообщений</div>'; return; }
-                container.innerHTML = messages.map(m => `<div class="admin-chat-message-neon ${m.isUser ? 'user-msg-neon' : 'admin-msg-neon'}"><div class="admin-message-header-neon"><strong>${m.isUser ? '👤 User' : (m.isAdminReply ? '👑 Admin' : '🤖 Bot')}</strong><span>${m.time}</span></div><div class="admin-message-text-neon">${escapeHtml(m.text)}</div></div>`).join('');
+                if (!messages.length) { container.innerHTML = '<div class="acid-placeholder">Нет сообщений</div>'; return; }
+                container.innerHTML = messages.map(m => `<div class="acid-admin-chat-message ${m.isUser ? 'acid-user-msg' : 'acid-admin-msg'}"><div class="acid-admin-message-header"><strong>${m.isUser ? '👤 User' : (m.isAdminReply ? '👑 Admin' : '🤖 Bot')}</strong><span>${m.time}</span></div><div class="acid-admin-message-text">${escapeHtml(m.text)}</div></div>`).join('');
                 container.scrollTop = container.scrollHeight;
             }
             
@@ -832,7 +851,7 @@
                         reader.onload = function(event) {
                             screenshotBase64 = event.target.result;
                             if (previewDiv) {
-                                previewDiv.innerHTML = `<img src="${screenshotBase64}" alt="Предпросмотр" style="max-width: 200px; border-radius: 12px;">`;
+                                previewDiv.innerHTML = `<img src="${screenshotBase64}" alt="Предпросмотр" style="max-width: 200px; border-radius: 12px; border: 2px solid #00ff41;">`;
                             }
                         };
                         reader.readAsDataURL(file);
@@ -865,17 +884,17 @@
             function createParticles() {
                 const container = document.getElementById('particlesContainer');
                 if (!container) return;
-                for (let i = 0; i < 60; i++) {
+                for (let i = 0; i < 80; i++) {
                     const particle = document.createElement('div');
-                    particle.className = 'particle-neon';
-                    const size = Math.random() * 3 + 1;
+                    particle.className = 'acid-particle';
+                    const size = Math.random() * 4 + 1;
                     particle.style.width = size + 'px';
                     particle.style.height = size + 'px';
                     particle.style.left = Math.random() * 100 + '%';
                     particle.style.top = Math.random() * 100 + '%';
                     particle.style.animationDelay = Math.random() * 8 + 's';
-                    particle.style.animationDuration = 3 + Math.random() * 5 + 's';
-                    particle.style.background = `radial-gradient(circle, ${Math.random() > 0.5 ? '#bf4bf6' : '#9b30ff'}, transparent)`;
+                    particle.style.animationDuration = 2 + Math.random() * 5 + 's';
+                    particle.style.background = `radial-gradient(circle, ${Math.random() > 0.5 ? '#00ff41' : '#39ff14'}, transparent)`;
                     container.appendChild(particle);
                 }
             }
@@ -900,7 +919,7 @@
                 const submitReviewBtn = document.getElementById('submitReviewBtn');
                 const reviewName = document.getElementById('reviewName');
                 const reviewText = document.getElementById('reviewText');
-                const charCounter = document.querySelector('.char-counter');
+                const charCounter = document.querySelector('.acid-char-counter');
                 
                 if (reviewText) {
                     reviewText.addEventListener('input', function() {
@@ -925,7 +944,7 @@
                 }
                 
                 // Админ-панель
-                const adminTabs = document.querySelectorAll('.admin-tab-neon');
+                const adminTabs = document.querySelectorAll('.acid-admin-tab');
                 adminTabs.forEach(tab => {
                     tab.addEventListener('click', () => {
                         adminTabs.forEach(t => t.classList.remove('active'));
