@@ -39,11 +39,22 @@
             </div>
             <div class="nav-links">
                 <a href="#" id="homeLink" class="active"><i class="fas fa-home"></i><span>Главная</span></a>
-                <a href="#" id="supportersLink"><i class="fas fa-users"></i><span>Сопровождающие</span></a>
+                <a href="#" id="wheelLink"><i class="fas fa-gift"></i><span>Колесо</span></a>
                 <a href="#" id="profileLink"><i class="fas fa-user"></i><span>Профиль</span></a>
                 <a href="#" id="reviewsLink"><i class="fas fa-star"></i><span>Отзывы</span></a>
                 <a href="#" id="supportLink"><i class="fas fa-headset"></i><span>Поддержка</span></a>
                 <a href="#" id="aboutLink"><i class="fas fa-info-circle"></i><span>О нас</span></a>
+            </div>
+            <div class="user-status">
+                <div class="balance-display" id="balanceDisplay">
+                    <i class="fas fa-coins"></i>
+                    <span id="userBalance">0</span> UC
+                </div>
+                <div id="userBadge" class="user-badge" style="display: none;">
+                    <img id="userAvatarMini" src="" alt="">
+                    <span id="userNameMini"></span>
+                    <div class="user-badge-glow"></div>
+                </div>
             </div>
         </div>
     </nav>
@@ -56,7 +67,7 @@
                     <h1 class="acid-glitch" data-text="AWANGARD ACID">AWANGARD ACID</h1>
                     <p class="acid-subtitle">PUBG Mobile | UC | Метровалюта</p>
                     <div class="acid-info-text">
-                        <i class="fas fa-bolt"></i> ПРИВЕТ! Здесь ты можешь купить UC, а также метровалюту. Пока работает оплата только по DonationAlerts. Нажми на "Поддержка" для связи. Чтобы стать сопровождающим — перейди в раздел "Сопровождающие". УДАЧНЫХ ПОКУПОК! <i class="fas fa-bolt"></i>
+                        <i class="fas fa-bolt"></i> ПРИВЕТ! Здесь ты можешь купить UC, а также метровалюту. Оплата через DonationAlerts. Нажми "Поддержка" для связи. Чтобы стать сопровождающим — перейди в раздел "Сопровождающие". УДАЧНЫХ ПОКУПОК! <i class="fas fa-bolt"></i>
                     </div>
                 </div>
                 
@@ -65,46 +76,28 @@
                     <i class="fas fa-shopping-cart"></i>
                     <h2>ТОВАРЫ</h2>
                 </div>
+                <div class="category-tabs">
+                    <button class="category-btn active" data-cat="all">Все</button>
+                    <button class="category-btn" data-cat="uc">UC</button>
+                    <button class="category-btn" data-cat="currency">Метровалюта</button>
+                </div>
                 <div id="cardsContainer" class="acid-cards-grid"></div>
-                
-                <!-- БЛОК ПРИНЯТЫХ СОПРОВОЖДАЮЩИХ -->
-                <div class="acid-section-title">
-                    <i class="fas fa-user-shield"></i>
-                    <h2>НАШИ СОПРОВОЖДАЮЩИЕ</h2>
-                </div>
-                <div id="acceptedSupportersList" class="acid-supporters-list">
-                    <div class="acid-no-data">Пока нет принятых сопровождающих</div>
-                </div>
             </div>
             
-            <!-- СТРАНИЦА СОПРОВОЖДАЮЩИХ (ЗАЯВКА) -->
-            <div id="supportersContent" style="display: none;">
+            <!-- СТРАНИЦА КОЛЕСА ФОРТУНЫ -->
+            <div id="wheelContent" style="display: none;">
                 <div class="acid-card">
                     <div class="acid-card-header">
-                        <i class="fas fa-users"></i>
-                        <h2>СТАТЬ СОПРОВОЖДАЮЩИМ</h2>
+                        <i class="fas fa-gift"></i>
+                        <h2>КОЛЕСО ФОРТУНЫ</h2>
                     </div>
-                    <p>Заполните форму ниже, чтобы отправить заявку на участие в программе сопровождения.</p>
-                    
-                    <div class="acid-form">
-                        <div class="acid-form-group">
-                            <label><i class="fas fa-user"></i> Ваш ник в игре</label>
-                            <input type="text" id="supporterNick" placeholder="Введите ваш ник..." class="acid-input">
-                        </div>
-                        <div class="acid-form-group">
-                            <label><i class="fas fa-id-card"></i> Ваш ID в игре</label>
-                            <input type="text" id="supporterId" placeholder="Введите ваш ID..." class="acid-input">
-                        </div>
-                        <div class="acid-form-group">
-                            <label><i class="fas fa-chart-line"></i> Статистика текущего сезона</label>
-                            <textarea id="supporterStats" placeholder="Опишите вашу статистику (ранг, K/D, процент побед и т.д.)..." class="acid-textarea" rows="4"></textarea>
-                        </div>
-                        <div class="acid-form-group">
-                            <label><i class="fas fa-image"></i> Скриншот статистики</label>
-                            <input type="file" id="supporterScreenshot" accept="image/*" class="acid-file">
-                            <div id="screenshotPreview" class="acid-preview"></div>
-                        </div>
-                        <button id="submitApplicationBtn" class="acid-btn acid-btn-glow">📝 ОТПРАВИТЬ ЗАЯВКУ</button>
+                    <p class="wheel-desc">Крути колесо и выигрывай UC! Стоимость вращения: <span class="acid-highlight">100 UC</span></p>
+                    <div class="wheel-container">
+                        <canvas id="wheelCanvas" width="400" height="400"></canvas>
+                        <button id="spinWheelBtn" class="acid-btn acid-btn-glow spin-btn">
+                            <i class="fas fa-play"></i> КРУТИТЬ
+                        </button>
+                        <div id="wheelResult" class="wheel-result"></div>
                     </div>
                 </div>
             </div>
@@ -128,6 +121,10 @@
                                 <i class="fas fa-fingerprint"></i>
                                 <span id="profilePageId">guest</span>
                             </div>
+                            <div class="acid-profile-balance">
+                                <i class="fas fa-coins"></i>
+                                <span id="profileBalance">0</span> UC
+                            </div>
                             <div class="acid-profile-device" id="profilePageDeviceInfo">
                                 <i class="fas fa-mobile-alt"></i>
                                 <span id="deviceInfoTextPage">Определение...</span>
@@ -139,6 +136,24 @@
                         <button id="logoutPageBtn" class="acid-btn acid-logout-btn" style="display: none;">
                             <i class="fas fa-sign-out-alt"></i>
                             <span>Выйти</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- ЧАТ С ПОДДЕРЖКОЙ -->
+                <div class="support-chat-readonly" id="userChatContainer" style="display: none;">
+                    <div class="chat-header-readonly">
+                        <i class="fas fa-headset"></i>
+                        <span>Чат с поддержкой</span>
+                        <span class="online-status">● Онлайн</span>
+                    </div>
+                    <div class="chat-messages-readonly" id="userChatMessages">
+                        <div class="empty-chat-message">💬 Здесь будут появляться сообщения от администратора</div>
+                    </div>
+                    <div class="chat-input-area-user">
+                        <input type="text" id="userChatInput" placeholder="Напишите сообщение..." class="chat-input-user">
+                        <button id="userSendMessageBtn" class="send-btn-user">
+                            <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
                 </div>
@@ -157,6 +172,14 @@
                             <div class="acid-stars-display" id="averageStars"></div>
                             <span class="acid-reviews-count">(<span id="reviewsCount">0</span> отзывов)</span>
                         </div>
+                    </div>
+                    <div class="reviews-filters">
+                        <button class="filter-btn active" data-filter="all">Все</button>
+                        <button class="filter-btn" data-filter="5">5 ★</button>
+                        <button class="filter-btn" data-filter="4">4 ★</button>
+                        <button class="filter-btn" data-filter="3">3 ★</button>
+                        <button class="filter-btn" data-filter="2">2 ★</button>
+                        <button class="filter-btn" data-filter="1">1 ★</button>
                     </div>
                     <div id="reviewsList" class="acid-reviews-list">
                         <div class="acid-no-data">Пока нет отзывов. Будьте первым!</div>
@@ -197,6 +220,31 @@
         </main>
     </div>
     
+    <!-- МОДАЛЬНОЕ ОКНО ОПЛАТЫ -->
+    <div id="paymentModal" class="payment-modal" style="display: none;">
+        <div class="payment-modal-content">
+            <div class="payment-modal-header">
+                <h3><i class="fas fa-credit-card"></i> Оплата</h3>
+                <button id="closePaymentModal" class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="payment-modal-body">
+                <p>Товар: <strong id="paymentProductName"></strong></p>
+                <p>Сумма: <strong id="paymentAmount"></strong></p>
+                <div class="payment-warning">
+                    <i class="fas fa-info-circle"></i> После оплаты нажмите "Подтвердить"
+                </div>
+                <div class="payment-buttons">
+                    <a href="https://www.donationalerts.com/r/limitblitzoffical" target="_blank" class="payment-link-btn">
+                        <i class="fas fa-external-link-alt"></i> Перейти к оплате
+                    </a>
+                    <button id="confirmPaymentBtn" class="confirm-payment-btn">
+                        <i class="fas fa-check"></i> Подтвердить оплату
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- АДМИН-ПАНЕЛЬ -->
     <div id="adminPanel" class="acid-admin-panel" style="display: none;">
         <div class="acid-admin-header">
@@ -204,34 +252,51 @@
             <button id="closeAdminBtn" class="acid-admin-close"><i class="fas fa-times"></i></button>
         </div>
         <div class="acid-admin-tabs">
-            <button class="acid-admin-tab active" data-tab="users"><i class="fas fa-users"></i> Users</button>
-            <button class="acid-admin-tab" data-tab="chat"><i class="fas fa-comments"></i> Chats</button>
-            <button class="acid-admin-tab" data-tab="supporters"><i class="fas fa-user-plus"></i> Сопровождение</button>
-            <button class="acid-admin-tab" data-tab="reviews"><i class="fas fa-star"></i> Reviews</button>
-            <button class="acid-admin-tab" data-tab="stats"><i class="fas fa-chart-line"></i> Stats</button>
+            <button class="acid-admin-tab active" data-tab="users"><i class="fas fa-users"></i> Пользователи</button>
+            <button class="acid-admin-tab" data-tab="balance"><i class="fas fa-coins"></i> Баланс</button>
+            <button class="acid-admin-tab" data-tab="chats"><i class="fas fa-comments"></i> Чаты</button>
+            <button class="acid-admin-tab" data-tab="reviews"><i class="fas fa-star"></i> Отзывы</button>
+            <button class="acid-admin-tab" data-tab="stats"><i class="fas fa-chart-line"></i> Статистика</button>
         </div>
         
         <div id="adminUsersTab" class="acid-admin-content active">
             <h3><i class="fas fa-users"></i> Все пользователи</h3>
-            <div class="acid-search"><input type="text" id="usersSearchInput" placeholder="Поиск..." class="acid-search-input"></div>
-            <div id="usersList" class="acid-users-list"><div class="acid-loading">Загрузка...</div></div>
+            <div class="acid-search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="adminUserSearch" placeholder="Поиск по имени или ID..." class="acid-search-input">
+            </div>
+            <div id="adminUsersList" class="acid-users-list"><div class="acid-loading">Загрузка...</div></div>
         </div>
         
-        <div id="adminChatTab" class="acid-admin-content" style="display: none;">
-            <h3><i class="fas fa-comments"></i> Чаты пользователей</h3>
-            <div class="acid-chat-selector"><label>Выберите пользователя:</label><select id="adminUserSelect" class="acid-select"><option value="">-- выберите --</option></select></div>
-            <div class="acid-chat-area">
-                <div id="adminSelectedUserInfo" class="acid-user-info"></div>
-                <div id="adminChatMessages" class="acid-chat-messages"><div class="acid-placeholder">Выберите пользователя</div></div>
-                <div class="acid-chat-input-area"><input type="text" id="adminReplyInput" placeholder="Ответ пользователю..." class="acid-chat-input"><button id="sendReplyBtn" class="acid-send-btn"><i class="fas fa-paper-plane"></i></button></div>
+        <div id="adminBalanceTab" class="acid-admin-content" style="display: none;">
+            <h3><i class="fas fa-coins"></i> Управление балансом</h3>
+            <div class="acid-balance-form">
+                <label>Выберите пользователя:</label>
+                <select id="adminBalanceUserSelect" class="acid-select"></select>
+                <div class="acid-balance-actions">
+                    <button id="add100BalanceBtn" class="acid-balance-btn add-btn"><i class="fas fa-plus"></i> +100 UC</button>
+                    <button id="remove100BalanceBtn" class="acid-balance-btn remove-btn"><i class="fas fa-minus"></i> -100 UC</button>
+                </div>
+                <div class="acid-balance-info">
+                    <i class="fas fa-info-circle"></i> Баланс пользователей хранится отдельно
+                </div>
             </div>
         </div>
         
-        <div id="adminSupportersTab" class="acid-admin-content" style="display: none;">
-            <h3><i class="fas fa-user-plus"></i> Заявки на сопровождение</h3>
-            <div id="applicationsList" class="acid-applications-list"><div class="acid-loading">Загрузка...</div></div>
-            <h3 style="margin-top: 2rem;"><i class="fas fa-user-check"></i> Принятые сопровождающие</h3>
-            <div id="adminAcceptedList" class="acid-accepted-list"><div class="acid-loading">Загрузка...</div></div>
+        <div id="adminChatsTab" class="acid-admin-content" style="display: none;">
+            <h3><i class="fas fa-comments"></i> Чаты пользователей</h3>
+            <div class="acid-chat-selector">
+                <label>Выберите пользователя:</label>
+                <select id="adminUserSelect" class="acid-select"><option value="">-- выберите --</option></select>
+            </div>
+            <div class="acid-chat-area">
+                <div id="adminSelectedUserInfo" class="acid-user-info"></div>
+                <div id="adminChatMessages" class="acid-chat-messages"><div class="acid-placeholder">Выберите пользователя</div></div>
+                <div class="acid-chat-input-area">
+                    <input type="text" id="adminReplyInput" placeholder="Ответ пользователю..." class="acid-chat-input">
+                    <button id="sendReplyBtn" class="acid-send-btn"><i class="fas fa-paper-plane"></i> Отправить</button>
+                </div>
+            </div>
         </div>
         
         <div id="adminReviewsTab" class="acid-admin-content" style="display: none;">
@@ -240,13 +305,14 @@
         </div>
         
         <div id="adminStatsTab" class="acid-admin-content" style="display: none;">
+            <h3><i class="fas fa-chart-line"></i> Статистика</h3>
             <div class="acid-stats-grid">
-                <div class="acid-stat-card"><i class="fas fa-users"></i><div class="acid-stat-info"><span class="acid-stat-label">Всего</span><span id="totalUsers" class="acid-stat-value">0</span></div></div>
-                <div class="acid-stat-card"><i class="fab fa-telegram"></i><div class="acid-stat-info"><span class="acid-stat-label">Telegram</span><span id="telegramUsers" class="acid-stat-value">0</span></div></div>
-                <div class="acid-stat-card"><i class="fas fa-user"></i><div class="acid-stat-info"><span class="acid-stat-label">Гости</span><span id="guestUsers" class="acid-stat-value">0</span></div></div>
-                <div class="acid-stat-card"><i class="fas fa-star"></i><div class="acid-stat-info"><span class="acid-stat-label">Отзывов</span><span id="totalReviews" class="acid-stat-value">0</span></div></div>
-                <div class="acid-stat-card"><i class="fas fa-user-plus"></i><div class="acid-stat-info"><span class="acid-stat-label">Заявок</span><span id="totalApplications" class="acid-stat-value">0</span></div></div>
-                <div class="acid-stat-card"><i class="fas fa-user-check"></i><div class="acid-stat-info"><span class="acid-stat-label">Принято</span><span id="totalAccepted" class="acid-stat-value">0</span></div></div>
+                <div class="acid-stat-card"><i class="fas fa-users"></i><div class="acid-stat-info"><span class="acid-stat-label">Всего пользователей</span><span id="statTotalUsers" class="acid-stat-value">0</span></div></div>
+                <div class="acid-stat-card"><i class="fab fa-telegram"></i><div class="acid-stat-info"><span class="acid-stat-label">Telegram</span><span id="statTelegramUsers" class="acid-stat-value">0</span></div></div>
+                <div class="acid-stat-card"><i class="fas fa-user"></i><div class="acid-stat-info"><span class="acid-stat-label">Гости</span><span id="statGuestUsers" class="acid-stat-value">0</span></div></div>
+                <div class="acid-stat-card"><i class="fas fa-star"></i><div class="acid-stat-info"><span class="acid-stat-label">Отзывов</span><span id="statTotalReviews" class="acid-stat-value">0</span></div></div>
+                <div class="acid-stat-card"><i class="fas fa-comments"></i><div class="acid-stat-info"><span class="acid-stat-label">Активных чатов</span><span id="statActiveChats" class="acid-stat-value">0</span></div></div>
+                <div class="acid-stat-card"><i class="fas fa-chart-simple"></i><div class="acid-stat-info"><span class="acid-stat-label">Средний рейтинг</span><span id="statAvgRating" class="acid-stat-value">0</span></div></div>
             </div>
         </div>
     </div>
@@ -254,725 +320,9 @@
     
     <footer class="acid-footer"><p>© 2026 AWANGARD | ACID GREEN NEON PUBG STORE</p></footer>
 
-    <script>
-        (function() {
-            // ========== НАСТРОЙКИ ==========
-            const DONATION_URL = 'https://www.donationalerts.com/r/limitblitzoffical';
-            const BOT_TOKEN = '8745985444:AAGA1jByHKR78uThXfkurejklLrIp53bp6M';
-            const ADMIN_ID = 'ВАШ_TELEGRAM_ID'; // ЗАМЕНИТЕ НА ВАШ TELEGRAM ID
-            
-            // ========== TELEGRAM ВХОД ==========
-            window.onTelegramAuth = function(user) {
-                if (user && user.id) {
-                    const userData = {
-                        id: user.id,
-                        first_name: user.first_name,
-                        last_name: user.last_name || '',
-                        username: user.username || '',
-                        photo_url: user.photo_url || ''
-                    };
-                    saveTelegramUser(userData);
-                    updateUIAfterLogin(userData);
-                    updateUserLastSeen(user.id.toString());
-                    alert('Добро пожаловать, ' + user.first_name + '!');
-                    document.getElementById('profileLink').click();
-                }
-            };
-            
-            function initTelegramLogin() {
-                const container = document.getElementById('telegramLoginPage');
-                if (container) {
-                    container.innerHTML = '';
-                    const script = document.createElement('script');
-                    script.async = true;
-                    script.src = 'https://telegram.org/js/telegram-widget.js?23';
-                    script.setAttribute('data-telegram-login', 'awangard_shop_bot');
-                    script.setAttribute('data-size', 'large');
-                    script.setAttribute('data-onauth', 'onTelegramAuth(user)');
-                    script.setAttribute('data-request-access', 'write');
-                    container.appendChild(script);
-                }
-            }
-            
-            // ========== АДМИН-ПАНЕЛЬ ==========
-            const ADMIN_CODE = 'AWANGARD';
-            let secretCode = '';
-            const adminPanel = document.getElementById('adminPanel');
-            const adminOverlay = document.getElementById('adminOverlay');
-            
-            function openAdminPanel() { adminPanel.style.display = 'flex'; adminOverlay.style.display = 'block'; document.body.style.overflow = 'hidden'; loadAdminData(); }
-            function closeAdminPanel() { adminPanel.style.display = 'none'; adminOverlay.style.display = 'none'; document.body.style.overflow = 'auto'; }
-            
-            document.addEventListener('keydown', function(e) {
-                if (e.key.length === 1 && /[A-Za-z0-9]/.test(e.key)) {
-                    secretCode += e.key.toUpperCase();
-                    if (secretCode.length > ADMIN_CODE.length) secretCode = secretCode.slice(-ADMIN_CODE.length);
-                    if (secretCode === ADMIN_CODE) { openAdminPanel(); secretCode = ''; }
-                }
-            });
-            
-            // ========== ОПРЕДЕЛЕНИЕ УСТРОЙСТВА ==========
-            function getDeviceInfo() {
-                const parser = new UAParser();
-                const result = parser.getResult();
-                const os = result.os.name || 'Unknown';
-                const browser = result.browser.name || 'Unknown';
-                const device = result.device.type || 'desktop';
-                let deviceType = device === 'mobile' ? 'Mobile' : (device === 'tablet' ? 'Tablet' : 'Desktop');
-                return { os, browser, deviceType, fullString: `${deviceType} | ${os} | ${browser}` };
-            }
-            
-            const deviceInfo = getDeviceInfo();
-            const deviceInfoElement = document.getElementById('deviceInfoTextPage');
-            if (deviceInfoElement) deviceInfoElement.textContent = deviceInfo.fullString;
-            
-            // ========== УНИКАЛЬНЫЙ ID ==========
-            function generateUniqueId() { return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9); }
-            
-            function getOrCreateUserId() {
-                let userId = localStorage.getItem('awangard_user_id');
-                if (!userId) { userId = generateUniqueId(); localStorage.setItem('awangard_user_id', userId); registerUser(userId, 'guest', 'Гость'); }
-                return userId;
-            }
-            
-            function registerUser(id, type, name, photo = null, telegramId = null) {
-                let users = JSON.parse(localStorage.getItem('awangard_all_users') || '[]');
-                if (!users.find(u => u.id === id)) {
-                    users.push({ id, type, name, photo, telegramId, deviceInfo: deviceInfo.fullString, firstSeen: new Date().toISOString(), lastSeen: new Date().toISOString(), chatId: id });
-                    localStorage.setItem('awangard_all_users', JSON.stringify(users));
-                }
-            }
-            
-            function updateUserLastSeen(userId) {
-                let users = JSON.parse(localStorage.getItem('awangard_all_users') || '[]');
-                const user = users.find(u => u.id === userId);
-                if (user) { user.lastSeen = new Date().toISOString(); localStorage.setItem('awangard_all_users', JSON.stringify(users)); }
-            }
-            
-            const CURRENT_USER_ID = getOrCreateUserId();
-            const CHAT_STORAGE_PREFIX = 'awangard_chat_';
-            const USERS_STORAGE_KEY = 'awangard_all_users';
-            const TELEGRAM_USER_KEY = 'awangard_telegram_user';
-            const REVIEWS_STORAGE_KEY = 'awangard_reviews';
-            const APPLICATIONS_STORAGE_KEY = 'awangard_applications';
-            const ACCEPTED_SUPPORTERS_KEY = 'awangard_accepted_supporters';
-            
-            function getTelegramUser() { const saved = localStorage.getItem(TELEGRAM_USER_KEY); return saved ? JSON.parse(saved) : null; }
-            
-            function saveTelegramUser(userData) {
-                localStorage.setItem(TELEGRAM_USER_KEY, JSON.stringify(userData));
-                let users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
-                const existing = users.find(u => u.id === userData.id.toString());
-                if (existing) { existing.type = 'telegram'; existing.name = userData.first_name + ' ' + (userData.last_name || ''); existing.photo = userData.photo_url; existing.telegramId = userData.id; existing.lastSeen = new Date().toISOString(); }
-                else { users.push({ id: userData.id.toString(), type: 'telegram', name: userData.first_name + ' ' + (userData.last_name || ''), photo: userData.photo_url, telegramId: userData.id, deviceInfo: deviceInfo.fullString, firstSeen: new Date().toISOString(), lastSeen: new Date().toISOString(), chatId: userData.id.toString() }); }
-                localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
-            }
-            
-            function updateUIAfterLogin(userData) {
-                document.getElementById('profilePageName').textContent = userData.first_name + ' ' + (userData.last_name || '');
-                document.getElementById('profilePageUsername').textContent = userData.username ? '@' + userData.username : '';
-                document.getElementById('profilePageId').textContent = userData.id;
-                document.getElementById('profilePageAvatar').src = userData.photo_url || `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${userData.first_name}`;
-                document.getElementById('telegramLoginPage').style.display = 'none';
-                document.getElementById('logoutPageBtn').style.display = 'flex';
-                loadUsersList();
-            }
-            
-            function updateUIForGuest() {
-                document.getElementById('profilePageName').textContent = 'Гость';
-                document.getElementById('profilePageUsername').textContent = '';
-                document.getElementById('profilePageId').textContent = CURRENT_USER_ID.slice(-8);
-                document.getElementById('profilePageAvatar').src = 'https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=Guest';
-                document.getElementById('telegramLoginPage').style.display = 'block';
-                document.getElementById('logoutPageBtn').style.display = 'none';
-            }
-            
-            function logout() { localStorage.removeItem(TELEGRAM_USER_KEY); updateUIForGuest(); }
-            
-            function addAdminMessageToUser(userId, text) {
-                const messages = JSON.parse(localStorage.getItem(CHAT_STORAGE_PREFIX + userId) || '[]');
-                const now = new Date();
-                const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-                messages.push({ isUser: false, isAdminReply: true, text, time: timeStr });
-                localStorage.setItem(CHAT_STORAGE_PREFIX + userId, JSON.stringify(messages));
-            }
-            
-            function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-            
-            // ========== ЗАЯВКИ И СОПРОВОЖДЕНИЕ ==========
-            function getApplications() { return JSON.parse(localStorage.getItem(APPLICATIONS_STORAGE_KEY) || '[]'); }
-            function saveApplications(apps) { localStorage.setItem(APPLICATIONS_STORAGE_KEY, JSON.stringify(apps)); }
-            
-            function getAcceptedSupporters() { return JSON.parse(localStorage.getItem(ACCEPTED_SUPPORTERS_KEY) || '[]'); }
-            function saveAcceptedSupporters(supporters) { localStorage.setItem(ACCEPTED_SUPPORTERS_KEY, JSON.stringify(supporters)); }
-            
-            function addApplication(nick, userId, stats, screenshotBase64) {
-                const apps = getApplications();
-                apps.unshift({
-                    id: Date.now(),
-                    nick: nick,
-                    userId: userId,
-                    stats: stats,
-                    screenshot: screenshotBase64,
-                    date: new Date().toISOString(),
-                    status: 'pending'
-                });
-                saveApplications(apps);
-                renderApplicationsAdmin();
-                updateStats();
-                
-                const message = `📝 НОВАЯ ЗАЯВКА НА СОПРОВОЖДЕНИЕ!\n\n🎮 Ник: ${nick}\n🆔 ID: ${userId}\n📊 Статистика: ${stats}\n📅 Дата: ${new Date().toLocaleString()}`;
-                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: ADMIN_ID, text: message })
-                }).catch(console.error);
-            }
-            
-            function acceptApplication(appId, nick, userId, stats, screenshot) {
-                let apps = getApplications();
-                apps = apps.filter(a => a.id !== appId);
-                saveApplications(apps);
-                
-                const supporters = getAcceptedSupporters();
-                supporters.unshift({
-                    id: Date.now(),
-                    nick: nick,
-                    userId: userId,
-                    stats: stats,
-                    screenshot: screenshot,
-                    acceptedDate: new Date().toISOString()
-                });
-                saveAcceptedSupporters(supporters);
-                
-                renderApplicationsAdmin();
-                renderAcceptedSupportersAdmin();
-                renderAcceptedSupportersFront();
-                updateStats();
-            }
-            
-            function rejectApplication(appId) {
-                let apps = getApplications();
-                apps = apps.filter(a => a.id !== appId);
-                saveApplications(apps);
-                renderApplicationsAdmin();
-                updateStats();
-            }
-            
-            function removeAcceptedSupporter(supporterId) {
-                let supporters = getAcceptedSupporters();
-                supporters = supporters.filter(s => s.id !== supporterId);
-                saveAcceptedSupporters(supporters);
-                renderAcceptedSupportersAdmin();
-                renderAcceptedSupportersFront();
-                updateStats();
-            }
-            
-            function renderApplicationsAdmin() {
-                const apps = getApplications();
-                const container = document.getElementById('applicationsList');
-                if (!container) return;
-                if (apps.length === 0) { container.innerHTML = '<div class="acid-no-data">Нет новых заявок</div>'; return; }
-                container.innerHTML = apps.map(app => `
-                    <div class="acid-application-item">
-                        <div class="acid-application-info">
-                            <strong>${escapeHtml(app.nick)}</strong>
-                            <span>ID: ${escapeHtml(app.userId)}</span>
-                            <span>📊 ${escapeHtml(app.stats.substring(0, 100))}${app.stats.length > 100 ? '...' : ''}</span>
-                            <small>${new Date(app.date).toLocaleString()}</small>
-                            ${app.screenshot ? `<div class="acid-screenshot-thumb"><img src="${app.screenshot}" alt="Скриншот" onclick="window.open(this.src)"></div>` : ''}
-                        </div>
-                        <div class="acid-application-actions">
-                            <button class="acid-accept-btn" data-id="${app.id}" data-nick="${escapeHtml(app.nick)}" data-userid="${escapeHtml(app.userId)}" data-stats="${escapeHtml(app.stats)}" data-screenshot="${app.screenshot || ''}">✅ Принять</button>
-                            <button class="acid-reject-btn" data-id="${app.id}">❌ Отклонить</button>
-                        </div>
-                    </div>
-                `).join('');
-                
-                container.querySelectorAll('.acid-accept-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const id = parseInt(btn.dataset.id);
-                        const nick = btn.dataset.nick;
-                        const userId = btn.dataset.userid;
-                        const stats = btn.dataset.stats;
-                        const screenshot = btn.dataset.screenshot;
-                        acceptApplication(id, nick, userId, stats, screenshot);
-                    });
-                });
-                container.querySelectorAll('.acid-reject-btn').forEach(btn => {
-                    btn.addEventListener('click', () => rejectApplication(parseInt(btn.dataset.id)));
-                });
-            }
-            
-            function renderAcceptedSupportersAdmin() {
-                const supporters = getAcceptedSupporters();
-                const container = document.getElementById('adminAcceptedList');
-                if (!container) return;
-                if (supporters.length === 0) { container.innerHTML = '<div class="acid-no-data">Нет принятых сопровождающих</div>'; return; }
-                container.innerHTML = supporters.map(s => `
-                    <div class="acid-accepted-item">
-                        <div class="acid-accepted-info">
-                            <strong>${escapeHtml(s.nick)}</strong>
-                            <span>ID: ${escapeHtml(s.userId)}</span>
-                            <span>📊 ${escapeHtml(s.stats.substring(0, 100))}${s.stats.length > 100 ? '...' : ''}</span>
-                            <small>Принят: ${new Date(s.acceptedDate).toLocaleString()}</small>
-                            ${s.screenshot ? `<div class="acid-screenshot-thumb"><img src="${s.screenshot}" alt="Скриншот" onclick="window.open(this.src)"></div>` : ''}
-                        </div>
-                        <button class="acid-remove-btn" data-id="${s.id}">🗑️ Удалить</button>
-                    </div>
-                `).join('');
-                container.querySelectorAll('.acid-remove-btn').forEach(btn => {
-                    btn.addEventListener('click', () => removeAcceptedSupporter(parseInt(btn.dataset.id)));
-                });
-            }
-            
-            function renderAcceptedSupportersFront() {
-                const supporters = getAcceptedSupporters();
-                const container = document.getElementById('acceptedSupportersList');
-                if (!container) return;
-                if (supporters.length === 0) { container.innerHTML = '<div class="acid-no-data">Пока нет принятых сопровождающих</div>'; return; }
-                container.innerHTML = supporters.map(s => `
-                    <div class="acid-supporter-card">
-                        <div class="acid-supporter-avatar"><i class="fas fa-user-shield"></i></div>
-                        <div class="acid-supporter-info">
-                            <div class="acid-supporter-nick">${escapeHtml(s.nick)}</div>
-                            <div class="acid-supporter-id">ID: ${escapeHtml(s.userId)}</div>
-                            <div class="acid-supporter-stats">📊 ${escapeHtml(s.stats.substring(0, 80))}${s.stats.length > 80 ? '...' : ''}</div>
-                        </div>
-                    </div>
-                `).join('');
-            }
-            
-            // ========== ОТЗЫВЫ ==========
-            function getReviews() { return JSON.parse(localStorage.getItem(REVIEWS_STORAGE_KEY) || '[]'); }
-            function saveReviews(reviews) { localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(reviews)); }
-            
-            function addReview(userName, rating, text) {
-                const reviews = getReviews();
-                reviews.unshift({ id: Date.now(), userName: userName || 'Аноним', rating: rating, text: text, date: new Date().toISOString(), avatar: `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${userName || 'Аноним'}` });
-                saveReviews(reviews);
-                renderReviews();
-                updateStats();
-            }
-            
-            function deleteReview(reviewId) {
-                let reviews = getReviews();
-                reviews = reviews.filter(r => r.id !== reviewId);
-                saveReviews(reviews);
-                renderReviews();
-                if (document.getElementById('adminReviewsList').style.display !== 'none') renderAdminReviews();
-                updateStats();
-            }
-            
-            function renderReviews() {
-                const reviews = getReviews();
-                const container = document.getElementById('reviewsList');
-                const reviewsCountSpan = document.getElementById('reviewsCount');
-                const averageRatingSpan = document.getElementById('averageRating');
-                const averageStarsDiv = document.getElementById('averageStars');
-                
-                if (reviewsCountSpan) reviewsCountSpan.textContent = reviews.length;
-                let totalRating = 0;
-                reviews.forEach(r => totalRating += r.rating);
-                const average = reviews.length > 0 ? (totalRating / reviews.length).toFixed(1) : 0;
-                if (averageRatingSpan) averageRatingSpan.textContent = average;
-                if (averageStarsDiv) {
-                    averageStarsDiv.innerHTML = '';
-                    for (let i = 1; i <= 5; i++) {
-                        const star = document.createElement('i');
-                        star.className = i <= Math.round(average) ? 'fas fa-star' : 'far fa-star';
-                        averageStarsDiv.appendChild(star);
-                    }
-                }
-                if (!container) return;
-                if (reviews.length === 0) { container.innerHTML = '<div class="acid-no-data">Пока нет отзывов. Будьте первым!</div>'; return; }
-                container.innerHTML = reviews.map(r => `
-                    <div class="acid-review-item">
-                        <div class="acid-review-header">
-                            <img src="${r.avatar}" class="acid-review-avatar" alt="">
-                            <div class="acid-review-user-info">
-                                <span class="acid-review-user-name">${escapeHtml(r.userName)}</span>
-                                <div class="acid-review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}${'<i class="far fa-star"></i>'.repeat(5 - r.rating)}</div>
-                            </div>
-                            <span class="acid-review-date">${new Date(r.date).toLocaleDateString()}</span>
-                        </div>
-                        <div class="acid-review-text">${escapeHtml(r.text)}</div>
-                    </div>
-                `).join('');
-            }
-            
-            function renderAdminReviews() {
-                const reviews = getReviews();
-                const container = document.getElementById('adminReviewsList');
-                if (!container) return;
-                if (reviews.length === 0) { container.innerHTML = '<div class="acid-no-data">Нет отзывов</div>'; return; }
-                container.innerHTML = reviews.map(r => `
-                    <div class="acid-admin-review-item">
-                        <div class="acid-admin-review-info">
-                            <strong>${escapeHtml(r.userName)}</strong>
-                            <div class="acid-review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div>
-                            <span>${escapeHtml(r.text.substring(0, 100))}${r.text.length > 100 ? '...' : ''}</span>
-                            <small>${new Date(r.date).toLocaleString()}</small>
-                        </div>
-                        <button class="acid-delete-review-btn" data-id="${r.id}"><i class="fas fa-trash"></i> Удалить</button>
-                    </div>
-                `).join('');
-                container.querySelectorAll('.acid-delete-review-btn').forEach(btn => {
-                    btn.addEventListener('click', () => deleteReview(parseInt(btn.dataset.id)));
-                });
-            }
-            
-            // Звёздный рейтинг
-            let selectedRating = 0;
-            function initStarsInput() {
-                const stars = document.querySelectorAll('#starsInput i');
-                stars.forEach(star => {
-                    star.addEventListener('mouseenter', function() {
-                        const value = parseInt(this.dataset.value);
-                        stars.forEach((s, i) => { s.className = i < value ? 'fas fa-star' : 'far fa-star'; });
-                    });
-                    star.addEventListener('mouseleave', function() {
-                        stars.forEach((s, i) => { s.className = i < selectedRating ? 'fas fa-star' : 'far fa-star'; });
-                    });
-                    star.addEventListener('click', function() {
-                        selectedRating = parseInt(this.dataset.value);
-                        stars.forEach((s, i) => { s.className = i < selectedRating ? 'fas fa-star' : 'far fa-star'; });
-                    });
-                });
-            }
-            
-            // ========== ОПЛАТА ==========
-            function showPaymentPopup(cardText, price) {
-                window.open(DONATION_URL, '_blank');
-                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: ADMIN_ID, text: `🛍️ КЛИК ПО ТОВАРУ!\n\n📦 Товар: ${cardText}\n💰 Цена: ${price}\n\nПользователь перешёл к оплате на DonationAlerts` })
-                }).catch(console.error);
-            }
-            
-            // ========== ТОВАРЫ ==========
-            var ucCardsData = [
-                { text: "60 UC", price: "100 ₽", oldPrice: "150 ₽", letter: "UC" },
-                { text: "300+25 UC", price: "450 ₽", oldPrice: "600 ₽", letter: "UC" },
-                { text: "600+60 UC", price: "900 ₽", oldPrice: "1200 ₽", letter: "UC" },
-                { text: "1500+300 UC", price: "2200 ₽", oldPrice: "3000 ₽", letter: "UC" },
-                { text: "3000+850 UC", price: "4500 ₽", oldPrice: "6000 ₽", letter: "UC" },
-                { text: "6000+2100 UC", price: "9000 ₽", oldPrice: "12000 ₽", letter: "UC" }
-            ];
-            var supportCardsData = [
-                { text: "1 000 000 метровалюты", price: "100 ₽", letter: "M" },
-                { text: "2 000 000 метровалюты", price: "200 ₽", letter: "M" },
-                { text: "3 000 000 метровалюты", price: "300 ₽", letter: "M" },
-                { text: "4 000 000 метровалюты", price: "400 ₽", letter: "M" },
-                { text: "5 000 000 метровалюты", price: "500 ₽", letter: "M" },
-                { text: "6 000 000 метровалюты", price: "600 ₽", letter: "M" },
-                { text: "7 000 000 метровалюты", price: "700 ₽", letter: "M" },
-                { text: "8 000 000 метровалюты", price: "800 ₽", letter: "M" },
-                { text: "9 000 000 метровалюты", price: "900 ₽", letter: "M" },
-                { text: "10 000 000 метровалюты", price: "1000 ₽", letter: "M" }
-            ];
-            
-            function createCards() {
-                const container = document.getElementById('cardsContainer');
-                if (!container) return;
-                container.innerHTML = '';
-                [...ucCardsData, ...supportCardsData].forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'acid-product-card';
-                    card.innerHTML = `
-                        <div class="acid-card-letter ${item.letter === 'UC' ? 'acid-uc-letter' : 'acid-m-letter'}">${item.letter}</div>
-                        <div class="acid-card-info">
-                            <h3>${item.text}</h3>
-                            ${item.oldPrice ? `<div class="acid-old-price">${item.oldPrice}</div>` : ''}
-                            <div class="acid-price">${item.price}</div>
-                            <button class="acid-buy-btn">Купить</button>
-                        </div>
-                    `;
-                    card.querySelector('.acid-buy-btn').addEventListener('click', () => showPaymentPopup(item.text, item.price));
-                    container.appendChild(card);
-                });
-            }
-            
-            // ========== АДМИН-ПАНЕЛЬ ==========
-            function loadAdminData() { loadUsersList(); loadAdminUserSelect(); updateStats(); renderApplicationsAdmin(); renderAcceptedSupportersAdmin(); renderAdminReviews(); }
-            
-            function loadUsersList() {
-                const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
-                const search = document.getElementById('usersSearchInput')?.value.toLowerCase() || '';
-                const filtered = users.filter(u => u.name?.toLowerCase().includes(search) || u.id.toString().includes(search));
-                const usersListDiv = document.getElementById('usersList');
-                if (usersListDiv) {
-                    usersListDiv.innerHTML = filtered.map(u => `
-                        <div class="acid-user-item" onclick="window.selectUserForChat?.('${u.chatId || u.id}')">
-                            <img src="${u.photo || `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${u.name || 'Guest'}`}" onerror="this.src='https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=User'">
-                            <div class="acid-user-info-mini">
-                                <div class="acid-user-name-mini">${u.name || 'Гость'}</div>
-                                <div class="acid-user-id-mini">ID: ${typeof u.id === 'number' ? u.id : u.id.slice(-8)}</div>
-                                <div class="acid-user-device-mini"><i class="fas fa-mobile-alt"></i> ${u.deviceInfo || '?'}</div>
-                            </div>
-                            <div class="acid-user-type-badge ${u.type === 'telegram' ? 'acid-telegram-badge' : 'acid-guest-badge'}">${u.type === 'telegram' ? '<i class="fab fa-telegram"></i> TG' : '<i class="fas fa-user"></i> Guest'}</div>
-                        </div>
-                    `).join('');
-                }
-            }
-            
-            window.selectUserForChat = function(userId) {
-                document.querySelector('.acid-admin-tab[data-tab="chat"]').click();
-                const select = document.getElementById('adminUserSelect');
-                if (select) { select.value = userId; loadAdminChat(userId); loadAdminUserInfo(userId); }
-            };
-            
-            function loadAdminUserInfo(userId) {
-                const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
-                const user = users.find(u => (u.chatId || u.id).toString() === userId);
-                const infoDiv = document.getElementById('adminSelectedUserInfo');
-                if (infoDiv) {
-                    infoDiv.innerHTML = user ? `<div class="acid-admin-user-card"><img src="${user.photo || 'https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=User'}"><div><strong>${user.name || 'Гость'}</strong><br><small>${user.type === 'telegram' ? 'Telegram ID: ' + user.id : 'Гость'}</small><br><small>📱 ${user.deviceInfo || '?'}</small></div></div>` : '';
-                }
-            }
-            
-            function loadAdminUserSelect() {
-                const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
-                const select = document.getElementById('adminUserSelect');
-                if (select) {
-                    select.innerHTML = '<option value="">-- выберите --</option>' + users.map(u => `<option value="${u.chatId || u.id}">${u.name || 'Гость'} (${u.type === 'telegram' ? 'TG' : 'Guest'})</option>`).join('');
-                }
-            }
-            
-            function loadAdminChat(userId) {
-                const messages = JSON.parse(localStorage.getItem(CHAT_STORAGE_PREFIX + userId) || '[]');
-                const container = document.getElementById('adminChatMessages');
-                if (!container) return;
-                if (!messages.length) { container.innerHTML = '<div class="acid-placeholder">Нет сообщений</div>'; return; }
-                container.innerHTML = messages.map(m => `<div class="acid-admin-chat-message ${m.isUser ? 'acid-user-msg' : 'acid-admin-msg'}"><div class="acid-admin-message-header"><strong>${m.isUser ? '👤 User' : (m.isAdminReply ? '👑 Admin' : '🤖 Bot')}</strong><span>${m.time}</span></div><div class="acid-admin-message-text">${escapeHtml(m.text)}</div></div>`).join('');
-                container.scrollTop = container.scrollHeight;
-            }
-            
-            function updateStats() {
-                const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]');
-                const reviews = getReviews();
-                const apps = getApplications();
-                const accepted = getAcceptedSupporters();
-                document.getElementById('totalUsers').textContent = users.length;
-                document.getElementById('telegramUsers').textContent = users.filter(u => u.type === 'telegram').length;
-                document.getElementById('guestUsers').textContent = users.filter(u => u.type !== 'telegram').length;
-                document.getElementById('totalReviews').textContent = reviews.length;
-                document.getElementById('totalApplications').textContent = apps.length;
-                document.getElementById('totalAccepted').textContent = accepted.length;
-            }
-            
-            function sendAdminReply() {
-                const userId = document.getElementById('adminUserSelect')?.value;
-                const text = document.getElementById('adminReplyInput')?.value.trim();
-                if (!userId || !text) return;
-                addAdminMessageToUser(userId, text);
-                document.getElementById('adminReplyInput').value = '';
-                loadAdminChat(userId);
-                alert('Ответ отправлен!');
-            }
-            
-            // ========== НАВИГАЦИЯ ==========
-            const homeLink = document.getElementById('homeLink');
-            const supportersLink = document.getElementById('supportersLink');
-            const profileLink = document.getElementById('profileLink');
-            const reviewsLink = document.getElementById('reviewsLink');
-            const aboutLink = document.getElementById('aboutLink');
-            const supportLink = document.getElementById('supportLink');
-            const mainContent = document.getElementById('mainContent');
-            const supportersContent = document.getElementById('supportersContent');
-            const profileContent = document.getElementById('profileContent');
-            const reviewsContent = document.getElementById('reviewsContent');
-            const aboutContainer = document.getElementById('aboutContainer');
-            
-            function showHome() { 
-                if (mainContent) mainContent.style.display = 'block';
-                if (supportersContent) supportersContent.style.display = 'none';
-                if (profileContent) profileContent.style.display = 'none';
-                if (reviewsContent) reviewsContent.style.display = 'none';
-                if (aboutContainer) aboutContainer.style.display = 'none';
-                homeLink.classList.add('active'); supportersLink.classList.remove('active'); profileLink.classList.remove('active'); reviewsLink.classList.remove('active'); aboutLink.classList.remove('active');
-                createCards();
-                renderAcceptedSupportersFront();
-            }
-            function showSupporters() { 
-                if (mainContent) mainContent.style.display = 'none';
-                if (supportersContent) supportersContent.style.display = 'block';
-                if (profileContent) profileContent.style.display = 'none';
-                if (reviewsContent) reviewsContent.style.display = 'none';
-                if (aboutContainer) aboutContainer.style.display = 'none';
-                supportersLink.classList.add('active'); homeLink.classList.remove('active'); profileLink.classList.remove('active'); reviewsLink.classList.remove('active'); aboutLink.classList.remove('active');
-            }
-            function showProfile() { 
-                if (mainContent) mainContent.style.display = 'none';
-                if (supportersContent) supportersContent.style.display = 'none';
-                if (profileContent) profileContent.style.display = 'block';
-                if (reviewsContent) reviewsContent.style.display = 'none';
-                if (aboutContainer) aboutContainer.style.display = 'none';
-                profileLink.classList.add('active'); homeLink.classList.remove('active'); supportersLink.classList.remove('active'); reviewsLink.classList.remove('active'); aboutLink.classList.remove('active');
-            }
-            function showReviews() { 
-                if (mainContent) mainContent.style.display = 'none';
-                if (supportersContent) supportersContent.style.display = 'none';
-                if (profileContent) profileContent.style.display = 'none';
-                if (reviewsContent) reviewsContent.style.display = 'block';
-                if (aboutContainer) aboutContainer.style.display = 'none';
-                reviewsLink.classList.add('active'); homeLink.classList.remove('active'); supportersLink.classList.remove('active'); profileLink.classList.remove('active'); aboutLink.classList.remove('active');
-                renderReviews();
-            }
-            function showAbout() { 
-                if (mainContent) mainContent.style.display = 'none';
-                if (supportersContent) supportersContent.style.display = 'none';
-                if (profileContent) profileContent.style.display = 'none';
-                if (reviewsContent) reviewsContent.style.display = 'none';
-                if (aboutContainer) aboutContainer.style.display = 'block';
-                aboutLink.classList.add('active'); homeLink.classList.remove('active'); supportersLink.classList.remove('active'); profileLink.classList.remove('active'); reviewsLink.classList.remove('active');
-            }
-            
-            if (homeLink) homeLink.addEventListener('click', (e) => { e.preventDefault(); showHome(); });
-            if (supportersLink) supportersLink.addEventListener('click', (e) => { e.preventDefault(); showSupporters(); });
-            if (profileLink) profileLink.addEventListener('click', (e) => { e.preventDefault(); showProfile(); });
-            if (reviewsLink) reviewsLink.addEventListener('click', (e) => { e.preventDefault(); showReviews(); });
-            if (aboutLink) aboutLink.addEventListener('click', (e) => { e.preventDefault(); showAbout(); });
-            if (supportLink) supportLink.addEventListener('click', (e) => { e.preventDefault(); window.open('https://t.me/l_AWANGARD_l', '_blank'); });
-            
-            // ========== ОТПРАВКА ЗАЯВКИ ==========
-            const submitBtn = document.getElementById('submitApplicationBtn');
-            const nickInput = document.getElementById('supporterNick');
-            const idInput = document.getElementById('supporterId');
-            const statsInput = document.getElementById('supporterStats');
-            const screenshotInput = document.getElementById('supporterScreenshot');
-            const previewDiv = document.getElementById('screenshotPreview');
-            let screenshotBase64 = '';
-            
-            if (screenshotInput) {
-                screenshotInput.addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(event) {
-                            screenshotBase64 = event.target.result;
-                            if (previewDiv) {
-                                previewDiv.innerHTML = `<img src="${screenshotBase64}" alt="Предпросмотр" style="max-width: 200px; border-radius: 12px; border: 2px solid #00ff41;">`;
-                            }
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-            }
-            
-            if (submitBtn) {
-                submitBtn.addEventListener('click', () => {
-                    const nick = nickInput?.value.trim();
-                    const userId = idInput?.value.trim();
-                    const stats = statsInput?.value.trim();
-                    
-                    if (!nick) { alert('Введите ваш ник в игре'); return; }
-                    if (!userId) { alert('Введите ваш ID в игре'); return; }
-                    if (!stats) { alert('Введите вашу статистику'); return; }
-                    
-                    addApplication(nick, userId, stats, screenshotBase64);
-                    alert('Заявка отправлена! Администратор рассмотрит её в ближайшее время.');
-                    if (nickInput) nickInput.value = '';
-                    if (idInput) idInput.value = '';
-                    if (statsInput) statsInput.value = '';
-                    if (previewDiv) previewDiv.innerHTML = '';
-                    screenshotBase64 = '';
-                    showHome();
-                });
-            }
-            
-            // ========== ЧАСТИЦЫ ==========
-            function createParticles() {
-                const container = document.getElementById('particlesContainer');
-                if (!container) return;
-                for (let i = 0; i < 80; i++) {
-                    const particle = document.createElement('div');
-                    particle.className = 'acid-particle';
-                    const size = Math.random() * 4 + 1;
-                    particle.style.width = size + 'px';
-                    particle.style.height = size + 'px';
-                    particle.style.left = Math.random() * 100 + '%';
-                    particle.style.top = Math.random() * 100 + '%';
-                    particle.style.animationDelay = Math.random() * 8 + 's';
-                    particle.style.animationDuration = 2 + Math.random() * 5 + 's';
-                    particle.style.background = `radial-gradient(circle, ${Math.random() > 0.5 ? '#00ff41' : '#39ff14'}, transparent)`;
-                    container.appendChild(particle);
-                }
-            }
-            
-            // ========== ЗАПУСК ==========
-            document.addEventListener('DOMContentLoaded', function() {
-                initTelegramLogin();
-                createParticles();
-                initStarsInput();
-                
-                const telegramUser = getTelegramUser();
-                if (telegramUser) updateUIAfterLogin(telegramUser);
-                else updateUIForGuest();
-                
-                renderReviews();
-                renderAcceptedSupportersFront();
-                
-                const logoutPageBtn = document.getElementById('logoutPageBtn');
-                if (logoutPageBtn) logoutPageBtn.addEventListener('click', logout);
-                
-                // Отправка отзыва
-                const submitReviewBtn = document.getElementById('submitReviewBtn');
-                const reviewName = document.getElementById('reviewName');
-                const reviewText = document.getElementById('reviewText');
-                const charCounter = document.querySelector('.acid-char-counter');
-                
-                if (reviewText) {
-                    reviewText.addEventListener('input', function() {
-                        if (charCounter) charCounter.textContent = this.value.length + '/500';
-                    });
-                }
-                
-                if (submitReviewBtn) {
-                    submitReviewBtn.addEventListener('click', () => {
-                        if (selectedRating === 0) { alert('Поставьте оценку от 1 до 5 звёзд'); return; }
-                        const name = reviewName?.value.trim() || 'Аноним';
-                        const text = reviewText?.value.trim();
-                        if (!text) { alert('Напишите текст отзыва'); return; }
-                        addReview(name, selectedRating, text);
-                        if (reviewText) reviewText.value = '';
-                        if (reviewName) reviewName.value = '';
-                        selectedRating = 0;
-                        document.querySelectorAll('#starsInput i').forEach(s => s.className = 'far fa-star');
-                        alert('Спасибо за отзыв!');
-                        showReviews();
-                    });
-                }
-                
-                // Админ-панель
-                const adminTabs = document.querySelectorAll('.acid-admin-tab');
-                adminTabs.forEach(tab => {
-                    tab.addEventListener('click', () => {
-                        adminTabs.forEach(t => t.classList.remove('active'));
-                        tab.classList.add('active');
-                        document.getElementById('adminUsersTab').style.display = 'none';
-                        document.getElementById('adminChatTab').style.display = 'none';
-                        document.getElementById('adminSupportersTab').style.display = 'none';
-                        document.getElementById('adminReviewsTab').style.display = 'none';
-                        document.getElementById('adminStatsTab').style.display = 'none';
-                        if (tab.getAttribute('data-tab') === 'users') { document.getElementById('adminUsersTab').style.display = 'block'; loadUsersList(); }
-                        else if (tab.getAttribute('data-tab') === 'chat') { document.getElementById('adminChatTab').style.display = 'block'; loadAdminUserSelect(); }
-                        else if (tab.getAttribute('data-tab') === 'supporters') { document.getElementById('adminSupportersTab').style.display = 'block'; renderApplicationsAdmin(); renderAcceptedSupportersAdmin(); }
-                        else if (tab.getAttribute('data-tab') === 'reviews') { document.getElementById('adminReviewsTab').style.display = 'block'; renderAdminReviews(); }
-                        else if (tab.getAttribute('data-tab') === 'stats') { document.getElementById('adminStatsTab').style.display = 'block'; updateStats(); }
-                    });
-                });
-                
-                document.getElementById('adminUserSelect')?.addEventListener('change', (e) => { if (e.target.value) { loadAdminChat(e.target.value); loadAdminUserInfo(e.target.value); } });
-                document.getElementById('sendReplyBtn')?.addEventListener('click', sendAdminReply);
-                document.getElementById('adminReplyInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendAdminReply(); });
-                document.getElementById('closeAdminBtn')?.addEventListener('click', closeAdminPanel);
-                document.getElementById('adminOverlay')?.addEventListener('click', closeAdminPanel);
-                document.getElementById('usersSearchInput')?.addEventListener('input', () => loadUsersList());
-                
-                createCards();
-                showHome();
-            });
-        })();
-    </script>
+    <div id="toastNotification" class="toast-notification"></div>
+    <div class="version-badge">v1.0 | ACID GREEN</div>
+
+    <script src="script.js"></script>
 </body>
 </html>
