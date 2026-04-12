@@ -47,7 +47,8 @@ function getDeviceFullInfo() {
 }
 
 const deviceInfo = getDeviceFullInfo();
-document.getElementById('deviceInfoTextPage').textContent = `${deviceInfo.deviceType} | ${deviceInfo.os} | ${deviceInfo.browser}`;
+const deviceInfoElement = document.getElementById('deviceInfoTextPage');
+if (deviceInfoElement) deviceInfoElement.textContent = `${deviceInfo.deviceType} | ${deviceInfo.os} | ${deviceInfo.browser}`;
 
 // ========== УНИКАЛЬНЫЙ ID ==========
 function generateUniqueId() { return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9); }
@@ -58,23 +59,38 @@ function getOrCreateUserId() {
     return userId;
 }
 
-function registerUser(id, type, name, photo = null, telegramId = null) {
-    let users = JSON.parse(localStorage.getItem('awangard_all_users') || '[]');
-    if (!users.find(u => u.id === id)) {
-        users.push({ id, type, name, photo, telegramId, deviceInfo: deviceInfo, firstSeen: new Date().toISOString(), lastSeen: new Date().toISOString(), chatId: id, orders: 0, visitCount: 1 });
-        localStorage.setItem('awangard_all_users', JSON.stringify(users));
-    } else {
-        const idx = users.findIndex(u => u.id === id);
-        users[idx].lastSeen = new Date().toISOString();
-        users[idx].visitCount = (users[idx].visitCount || 0) + 1;
-        localStorage.setItem('awangard_all_users', JSON.stringify(users));
+async function registerUser(id, type, name, photo = null, telegramId = null) {
+    if (!window.db) return;
+    try {
+        const userRef = window.firestore.doc(window.db, "users", id);
+        const userSnap = await window.firestore.getDoc(userRef);
+        if (!userSnap.exists()) {
+            await window.firestore.setDoc(userRef, {
+                id: id,
+                type: type,
+                name: name,
+                photo: photo,
+                telegramId: telegramId,
+                deviceInfo: deviceInfo,
+                firstSeen: Date.now(),
+                lastSeen: Date.now(),
+                visitCount: 1
+            });
+        } else {
+            await window.firestore.setDoc(userRef, {
+                ...userSnap.data(),
+                lastSeen: Date.now(),
+                visitCount: (userSnap.data().visitCount || 0) + 1
+            });
+        }
+    } catch (error) {
+        console.error("Ошибка регистрации пользователя:", error);
     }
 }
 
 function updateUserLastSeen(userId) {
-    let users = JSON.parse(localStorage.getItem('awangard_all_users') || '[]');
-    const user = users.find(u => u.id === userId);
-    if (user) { user.lastSeen = new Date().toISOString(); localStorage.setItem('awangard_all_users', JSON.stringify(users)); }
+    if (!window.db) return;
+    window.firestore.setDoc(window.firestore.doc(window.db, "users", userId), { lastSeen: Date.now() }, { merge: true }).catch(console.error);
 }
 
 const CURRENT_USER_ID = getOrCreateUserId();
@@ -239,30 +255,72 @@ function sendAdminReply() {
     }
 }
 
-// ========== ОТЗЫВЫ ==========
-function getReviews() { return JSON.parse(localStorage.getItem('awangard_reviews') || '[]'); }
-function saveReviews(reviews) { localStorage.setItem('awangard_reviews', JSON.stringify(reviews)); }
+// ========== FIREBASE: ОТЗЫВЫ (ВИДНЫ ВСЕМ) ==========
 
-function addReview(userName, rating, text) {
-    const reviews = getReviews();
-    reviews.unshift({ id: Date.now(), userId: currentTelegramUser?.id || CURRENT_USER_ID, userName: userName || 'Anonymous', rating: rating, text: text, date: new Date().toISOString(), avatar: `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${userName || 'Anonymous'}` });
-    saveReviews(reviews);
-    renderReviews();
-    updateStats();
+async function getReviews() {
+    if (!window.db) return JSON.parse(localStorage.getItem('awangard_reviews') || '[]');
+    try {
+        const q = window.firestore.query(collection(window.db, "reviews"), orderBy("date", "desc"));
+        const querySnapshot = await window.firestore.getDocs(q);
+        const reviews = [];
+        querySnapshot.forEach(doc => {
+            reviews.push({ id: doc.id, ...doc.data() });
+        });
+        return reviews;
+    } catch (error) {
+        console.error("Ошибка загрузки отзывов:", error);
+        return JSON.parse(localStorage.getItem('awangard_reviews') || '[]');
+    }
 }
 
-function deleteReview(reviewId) {
-    let reviews = getReviews();
-    reviews = reviews.filter(r => r.id !== reviewId);
-    saveReviews(reviews);
-    renderReviews();
-    renderAdminReviews();
-    updateStats();
-    showToast('Review deleted', 'info');
+async function addReview(userName, rating, text) {
+    if (!window.db) {
+        const reviews = JSON.parse(localStorage.getItem('awangard_reviews') || '[]');
+        reviews.unshift({ id: Date.now(), userName: userName || 'Аноним', rating: rating, text: text, date: new Date().toISOString() });
+        localStorage.setItem('awangard_reviews', JSON.stringify(reviews));
+        renderReviews();
+        showToast('Отзыв добавлен (локально)', 'success');
+        return;
+    }
+    try {
+        await window.firestore.addDoc(collection(window.db, "reviews"), {
+            userName: userName || 'Аноним',
+            rating: rating,
+            text: text,
+            date: Date.now(),
+            avatar: `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${userName || 'Аноним'}`
+        });
+        renderReviews();
+        showToast('Отзыв добавлен!', 'success');
+    } catch (error) {
+        console.error("Ошибка добавления отзыва:", error);
+        showToast('Ошибка добавления отзыва', 'error');
+    }
 }
 
-function renderReviews() {
-    const reviews = getReviews();
+async function deleteReview(reviewId) {
+    if (!window.db) {
+        let reviews = JSON.parse(localStorage.getItem('awangard_reviews') || '[]');
+        reviews = reviews.filter(r => r.id.toString() !== reviewId);
+        localStorage.setItem('awangard_reviews', JSON.stringify(reviews));
+        renderReviews();
+        renderAdminReviews();
+        showToast('Отзыв удалён (локально)', 'info');
+        return;
+    }
+    try {
+        await window.firestore.deleteDoc(doc(window.db, "reviews", reviewId));
+        renderReviews();
+        renderAdminReviews();
+        showToast('Отзыв удалён!', 'info');
+    } catch (error) {
+        console.error("Ошибка удаления отзыва:", error);
+        showToast('Ошибка удаления отзыва', 'error');
+    }
+}
+
+async function renderReviews() {
+    const reviews = await getReviews();
     const filtered = currentReviewFilter === 'all' ? reviews : reviews.filter(r => r.rating === parseInt(currentReviewFilter));
     const container = document.getElementById('reviewsList');
     const countSpan = document.getElementById('reviewsCount');
@@ -282,11 +340,11 @@ function renderReviews() {
         }
     }
     if (!container) return;
-    if (filtered.length === 0) { container.innerHTML = '<div class="cyber-no-data">[ NO REVIEWS ]</div>'; return; }
+    if (filtered.length === 0) { container.innerHTML = '<div class="cyber-no-data">[ НЕТ ОТЗЫВОВ ]</div>'; return; }
     container.innerHTML = filtered.map(r => `
         <div class="cyber-review-item">
             <div class="cyber-review-header">
-                <img src="${r.avatar}" class="cyber-review-avatar" alt="">
+                <img src="${r.avatar || `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${r.userName}`}" class="cyber-review-avatar" alt="">
                 <div class="cyber-review-user-info">
                     <span class="cyber-review-user-name">${escapeHtml(r.userName)}</span>
                     <div class="cyber-review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}${'<i class="far fa-star"></i>'.repeat(5 - r.rating)}</div>
@@ -298,8 +356,8 @@ function renderReviews() {
     `).join('');
 }
 
-function renderAdminReviews() {
-    const reviews = getReviews();
+async function renderAdminReviews() {
+    const reviews = await getReviews();
     const container = document.getElementById('adminReviewsList');
     if (!container) return;
     if (reviews.length === 0) { container.innerHTML = '<div class="cyber-no-data">NO REVIEWS</div>'; return; }
@@ -314,14 +372,14 @@ function renderAdminReviews() {
         </div>
     `).join('');
     container.querySelectorAll('.cyber-delete-review-btn').forEach(btn => {
-        btn.addEventListener('click', () => deleteReview(parseInt(btn.dataset.id)));
+        btn.addEventListener('click', () => deleteReview(btn.dataset.id));
     });
 }
 
 // ========== ЗВЁЗДНЫЙ РЕЙТИНГ ==========
-function initStarsInput() {
-    const stars = document.querySelectorAll('#starsInput i');
+let getSelectedRating = (function() {
     let selected = 0;
+    const stars = document.querySelectorAll('#starsInput i');
     stars.forEach(star => {
         star.addEventListener('mouseenter', function() {
             const val = parseInt(this.dataset.value);
@@ -336,9 +394,7 @@ function initStarsInput() {
         });
     });
     return () => selected;
-}
-
-let getSelectedRating = initStarsInput();
+})();
 
 // ========== КОЛЕСО ФОРТУНЫ ==========
 const wheelSegments = [
@@ -517,6 +573,214 @@ function renderProducts(category = 'all') {
     });
 }
 
+// ========== FIREBASE: ЗАЯВКИ НА СОПРОВОЖДЕНИЕ ==========
+
+async function getApplications() {
+    if (!window.db) return JSON.parse(localStorage.getItem('awangard_applications_global') || '[]');
+    try {
+        const q = window.firestore.query(collection(window.db, "applications"), orderBy("date", "desc"));
+        const querySnapshot = await window.firestore.getDocs(q);
+        const apps = [];
+        querySnapshot.forEach(doc => {
+            apps.push({ id: doc.id, ...doc.data() });
+        });
+        return apps;
+    } catch (error) {
+        console.error("Ошибка загрузки заявок:", error);
+        return JSON.parse(localStorage.getItem('awangard_applications_global') || '[]');
+    }
+}
+
+async function addApplication(nick, userId, stats, screenshot) {
+    if (!window.db) {
+        const apps = JSON.parse(localStorage.getItem('awangard_applications_global') || '[]');
+        apps.unshift({ id: Date.now(), nick, userId, stats, screenshot, date: Date.now() });
+        localStorage.setItem('awangard_applications_global', JSON.stringify(apps));
+        renderApplicationsAdmin();
+        showToast('Заявка отправлена (локально)', 'success');
+        return;
+    }
+    try {
+        await window.firestore.addDoc(collection(window.db, "applications"), {
+            nick: nick,
+            userId: userId,
+            stats: stats,
+            screenshot: screenshot,
+            date: Date.now(),
+            status: "pending"
+        });
+        renderApplicationsAdmin();
+        showToast('Заявка отправлена!', 'success');
+        
+        fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: CONFIG.ADMIN_ID, text: `📝 НОВАЯ ЗАЯВКА!\n\nНик: ${nick}\nID: ${userId}\nСтатистика: ${stats.substring(0, 100)}...` })
+        }).catch(console.error);
+    } catch (error) {
+        console.error("Ошибка отправки заявки:", error);
+        showToast('Ошибка отправки заявки', 'error');
+    }
+}
+
+async function acceptApplication(appId, nick, userId, stats, screenshot) {
+    if (!window.db) {
+        let apps = JSON.parse(localStorage.getItem('awangard_applications_global') || '[]');
+        apps = apps.filter(a => a.id.toString() !== appId);
+        localStorage.setItem('awangard_applications_global', JSON.stringify(apps));
+        const accepted = JSON.parse(localStorage.getItem('awangard_accepted_supporters_global') || '[]');
+        accepted.unshift({ id: Date.now(), nick, userId, stats, screenshot, acceptedDate: Date.now() });
+        localStorage.setItem('awangard_accepted_supporters_global', JSON.stringify(accepted));
+        renderApplicationsAdmin();
+        renderAcceptedSupportersAdmin();
+        renderAcceptedSupportersFront();
+        showToast(`Сопровождающий ${nick} принят!`, 'success');
+        return;
+    }
+    try {
+        await window.firestore.deleteDoc(doc(window.db, "applications", appId));
+        await window.firestore.addDoc(collection(window.db, "accepted_supporters"), {
+            nick: nick,
+            userId: userId,
+            stats: stats,
+            screenshot: screenshot,
+            acceptedDate: Date.now()
+        });
+        renderApplicationsAdmin();
+        renderAcceptedSupportersAdmin();
+        renderAcceptedSupportersFront();
+        showToast(`Сопровождающий ${nick} принят!`, 'success');
+    } catch (error) {
+        console.error("Ошибка принятия заявки:", error);
+        showToast('Ошибка принятия заявки', 'error');
+    }
+}
+
+async function rejectApplication(appId) {
+    if (!window.db) {
+        let apps = JSON.parse(localStorage.getItem('awangard_applications_global') || '[]');
+        apps = apps.filter(a => a.id.toString() !== appId);
+        localStorage.setItem('awangard_applications_global', JSON.stringify(apps));
+        renderApplicationsAdmin();
+        showToast('Заявка отклонена', 'info');
+        return;
+    }
+    try {
+        await window.firestore.deleteDoc(doc(window.db, "applications", appId));
+        renderApplicationsAdmin();
+        showToast('Заявка отклонена', 'info');
+    } catch (error) {
+        console.error("Ошибка отклонения заявки:", error);
+        showToast('Ошибка отклонения заявки', 'error');
+    }
+}
+
+async function getAcceptedSupporters() {
+    if (!window.db) return JSON.parse(localStorage.getItem('awangard_accepted_supporters_global') || '[]');
+    try {
+        const q = window.firestore.query(collection(window.db, "accepted_supporters"), orderBy("acceptedDate", "desc"));
+        const querySnapshot = await window.firestore.getDocs(q);
+        const supporters = [];
+        querySnapshot.forEach(doc => {
+            supporters.push({ id: doc.id, ...doc.data() });
+        });
+        return supporters;
+    } catch (error) {
+        console.error("Ошибка загрузки сопровождающих:", error);
+        return JSON.parse(localStorage.getItem('awangard_accepted_supporters_global') || '[]');
+    }
+}
+
+async function removeAccepted(supporterId) {
+    if (!window.db) {
+        let accepted = JSON.parse(localStorage.getItem('awangard_accepted_supporters_global') || '[]');
+        accepted = accepted.filter(a => a.id.toString() !== supporterId);
+        localStorage.setItem('awangard_accepted_supporters_global', JSON.stringify(accepted));
+        renderAcceptedSupportersAdmin();
+        renderAcceptedSupportersFront();
+        showToast('Сопровождающий удалён', 'info');
+        return;
+    }
+    try {
+        await window.firestore.deleteDoc(doc(window.db, "accepted_supporters", supporterId));
+        renderAcceptedSupportersAdmin();
+        renderAcceptedSupportersFront();
+        showToast('Сопровождающий удалён', 'info');
+    } catch (error) {
+        console.error("Ошибка удаления сопровождающего:", error);
+        showToast('Ошибка удаления', 'error');
+    }
+}
+
+async function renderApplicationsAdmin() {
+    const apps = await getApplications();
+    const container = document.getElementById('applicationsList');
+    if (!container) return;
+    if (apps.length === 0) { container.innerHTML = '<div class="cyber-no-data">[ НЕТ ЗАЯВОК ]</div>'; return; }
+    container.innerHTML = apps.map(app => `
+        <div class="cyber-application-item">
+            <div class="cyber-application-info">
+                <strong>${escapeHtml(app.nick)}</strong>
+                <span>ID: ${escapeHtml(app.userId)}</span>
+                <span>📊 ${escapeHtml(app.stats?.substring(0, 100) || '')}${app.stats?.length > 100 ? '...' : ''}</span>
+                <small>${new Date(app.date).toLocaleString()}</small>
+                ${app.screenshot ? `<div class="cyber-screenshot-thumb"><img src="${app.screenshot}" alt="Screenshot" onclick="window.open(this.src)"></div>` : ''}
+            </div>
+            <div class="cyber-application-actions">
+                <button class="cyber-accept-btn" data-id="${app.id}" data-nick="${escapeHtml(app.nick)}" data-userid="${escapeHtml(app.userId)}" data-stats="${escapeHtml(app.stats || '')}" data-screenshot="${app.screenshot || ''}">ПРИНЯТЬ</button>
+                <button class="cyber-reject-btn" data-id="${app.id}">ОТКЛОНИТЬ</button>
+            </div>
+        </div>
+    `).join('');
+    
+    container.querySelectorAll('.cyber-accept-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            acceptApplication(btn.dataset.id, btn.dataset.nick, btn.dataset.userid, btn.dataset.stats, btn.dataset.screenshot);
+        });
+    });
+    container.querySelectorAll('.cyber-reject-btn').forEach(btn => {
+        btn.addEventListener('click', () => rejectApplication(btn.dataset.id));
+    });
+}
+
+async function renderAcceptedSupportersAdmin() {
+    const accepted = await getAcceptedSupporters();
+    const container = document.getElementById('adminAcceptedList');
+    if (!container) return;
+    if (accepted.length === 0) { container.innerHTML = '<div class="cyber-no-data">[ НЕТ ПРИНЯТЫХ ]</div>'; return; }
+    container.innerHTML = accepted.map(s => `
+        <div class="cyber-accepted-item">
+            <div class="cyber-accepted-info">
+                <strong>${escapeHtml(s.nick)}</strong>
+                <span>ID: ${escapeHtml(s.userId)}</span>
+                <span>📊 ${escapeHtml(s.stats?.substring(0, 100) || '')}${s.stats?.length > 100 ? '...' : ''}</span>
+                <small>Принят: ${new Date(s.acceptedDate).toLocaleString()}</small>
+                ${s.screenshot ? `<div class="cyber-screenshot-thumb"><img src="${s.screenshot}" alt="Screenshot" onclick="window.open(this.src)"></div>` : ''}
+            </div>
+            <button class="cyber-remove-btn" data-id="${s.id}">УДАЛИТЬ</button>
+        </div>
+    `).join('');
+    container.querySelectorAll('.cyber-remove-btn').forEach(btn => {
+        btn.addEventListener('click', () => removeAccepted(btn.dataset.id));
+    });
+}
+
+async function renderAcceptedSupportersFront() {
+    const accepted = await getAcceptedSupporters();
+    const container = document.getElementById('acceptedSupportersList');
+    if (!container) return;
+    if (accepted.length === 0) { container.innerHTML = '<div class="cyber-no-data">[ НЕТ АКТИВНЫХ СОПРОВОЖДАЮЩИХ ]</div>'; return; }
+    container.innerHTML = accepted.map(s => `
+        <div class="cyber-supporter-card">
+            <div class="cyber-supporter-avatar"><i class="fas fa-user-shield"></i></div>
+            <div class="cyber-supporter-info">
+                <div class="cyber-supporter-nick">${escapeHtml(s.nick)}</div>
+                <div class="cyber-supporter-id">ID: ${escapeHtml(s.userId)}</div>
+                <div class="cyber-supporter-stats">📊 ${escapeHtml(s.stats?.substring(0, 60) || '')}${s.stats?.length > 60 ? '...' : ''}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
 // ========== АДМИН-ПАНЕЛЬ ==========
 function openAdminPanel() { document.getElementById('adminPanel').style.display = 'flex'; document.getElementById('adminOverlay').style.display = 'block'; document.body.style.overflow = 'hidden'; loadAdminData(); }
 function closeAdminPanel() { document.getElementById('adminPanel').style.display = 'none'; document.getElementById('adminOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
@@ -529,28 +793,45 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-function loadAdminData() { loadUsersList(); loadAdminUserSelect(); loadAdminBalanceSelect(); updateStats(); renderAdminReviews(); renderApplicationsAdmin(); renderAcceptedSupportersAdmin(); }
+async function loadAdminData() { 
+    await loadUsersList(); 
+    loadAdminUserSelect(); 
+    loadAdminBalanceSelect(); 
+    await updateStats(); 
+    await renderAdminReviews(); 
+    await renderApplicationsAdmin(); 
+    await renderAcceptedSupportersAdmin(); 
+}
 
-function loadUsersList() {
-    const users = JSON.parse(localStorage.getItem('awangard_all_users') || '[]');
-    const search = document.getElementById('adminUserSearch')?.value.toLowerCase() || '';
-    const filtered = users.filter(u => u.name?.toLowerCase().includes(search) || u.id.toString().includes(search));
-    const container = document.getElementById('adminUsersList');
-    if (!container) return;
-    if (filtered.length === 0) { container.innerHTML = '<div class="cyber-no-data">NO USERS</div>'; return; }
-    container.innerHTML = filtered.map(u => `
-        <div class="cyber-user-item" onclick="selectUserForChat('${u.chatId || u.id}')">
-            <img src="${u.photo || `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${u.name || 'Guest'}`}" alt="">
-            <div class="cyber-user-info-mini">
-                <div class="cyber-user-name-mini">${u.name || 'Guest'}</div>
-                <div class="cyber-user-id-mini">ID: ${typeof u.id === 'number' ? u.id : u.id.slice(-12)}</div>
-                <div class="cyber-user-device-mini"><i class="fas fa-microchip"></i> ${u.deviceInfo?.deviceType || 'Desktop'} | ${u.deviceInfo?.os || 'Unknown'}</div>
+async function loadUsersList() {
+    if (!window.db) return;
+    try {
+        const querySnapshot = await window.firestore.getDocs(collection(window.db, "users"));
+        const users = [];
+        querySnapshot.forEach(doc => {
+            users.push({ id: doc.id, ...doc.data() });
+        });
+        const search = document.getElementById('adminUserSearch')?.value.toLowerCase() || '';
+        const filtered = users.filter(u => u.name?.toLowerCase().includes(search) || u.id.toString().includes(search));
+        const container = document.getElementById('adminUsersList');
+        if (!container) return;
+        if (filtered.length === 0) { container.innerHTML = '<div class="cyber-no-data">NO USERS</div>'; return; }
+        container.innerHTML = filtered.map(u => `
+            <div class="cyber-user-item" onclick="window.selectUserForChat('${u.id}')">
+                <img src="${u.photo || `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${u.name || 'Guest'}`}" alt="">
+                <div class="cyber-user-info-mini">
+                    <div class="cyber-user-name-mini">${u.name || 'Guest'}</div>
+                    <div class="cyber-user-id-mini">ID: ${typeof u.id === 'number' ? u.id : u.id.slice(-12)}</div>
+                    <div class="cyber-user-device-mini"><i class="fas fa-microchip"></i> ${u.deviceInfo?.deviceType || 'Desktop'} | ${u.deviceInfo?.os || 'Unknown'}</div>
+                </div>
+                <div class="cyber-user-type-badge ${u.type === 'telegram' ? 'cyber-telegram-badge' : 'cyber-guest-badge'}">
+                    ${u.type === 'telegram' ? '<i class="fab fa-telegram"></i> TG' : '<i class="fas fa-user"></i> GUEST'}
+                </div>
             </div>
-            <div class="cyber-user-type-badge ${u.type === 'telegram' ? 'cyber-telegram-badge' : 'cyber-guest-badge'}">
-                ${u.type === 'telegram' ? '<i class="fab fa-telegram"></i> TG' : '<i class="fas fa-user"></i> GUEST'}
-            </div>
-        </div>
-    `).join('');
+        `).join('');
+    } catch (error) {
+        console.error("Ошибка загрузки пользователей:", error);
+    }
 }
 
 window.selectUserForChat = function(userId) {
@@ -560,20 +841,23 @@ window.selectUserForChat = function(userId) {
 };
 
 function loadAdminUserInfo(userId) {
-    const users = JSON.parse(localStorage.getItem('awangard_all_users') || '[]');
-    const user = users.find(u => (u.chatId || u.id).toString() === userId);
-    const infoDiv = document.getElementById('adminSelectedUserInfo');
-    if (infoDiv) {
-        infoDiv.innerHTML = user ? `
-            <div class="cyber-admin-user-card">
-                <img src="${user.photo || `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=User`}" alt="">
-                <div>
-                    <strong>${user.name || 'Guest'}</strong><br>
-                    <small>${user.type === 'telegram' ? 'TG ID: ' + user.id : 'Guest'}</small><br>
-                    <small><i class="fas fa-microchip"></i> ${user.deviceInfo?.deviceType || '?'} | ${user.deviceInfo?.os || '?'}</small>
+    const usersData = localStorage.getItem('awangard_users_temp');
+    if (usersData) {
+        const users = JSON.parse(usersData);
+        const user = users.find(u => u.id === userId);
+        const infoDiv = document.getElementById('adminSelectedUserInfo');
+        if (infoDiv) {
+            infoDiv.innerHTML = user ? `
+                <div class="cyber-admin-user-card">
+                    <img src="${user.photo || `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=User`}" alt="">
+                    <div>
+                        <strong>${user.name || 'Guest'}</strong><br>
+                        <small>${user.type === 'telegram' ? 'TG ID: ' + user.id : 'Guest'}</small><br>
+                        <small><i class="fas fa-microchip"></i> ${user.deviceInfo?.deviceType || '?'} | ${user.deviceInfo?.os || '?'}</small>
+                    </div>
                 </div>
-            </div>
-        ` : '';
+            ` : '';
+        }
     }
 }
 
@@ -614,134 +898,25 @@ function removeAdminBalance() {
     modifyUserBalance(userId, -100);
 }
 
-function updateStats() {
-    const users = JSON.parse(localStorage.getItem('awangard_all_users') || '[]');
-    const reviews = getReviews();
-    document.getElementById('statTotalUsers').textContent = users.length;
-    document.getElementById('statTelegramUsers').textContent = users.filter(u => u.type === 'telegram').length;
-    document.getElementById('statGuestUsers').textContent = users.filter(u => u.type !== 'telegram').length;
-    document.getElementById('statTotalReviews').textContent = reviews.length;
-    let total = 0; reviews.forEach(r => total += r.rating);
-    document.getElementById('statAvgRating').textContent = reviews.length > 0 ? (total / reviews.length).toFixed(1) : 0;
-}
-
-// ========== СОПРОВОЖДАЮЩИЕ ==========
-const APPLICATIONS_KEY = 'awangard_applications';
-const ACCEPTED_KEY = 'awangard_accepted_supporters';
-
-function getApplications() { return JSON.parse(localStorage.getItem(APPLICATIONS_KEY) || '[]'); }
-function saveApplications(apps) { localStorage.setItem(APPLICATIONS_KEY, JSON.stringify(apps)); }
-function getAcceptedSupporters() { return JSON.parse(localStorage.getItem(ACCEPTED_KEY) || '[]'); }
-function saveAcceptedSupporters(supporters) { localStorage.setItem(ACCEPTED_KEY, JSON.stringify(supporters)); }
-
-function addApplication(nick, userId, stats, screenshot) {
-    const apps = getApplications();
-    apps.unshift({ id: Date.now(), nick, userId, stats, screenshot, date: new Date().toISOString() });
-    saveApplications(apps);
-    renderApplicationsAdmin();
-    updateStats();
-    fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: CONFIG.ADMIN_ID, text: `📝 NEW APPLICATION!\n\nNick: ${nick}\nID: ${userId}\nStats: ${stats}` })
-    }).catch(console.error);
-}
-
-function acceptApplication(id, nick, userId, stats, screenshot) {
-    let apps = getApplications();
-    apps = apps.filter(a => a.id !== id);
-    saveApplications(apps);
-    const accepted = getAcceptedSupporters();
-    accepted.unshift({ id: Date.now(), nick, userId, stats, screenshot, acceptedDate: new Date().toISOString() });
-    saveAcceptedSupporters(accepted);
-    renderApplicationsAdmin();
-    renderAcceptedSupportersAdmin();
-    renderAcceptedSupportersFront();
-    updateStats();
-    showToast(`Accepted ${nick}!`, 'success');
-}
-
-function rejectApplication(id) {
-    let apps = getApplications();
-    apps = apps.filter(a => a.id !== id);
-    saveApplications(apps);
-    renderApplicationsAdmin();
-    updateStats();
-}
-
-function removeAccepted(id) {
-    let accepted = getAcceptedSupporters();
-    accepted = accepted.filter(a => a.id !== id);
-    saveAcceptedSupporters(accepted);
-    renderAcceptedSupportersAdmin();
-    renderAcceptedSupportersFront();
-    updateStats();
-}
-
-function renderApplicationsAdmin() {
-    const apps = getApplications();
-    const container = document.getElementById('applicationsList');
-    if (!container) return;
-    if (apps.length === 0) { container.innerHTML = '<div class="cyber-no-data">NO APPLICATIONS</div>'; return; }
-    container.innerHTML = apps.map(app => `
-        <div class="cyber-application-item">
-            <div class="cyber-application-info">
-                <strong>${escapeHtml(app.nick)}</strong>
-                <span>ID: ${escapeHtml(app.userId)}</span>
-                <span>📊 ${escapeHtml(app.stats.substring(0, 100))}${app.stats.length > 100 ? '...' : ''}</span>
-                <small>${new Date(app.date).toLocaleString()}</small>
-                ${app.screenshot ? `<div class="cyber-screenshot-thumb"><img src="${app.screenshot}" alt="Screenshot" onclick="window.open(this.src)"></div>` : ''}
-            </div>
-            <div class="cyber-application-actions">
-                <button class="cyber-accept-btn" data-id="${app.id}" data-nick="${escapeHtml(app.nick)}" data-userid="${escapeHtml(app.userId)}" data-stats="${escapeHtml(app.stats)}" data-screenshot="${app.screenshot || ''}">ACCEPT</button>
-                <button class="cyber-reject-btn" data-id="${app.id}">REJECT</button>
-            </div>
-        </div>
-    `).join('');
-    container.querySelectorAll('.cyber-accept-btn').forEach(btn => {
-        btn.addEventListener('click', () => acceptApplication(parseInt(btn.dataset.id), btn.dataset.nick, btn.dataset.userid, btn.dataset.stats, btn.dataset.screenshot));
-    });
-    container.querySelectorAll('.cyber-reject-btn').forEach(btn => {
-        btn.addEventListener('click', () => rejectApplication(parseInt(btn.dataset.id)));
-    });
-}
-
-function renderAcceptedSupportersAdmin() {
-    const accepted = getAcceptedSupporters();
-    const container = document.getElementById('adminAcceptedList');
-    if (!container) return;
-    if (accepted.length === 0) { container.innerHTML = '<div class="cyber-no-data">NO ACCEPTED</div>'; return; }
-    container.innerHTML = accepted.map(s => `
-        <div class="cyber-accepted-item">
-            <div class="cyber-accepted-info">
-                <strong>${escapeHtml(s.nick)}</strong>
-                <span>ID: ${escapeHtml(s.userId)}</span>
-                <span>📊 ${escapeHtml(s.stats.substring(0, 100))}${s.stats.length > 100 ? '...' : ''}</span>
-                <small>Accepted: ${new Date(s.acceptedDate).toLocaleString()}</small>
-                ${s.screenshot ? `<div class="cyber-screenshot-thumb"><img src="${s.screenshot}" alt="Screenshot" onclick="window.open(this.src)"></div>` : ''}
-            </div>
-            <button class="cyber-remove-btn" data-id="${s.id}">REMOVE</button>
-        </div>
-    `).join('');
-    container.querySelectorAll('.cyber-remove-btn').forEach(btn => {
-        btn.addEventListener('click', () => removeAccepted(parseInt(btn.dataset.id)));
-    });
-}
-
-function renderAcceptedSupportersFront() {
-    const accepted = getAcceptedSupporters();
-    const container = document.getElementById('acceptedSupportersList');
-    if (!container) return;
-    if (accepted.length === 0) { container.innerHTML = '<div class="cyber-no-data">[ NO ACTIVE SUPPORTERS ]</div>'; return; }
-    container.innerHTML = accepted.map(s => `
-        <div class="cyber-supporter-card">
-            <div class="cyber-supporter-avatar"><i class="fas fa-user-shield"></i></div>
-            <div class="cyber-supporter-info">
-                <div class="cyber-supporter-nick">${escapeHtml(s.nick)}</div>
-                <div class="cyber-supporter-id">ID: ${escapeHtml(s.userId)}</div>
-                <div class="cyber-supporter-stats">📊 ${escapeHtml(s.stats.substring(0, 60))}${s.stats.length > 60 ? '...' : ''}</div>
-            </div>
-        </div>
-    `).join('');
+async function updateStats() {
+    if (!window.db) return;
+    try {
+        const usersSnapshot = await window.firestore.getDocs(collection(window.db, "users"));
+        const users = [];
+        usersSnapshot.forEach(doc => users.push(doc.data()));
+        const reviews = await getReviews();
+        const apps = await getApplications();
+        const accepted = await getAcceptedSupporters();
+        
+        document.getElementById('statTotalUsers').textContent = users.length;
+        document.getElementById('statTelegramUsers').textContent = users.filter(u => u.type === 'telegram').length;
+        document.getElementById('statGuestUsers').textContent = users.filter(u => u.type !== 'telegram').length;
+        document.getElementById('statTotalReviews').textContent = reviews.length;
+        document.getElementById('statTotalApplications').textContent = apps.length;
+        document.getElementById('statTotalAccepted').textContent = accepted.length;
+    } catch (error) {
+        console.error("Ошибка обновления статистики:", error);
+    }
 }
 
 // ========== ЧАСТИЦЫ ==========
@@ -799,6 +974,7 @@ function initNavigation() {
         profileContent.style.display = 'none'; reviewsContent.style.display = 'none'; aboutContainer.style.display = 'none';
         [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active'));
         homeLink.classList.add('active'); renderProducts(currentFilter);
+        renderAcceptedSupportersFront();
     }
     function showSupporters() {
         mainContent.style.display = 'none'; supportersContent.style.display = 'block'; wheelContent.style.display = 'none';
@@ -859,7 +1035,7 @@ function initNavigation() {
 }
 
 // ========== ЗАПУСК ==========
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     console.log(`AWANGARD CYBER v${CONFIG.VERSION} | ${CONFIG.UPDATE_DATE}`);
     initTelegramLogin();
     createParticles();
@@ -869,9 +1045,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (savedUser) { currentTelegramUser = savedUser; updateUIAfterLogin(savedUser); }
     else { updateUIForGuest(); }
     
-    renderReviews();
+    await renderReviews();
+    await renderAcceptedSupportersFront();
     renderProducts('all');
-    renderAcceptedSupportersFront();
     updateBalanceDisplay();
     checkUserChat();
     
@@ -884,16 +1060,15 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('paymentModal')?.addEventListener('click', (e) => { if (e.target === document.getElementById('paymentModal')) closePaymentModals(); });
     
     // Отправка отзыва
-    document.getElementById('submitReviewBtn')?.addEventListener('click', () => {
+    document.getElementById('submitReviewBtn')?.addEventListener('click', async () => {
         const rating = getSelectedRating();
         if (rating === 0) { showToast('Select rating!', 'error'); return; }
         const name = document.getElementById('reviewName')?.value.trim() || 'Anonymous';
         const text = document.getElementById('reviewText')?.value.trim();
         if (!text) { showToast('Write review!', 'error'); return; }
-        addReview(name, rating, text);
+        await addReview(name, rating, text);
         document.getElementById('reviewText').value = '';
         document.getElementById('reviewName').value = '';
-        getSelectedRating = initStarsInput();
         showToast('Thank you for review!', 'success');
         document.getElementById('reviewsLink').click();
     });
@@ -905,11 +1080,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const stats = document.getElementById('supporterStats')?.value.trim();
         const file = document.getElementById('supporterScreenshot')?.files[0];
         if (!nick || !userId || !stats) { showToast('Fill all fields!', 'error'); return; }
-        let screenshotBase64 = '';
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(e) {
-                addApplication(nick, userId, stats, e.target.result);
+            reader.onload = async function(e) {
+                await addApplication(nick, userId, stats, e.target.result);
                 document.getElementById('supporterNick').value = '';
                 document.getElementById('supporterId').value = '';
                 document.getElementById('supporterStats').value = '';
@@ -943,7 +1117,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Админ-панель
     const adminTabs = document.querySelectorAll('.cyber-admin-tab');
     adminTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
+        tab.addEventListener('click', async () => {
             adminTabs.forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
             document.getElementById('adminUsersTab').style.display = 'none';
@@ -953,12 +1127,12 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('adminReviewsTab').style.display = 'none';
             document.getElementById('adminStatsTab').style.display = 'none';
             const target = tab.dataset.tab;
-            if (target === 'users') { document.getElementById('adminUsersTab').style.display = 'block'; loadUsersList(); }
+            if (target === 'users') { document.getElementById('adminUsersTab').style.display = 'block'; await loadUsersList(); }
             else if (target === 'balance') { document.getElementById('adminBalanceTab').style.display = 'block'; loadAdminBalanceSelect(); }
-            else if (target === 'supporters') { document.getElementById('adminSupportersTab').style.display = 'block'; renderApplicationsAdmin(); renderAcceptedSupportersAdmin(); }
+            else if (target === 'supporters') { document.getElementById('adminSupportersTab').style.display = 'block'; await renderApplicationsAdmin(); await renderAcceptedSupportersAdmin(); }
             else if (target === 'chats') { document.getElementById('adminChatsTab').style.display = 'block'; loadAdminUserSelect(); }
-            else if (target === 'reviews') { document.getElementById('adminReviewsTab').style.display = 'block'; renderAdminReviews(); }
-            else if (target === 'stats') { document.getElementById('adminStatsTab').style.display = 'block'; updateStats(); }
+            else if (target === 'reviews') { document.getElementById('adminReviewsTab').style.display = 'block'; await renderAdminReviews(); }
+            else if (target === 'stats') { document.getElementById('adminStatsTab').style.display = 'block'; await updateStats(); }
         });
     });
     

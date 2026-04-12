@@ -9,6 +9,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.35/ua-parser.min.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, setDoc, getDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        
+        // Ваши данные Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyB_Bkxiuia16G4Bn0-cyLMEp2IsB6fR4Qo",
+            authDomain: "awangard-7b58f.firebaseapp.com",
+            projectId: "awangard-7b58f",
+            storageBucket: "awangard-7b58f.firebasestorage.app",
+            messagingSenderId: "1095576840101",
+            appId: "1:1095576840101:web:859309f3b32afde3b16a4c"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Сохраняем в глобальную переменную
+        window.db = db;
+        window.firestore = { collection, getDocs, addDoc, deleteDoc, doc, setDoc, getDoc, query, orderBy };
+        
+        console.log("✅ Firebase подключен!");
+    </script>
 </head>
 <body>
     <!-- КИБЕРПАНК ФОН -->
@@ -95,7 +120,7 @@
                     <div class="section-line"></div>
                 </div>
                 <div id="acceptedSupportersList" class="cyber-supporters-list">
-                    <div class="cyber-no-data">[ НЕТ АКТИВНЫХ СОПРОВОЖДАЮЩИХ ]</div>
+                    <div class="cyber-no-data">[ ЗАГРУЗКА... ]</div>
                 </div>
             </div>
             
@@ -231,7 +256,7 @@
                         <button class="filter-btn" data-filter="1">1 ★</button>
                     </div>
                     <div id="reviewsList" class="cyber-reviews-list">
-                        <div class="cyber-no-data">[ НЕТ ОТЗЫВОВ ]</div>
+                        <div class="cyber-no-data">[ ЗАГРУЗКА ОТЗЫВОВ... ]</div>
                     </div>
                     <div class="cyber-review-form">
                         <h3><i class="fas fa-edit"></i> ОСТАВИТЬ ОТЗЫВ</h3>
