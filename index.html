@@ -181,36 +181,6 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 10px;
-            color: white;
-            margin-bottom: 15px;
-        }
-        
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-        
-        button {
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        
-        button:hover {
-            transform: scale(1.02);
-        }
-        
         .supporters-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -361,7 +331,7 @@
         </div>
         <div class="balance">
             <i class="fas fa-coins"></i>
-            <span id="balanceDisplay">0</span> UC
+            <span id="balanceDisplay">100</span> UC
         </div>
     </div>
     
@@ -444,19 +414,11 @@
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="profile-details">
-                        <h3 id="profileName">Гость</h3>
+                        <h3>Игрок</h3>
                         <p><i class="fas fa-fingerprint"></i> ID: <span id="profileId">guest</span></p>
-                        <p><i class="fas fa-coins"></i> Баланс: <span id="profileBalance">0</span> UC</p>
+                        <p><i class="fas fa-coins"></i> Баланс: <span id="profileBalance">100</span> UC</p>
                         <p><i class="fas fa-microchip"></i> <span id="deviceInfo">Определение...</span></p>
                     </div>
-                </div>
-                <div style="margin-top: 20px; text-align: center;">
-                    <button id="loginBtn" style="background: linear-gradient(45deg, #0088cc, #006699);">
-                        <i class="fab fa-telegram"></i> Войти через Telegram
-                    </button>
-                    <button id="logoutBtn" style="display: none; background: linear-gradient(45deg, #ff6b6b, #ff4444);">
-                        <i class="fas fa-sign-out-alt"></i> Выйти
-                    </button>
                 </div>
             </div>
         </div>
@@ -507,6 +469,335 @@
     
     <div id="toast" class="toast"></div>
 
-    <script src="script.js"></script>
+    <script>
+        // ========== AWANGARD STORE (БЕЗ АВТОРИЗАЦИИ) ==========
+        
+        let userBalance = 100;
+        let spinning = false;
+        let currentAngle = 0;
+        let pendingProduct = null;
+        
+        // Товары
+        const products = {
+            uc: [
+                { name: "60 UC", price: 100, oldPrice: 150, icon: "UC", value: 60 },
+                { name: "300+25 UC", price: 450, oldPrice: 600, icon: "UC", value: 325 },
+                { name: "600+60 UC", price: 900, oldPrice: 1200, icon: "UC", value: 660 },
+                { name: "1500+300 UC", price: 2200, oldPrice: 3000, icon: "UC", value: 1800 },
+                { name: "3000+850 UC", price: 4500, oldPrice: 6000, icon: "UC", value: 3850 },
+                { name: "6000+2100 UC", price: 9000, oldPrice: 12000, icon: "UC", value: 8100 }
+            ],
+            currency: [
+                { name: "1 000 000 метровалюты", price: 100, icon: "M", value: 0 },
+                { name: "2 000 000 метровалюты", price: 200, icon: "M", value: 0 },
+                { name: "3 000 000 метровалюты", price: 300, icon: "M", value: 0 },
+                { name: "4 000 000 метровалюты", price: 400, icon: "M", value: 0 },
+                { name: "5 000 000 метровалюты", price: 500, icon: "M", value: 0 },
+                { name: "6 000 000 метровалюты", price: 600, icon: "M", value: 0 },
+                { name: "7 000 000 метровалюты", price: 700, icon: "M", value: 0 },
+                { name: "8 000 000 метровалюты", price: 800, icon: "M", value: 0 },
+                { name: "9 000 000 метровалюты", price: 900, icon: "M", value: 0 },
+                { name: "10 000 000 метровалюты", price: 1000, icon: "M", value: 0 }
+            ]
+        };
+        
+        // Колесо фортуны
+        const wheelSegments = [
+            { name: "60 UC", value: 60, color: "#ff6b6b" },
+            { name: "325 UC", value: 325, color: "#4ecdc4" },
+            { name: "LOSE", value: 0, color: "#333" },
+            { name: "LOSE", value: 0, color: "#444" },
+            { name: "LOSE", value: 0, color: "#555" },
+            { name: "LOSE", value: 0, color: "#666" },
+            { name: "LOSE", value: 0, color: "#777" },
+            { name: "LOSE", value: 0, color: "#888" }
+        ];
+        
+        // Генерация ID
+        function getUserId() {
+            let id = localStorage.getItem('awangard_user_id');
+            if (!id) {
+                id = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+                localStorage.setItem('awangard_user_id', id);
+            }
+            return id;
+        }
+        
+        // ========== БАЛАНС ==========
+        function loadBalance() {
+            const saved = localStorage.getItem('awangard_balance');
+            userBalance = saved ? parseInt(saved) : 100;
+            updateBalanceUI();
+        }
+        
+        function saveBalance() {
+            localStorage.setItem('awangard_balance', userBalance);
+            updateBalanceUI();
+        }
+        
+        function updateBalanceUI() {
+            document.querySelectorAll('#balanceDisplay, #profileBalance').forEach(el => {
+                if (el) el.textContent = userBalance;
+            });
+        }
+        
+        function addBalance(amount) {
+            userBalance += amount;
+            saveBalance();
+            showToast(`+${amount} UC начислено!`, 'success');
+        }
+        
+        function deductBalance(amount) {
+            if (userBalance >= amount) {
+                userBalance -= amount;
+                saveBalance();
+                return true;
+            }
+            showToast(`Недостаточно UC! Нужно ${amount} UC`, 'error');
+            return false;
+        }
+        
+        // ========== ТОВАРЫ ==========
+        function renderProducts(category = 'all') {
+            const container = document.getElementById('productsGrid');
+            if (!container) return;
+            
+            let allProducts = [];
+            if (category === 'all') {
+                allProducts = [...products.uc, ...products.currency];
+            } else if (category === 'uc') {
+                allProducts = [...products.uc];
+            } else {
+                allProducts = [...products.currency];
+            }
+            
+            container.innerHTML = allProducts.map(p => `
+                <div class="product-card" data-name="${p.name}" data-price="${p.price}" data-value="${p.value || 0}" data-isuc="${p.icon === 'UC'}">
+                    <div class="product-icon">${p.icon}</div>
+                    <div class="product-name">${p.name}</div>
+                    ${p.oldPrice ? `<div class="product-old-price">${p.oldPrice} ₽</div>` : ''}
+                    <div class="product-price">${p.price} ₽</div>
+                    <button class="buy-btn">Купить</button>
+                </div>
+            `).join('');
+            
+            document.querySelectorAll('.product-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('buy-btn')) {
+                        e.stopPropagation();
+                        const name = card.dataset.name;
+                        const price = parseInt(card.dataset.price);
+                        const value = parseInt(card.dataset.value);
+                        const isUc = card.dataset.isuc === 'true';
+                        buyProduct(name, price, value, isUc);
+                    }
+                });
+            });
+        }
+        
+        function buyProduct(name, price, value, isUc) {
+            if (deductBalance(price)) {
+                if (isUc) {
+                    addBalance(value);
+                    showToast(`Вы купили ${name}! +${value} UC на баланс`, 'success');
+                } else {
+                    showToast(`Заказ на ${name} оформлен! Ожидайте выдачи.`, 'success');
+                }
+            } else {
+                pendingProduct = { name, price };
+                document.getElementById('paymentProduct').textContent = `Товар: ${name}`;
+                document.getElementById('paymentPrice').textContent = `Сумма: ${price} ₽`;
+                document.getElementById('paymentModal').classList.add('active');
+            }
+        }
+        
+        // ========== КОЛЕСО ФОРТУНЫ ==========
+        function initWheel() {
+            const canvas = document.getElementById('wheelCanvas');
+            if (!canvas) return;
+            drawWheel(canvas);
+        }
+        
+        function drawWheel(canvas) {
+            const ctx = canvas.getContext('2d');
+            const size = canvas.width;
+            const center = size / 2;
+            const radius = size / 2 - 5;
+            const angleStep = (Math.PI * 2) / wheelSegments.length;
+            
+            ctx.clearRect(0, 0, size, size);
+            
+            for (let i = 0; i < wheelSegments.length; i++) {
+                const start = i * angleStep + currentAngle;
+                const end = (i + 1) * angleStep + currentAngle;
+                
+                ctx.beginPath();
+                ctx.moveTo(center, center);
+                ctx.arc(center, center, radius, start, end);
+                ctx.fillStyle = wheelSegments[i].color;
+                ctx.fill();
+                ctx.strokeStyle = "#fff";
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                
+                ctx.save();
+                ctx.translate(center, center);
+                ctx.rotate(start + angleStep / 2);
+                ctx.textAlign = "center";
+                ctx.fillStyle = wheelSegments[i].name === "LOSE" ? "#aaa" : "#fff";
+                ctx.font = "bold 10px 'Segoe UI'";
+                ctx.fillText(wheelSegments[i].name, radius * 0.7, 5);
+                ctx.restore();
+            }
+            
+            ctx.beginPath();
+            ctx.moveTo(center - 10, 10);
+            ctx.lineTo(center + 10, 10);
+            ctx.lineTo(center, 25);
+            ctx.fillStyle = "#fff";
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(center - 10, 10);
+            ctx.lineTo(center + 10, 10);
+            ctx.lineTo(center, -5);
+            ctx.fillStyle = "#ffd700";
+            ctx.fill();
+        }
+        
+        function spinWheel() {
+            if (spinning) return;
+            if (userBalance < 100) {
+                showToast('Недостаточно UC для вращения!', 'error');
+                return;
+            }
+            
+            spinning = true;
+            deductBalance(100);
+            
+            const canvas = document.getElementById('wheelCanvas');
+            const spins = 10 + Math.random() * 10;
+            const finalAngle = (Math.PI * 2 * spins) + (Math.random() * Math.PI * 2);
+            const startAngle = currentAngle;
+            const startTime = performance.now();
+            const duration = 2000;
+            
+            function animate(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(1, elapsed / duration);
+                const ease = 1 - Math.pow(1 - progress, 3);
+                currentAngle = startAngle + finalAngle * ease;
+                drawWheel(canvas);
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    finishSpin();
+                }
+            }
+            
+            function finishSpin() {
+                spinning = false;
+                const angleStep = (Math.PI * 2) / wheelSegments.length;
+                let norm = (currentAngle % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+                let idx = Math.floor(norm / angleStep);
+                const seg = wheelSegments[(wheelSegments.length - idx) % wheelSegments.length];
+                const resultDiv = document.getElementById('wheelResult');
+                
+                if (seg.value > 0) {
+                    addBalance(seg.value);
+                    resultDiv.innerHTML = `<span style="color: #4ecdc4;">🎉 ВЫ ВЫИГРАЛИ ${seg.name}! 🎉</span>`;
+                    showToast(`Вы выиграли ${seg.name}!`, 'success');
+                } else {
+                    resultDiv.innerHTML = `<span style="color: #ff6b6b;">😢 К сожалению, проигрыш. Попробуйте ещё! 😢</span>`;
+                    showToast(`Проигрыш!`, 'info');
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        
+        // ========== НАВИГАЦИЯ ==========
+        function initNavigation() {
+            const btns = document.querySelectorAll('.nav-btn');
+            const pages = document.querySelectorAll('.page');
+            
+            btns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const pageId = btn.dataset.page + 'Page';
+                    
+                    btns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    pages.forEach(page => page.classList.remove('active'));
+                    const activePage = document.getElementById(pageId);
+                    if (activePage) activePage.classList.add('active');
+                    
+                    if (pageId === 'wheelPage') {
+                        setTimeout(() => initWheel(), 100);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderProducts(btn.dataset.cat);
+                });
+            });
+        }
+        
+        // ========== ВСПОМОГАТЕЛЬНЫЕ ==========
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = 'toast show';
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+        
+        function getDeviceInfo() {
+            const ua = navigator.userAgent;
+            let os = "Unknown";
+            if (/Windows NT 10/.test(ua)) os = "Windows 10";
+            else if (/Mac OS X/.test(ua)) os = "macOS";
+            else if (/Android/.test(ua)) os = "Android";
+            else if (/iPhone|iPad|iPod/.test(ua)) os = "iOS";
+            let deviceType = /Mobi|Android|iPhone|iPad|iPod/.test(ua) ? "Mobile" : "Desktop";
+            document.getElementById('deviceInfo').textContent = `${deviceType} | ${os}`;
+            document.getElementById('profileId').textContent = getUserId();
+        }
+        
+        // ========== ЗАПУСК ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            loadBalance();
+            getDeviceInfo();
+            initNavigation();
+            renderProducts('all');
+            
+            document.getElementById('spinBtn')?.addEventListener('click', spinWheel);
+            
+            // Сопровождение - Telegram
+            document.getElementById('openSupportersBtn')?.addEventListener('click', () => {
+                window.open('https://t.me/l_AWANGARD_l', '_blank');
+            });
+            
+            // Отзывы - Telegram канал
+            document.getElementById('openReviewsBtn')?.addEventListener('click', () => {
+                window.open('https://t.me/Awangard_shop_feedback', '_blank');
+            });
+            
+            // Модалка оплаты
+            document.getElementById('closeModalBtn')?.addEventListener('click', () => {
+                document.getElementById('paymentModal').classList.remove('active');
+            });
+            document.getElementById('confirmPaymentBtn')?.addEventListener('click', () => {
+                if (pendingProduct) {
+                    showToast(`Оплата товара "${pendingProduct.name}" подтверждена!`, 'success');
+                    document.getElementById('paymentModal').classList.remove('active');
+                    pendingProduct = null;
+                }
+            });
+            
+            showToast('Добро пожаловать в AWANGARD!', 'success');
+        });
+    </script>
 </body>
 </html>
