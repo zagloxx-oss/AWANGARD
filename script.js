@@ -1,6 +1,4 @@
 // ========== AWANGARD CYBER v2.0 ==========
-// Версия: 2.0 | Дата: 12.04.2026
-
 const CONFIG = {
     VERSION: '2.0',
     UPDATE_DATE: '12.04.2026',
@@ -10,7 +8,6 @@ const CONFIG = {
     ADMIN_CODE: 'AWANGARD'
 };
 
-// Глобальные переменные
 let secretCode = '';
 let currentFilter = 'all';
 let currentReviewFilter = 'all';
@@ -19,7 +16,6 @@ let spinning = false;
 let currentAngle = 0;
 let pendingPaymentProduct = null;
 let currentTelegramUser = null;
-let userLocation = { country: "Unknown", city: "Unknown", ip: "Unknown" };
 
 // ========== ОПРЕДЕЛЕНИЕ УСТРОЙСТВА ==========
 function getDeviceFullInfo() {
@@ -42,7 +38,6 @@ function getDeviceFullInfo() {
     if (/Mobi|Android|iPhone|iPad|iPod/.test(ua)) {
         deviceType = /iPad|Android(?!.*Mobile)/i.test(ua) ? "Tablet" : "Mobile";
     }
-    
     return { os, browser, deviceType };
 }
 
@@ -52,7 +47,6 @@ if (deviceInfoElement) deviceInfoElement.textContent = `${deviceInfo.deviceType}
 
 // ========== УНИКАЛЬНЫЙ ID ==========
 function generateUniqueId() { return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9); }
-
 function getOrCreateUserId() {
     let userId = localStorage.getItem('awangard_user_id');
     if (!userId) { userId = generateUniqueId(); localStorage.setItem('awangard_user_id', userId); registerUser(userId, 'guest', 'Guest'); }
@@ -62,35 +56,14 @@ function getOrCreateUserId() {
 async function registerUser(id, type, name, photo = null, telegramId = null) {
     if (!window.db) return;
     try {
-        const userRef = window.firestore.doc(window.db, "users", id);
-        const userSnap = await window.firestore.getDoc(userRef);
+        const userRef = doc(window.db, "users", id);
+        const userSnap = await getDoc(userRef);
         if (!userSnap.exists()) {
-            await window.firestore.setDoc(userRef, {
-                id: id,
-                type: type,
-                name: name,
-                photo: photo,
-                telegramId: telegramId,
-                deviceInfo: deviceInfo,
-                firstSeen: Date.now(),
-                lastSeen: Date.now(),
-                visitCount: 1
-            });
+            await setDoc(userRef, { id, type, name, photo, telegramId, deviceInfo, firstSeen: Date.now(), lastSeen: Date.now(), visitCount: 1 });
         } else {
-            await window.firestore.setDoc(userRef, {
-                ...userSnap.data(),
-                lastSeen: Date.now(),
-                visitCount: (userSnap.data().visitCount || 0) + 1
-            });
+            await setDoc(userRef, { ...userSnap.data(), lastSeen: Date.now(), visitCount: (userSnap.data().visitCount || 0) + 1 }, { merge: true });
         }
-    } catch (error) {
-        console.error("Ошибка регистрации пользователя:", error);
-    }
-}
-
-function updateUserLastSeen(userId) {
-    if (!window.db) return;
-    window.firestore.setDoc(window.firestore.doc(window.db, "users", userId), { lastSeen: Date.now() }, { merge: true }).catch(console.error);
+    } catch (error) { console.error("Ошибка регистрации:", error); }
 }
 
 const CURRENT_USER_ID = getOrCreateUserId();
@@ -104,28 +77,19 @@ function updateBalanceDisplay() { document.querySelectorAll('#userBalance, #prof
 
 // ========== TELEGRAM ВХОД ==========
 function getTelegramUser() { const saved = localStorage.getItem('awangard_telegram_user'); return saved ? JSON.parse(saved) : null; }
-
 function saveTelegramUser(userData) {
     localStorage.setItem('awangard_telegram_user', JSON.stringify(userData));
     currentTelegramUser = userData;
     registerUser(userData.id.toString(), 'telegram', userData.first_name + ' ' + (userData.last_name || ''), userData.photo_url, userData.id);
     updateUIAfterLogin(userData);
 }
-
 window.onTelegramAuth = function(user) {
     if (user && user.id) {
-        saveTelegramUser({
-            id: user.id,
-            first_name: user.first_name,
-            last_name: user.last_name || '',
-            username: user.username || '',
-            photo_url: user.photo_url || ''
-        });
+        saveTelegramUser({ id: user.id, first_name: user.first_name, last_name: user.last_name || '', username: user.username || '', photo_url: user.photo_url || '' });
         alert(`Welcome, ${user.first_name}!`);
         document.getElementById('profileLink').click();
     }
 };
-
 function initTelegramLogin() {
     const container = document.getElementById('telegramLoginPage');
     if (container) {
@@ -143,7 +107,6 @@ function initTelegramLogin() {
         wrapper.appendChild(script);
     }
 }
-
 function updateUIAfterLogin(userData) {
     document.getElementById('profilePageName').textContent = userData.first_name + ' ' + (userData.last_name || '');
     document.getElementById('profilePageUsername').textContent = userData.username ? '@' + userData.username : '';
@@ -155,9 +118,7 @@ function updateUIAfterLogin(userData) {
     document.getElementById('userAvatarMini').src = userData.photo_url || `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${userData.first_name}`;
     document.getElementById('userNameMini').textContent = userData.first_name;
     showToast(`Welcome, ${userData.first_name}!`, 'success');
-    loadUsersList();
 }
-
 function updateUIForGuest() {
     document.getElementById('profilePageName').textContent = 'UNKNOWN';
     document.getElementById('profilePageUsername').textContent = '';
@@ -167,13 +128,11 @@ function updateUIForGuest() {
     document.getElementById('logoutPageBtn').style.display = 'none';
     document.getElementById('userBadge').style.display = 'none';
 }
-
 function logout() { localStorage.removeItem('awangard_telegram_user'); currentTelegramUser = null; updateUIForGuest(); showToast('Logged out', 'info'); }
 
 // ========== ЧАТ ==========
 function getCurrentUserId() { return currentTelegramUser ? currentTelegramUser.id.toString() : CURRENT_USER_ID; }
 function getCurrentUserName() { return currentTelegramUser ? (currentTelegramUser.first_name + ' ' + (currentTelegramUser.last_name || '')) : 'Guest'; }
-
 function checkUserChat() {
     const userId = getCurrentUserId();
     const messages = JSON.parse(localStorage.getItem(`awangard_chat_${userId}`) || '[]');
@@ -181,7 +140,6 @@ function checkUserChat() {
     if (container) container.style.display = messages.length > 0 ? 'block' : 'none';
     renderUserChat(messages);
 }
-
 function renderUserChat(messages) {
     const container = document.getElementById('userChatMessages');
     if (!container) return;
@@ -200,7 +158,6 @@ function renderUserChat(messages) {
     `).join('');
     container.scrollTop = container.scrollHeight;
 }
-
 function sendUserMessage() {
     const input = document.getElementById('userChatInput');
     const text = input.value.trim();
@@ -209,7 +166,7 @@ function sendUserMessage() {
     const messages = JSON.parse(localStorage.getItem(`awangard_chat_${userId}`) || '[]');
     const now = new Date();
     const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-    messages.push({ isAdmin: false, text: text, time: timeStr, timestamp: now.toISOString() });
+    messages.push({ isAdmin: false, text, time: timeStr, timestamp: now.toISOString() });
     localStorage.setItem(`awangard_chat_${userId}`, JSON.stringify(messages));
     renderUserChat(messages);
     input.value = '';
@@ -236,7 +193,6 @@ function loadAdminChat(userId) {
     `).join('');
     container.scrollTop = container.scrollHeight;
 }
-
 function sendAdminReply() {
     const userId = document.getElementById('adminUserSelect')?.value;
     const text = document.getElementById('adminReplyInput')?.value.trim();
@@ -244,7 +200,7 @@ function sendAdminReply() {
     const messages = JSON.parse(localStorage.getItem(`awangard_chat_${userId}`) || '[]');
     const now = new Date();
     const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-    messages.push({ isAdmin: true, text: text, time: timeStr, timestamp: now.toISOString() });
+    messages.push({ isAdmin: true, text, time: timeStr, timestamp: now.toISOString() });
     localStorage.setItem(`awangard_chat_${userId}`, JSON.stringify(messages));
     document.getElementById('adminReplyInput').value = '';
     loadAdminChat(userId);
@@ -255,70 +211,47 @@ function sendAdminReply() {
     }
 }
 
-// ========== FIREBASE: ОТЗЫВЫ (ВИДНЫ ВСЕМ) ==========
-
+// ========== FIREBASE: ОТЗЫВЫ ==========
 async function getReviews() {
     if (!window.db) return JSON.parse(localStorage.getItem('awangard_reviews') || '[]');
     try {
-        const q = window.firestore.query(collection(window.db, "reviews"), orderBy("date", "desc"));
-        const querySnapshot = await window.firestore.getDocs(q);
+        const q = query(collection(window.db, "reviews"), orderBy("date", "desc"));
+        const querySnapshot = await getDocs(q);
         const reviews = [];
-        querySnapshot.forEach(doc => {
-            reviews.push({ id: doc.id, ...doc.data() });
-        });
+        querySnapshot.forEach(doc => { reviews.push({ id: doc.id, ...doc.data() }); });
         return reviews;
-    } catch (error) {
-        console.error("Ошибка загрузки отзывов:", error);
-        return JSON.parse(localStorage.getItem('awangard_reviews') || '[]');
-    }
+    } catch (error) { console.error("Ошибка загрузки отзывов:", error); return []; }
 }
-
 async function addReview(userName, rating, text) {
     if (!window.db) {
         const reviews = JSON.parse(localStorage.getItem('awangard_reviews') || '[]');
-        reviews.unshift({ id: Date.now(), userName: userName || 'Аноним', rating: rating, text: text, date: new Date().toISOString() });
+        reviews.unshift({ id: Date.now(), userName, rating, text, date: Date.now(), avatar: `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${userName}` });
         localStorage.setItem('awangard_reviews', JSON.stringify(reviews));
-        renderReviews();
+        await renderReviews();
         showToast('Отзыв добавлен (локально)', 'success');
         return;
     }
     try {
-        await window.firestore.addDoc(collection(window.db, "reviews"), {
-            userName: userName || 'Аноним',
-            rating: rating,
-            text: text,
-            date: Date.now(),
-            avatar: `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${userName || 'Аноним'}`
-        });
-        renderReviews();
+        await addDoc(collection(window.db, "reviews"), { userName, rating, text, date: Date.now(), avatar: `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${userName}` });
+        await renderReviews();
         showToast('Отзыв добавлен!', 'success');
-    } catch (error) {
-        console.error("Ошибка добавления отзыва:", error);
-        showToast('Ошибка добавления отзыва', 'error');
-    }
+    } catch (error) { console.error("Ошибка:", error); showToast('Ошибка добавления отзыва', 'error'); }
 }
-
 async function deleteReview(reviewId) {
     if (!window.db) {
         let reviews = JSON.parse(localStorage.getItem('awangard_reviews') || '[]');
         reviews = reviews.filter(r => r.id.toString() !== reviewId);
         localStorage.setItem('awangard_reviews', JSON.stringify(reviews));
-        renderReviews();
-        renderAdminReviews();
+        await renderReviews();
         showToast('Отзыв удалён (локально)', 'info');
         return;
     }
     try {
-        await window.firestore.deleteDoc(doc(window.db, "reviews", reviewId));
-        renderReviews();
-        renderAdminReviews();
+        await deleteDoc(doc(window.db, "reviews", reviewId));
+        await renderReviews();
         showToast('Отзыв удалён!', 'info');
-    } catch (error) {
-        console.error("Ошибка удаления отзыва:", error);
-        showToast('Ошибка удаления отзыва', 'error');
-    }
+    } catch (error) { console.error("Ошибка:", error); showToast('Ошибка удаления отзыва', 'error'); }
 }
-
 async function renderReviews() {
     const reviews = await getReviews();
     const filtered = currentReviewFilter === 'all' ? reviews : reviews.filter(r => r.rating === parseInt(currentReviewFilter));
@@ -326,25 +259,20 @@ async function renderReviews() {
     const countSpan = document.getElementById('reviewsCount');
     const avgSpan = document.getElementById('averageRating');
     const starsDiv = document.getElementById('averageStars');
-    
     if (countSpan) countSpan.textContent = reviews.length;
     let total = 0; reviews.forEach(r => total += r.rating);
     const avg = reviews.length > 0 ? (total / reviews.length).toFixed(1) : 0;
     if (avgSpan) avgSpan.textContent = avg;
     if (starsDiv) {
         starsDiv.innerHTML = '';
-        for (let i = 1; i <= 5; i++) {
-            const star = document.createElement('i');
-            star.className = i <= Math.round(avg) ? 'fas fa-star' : 'far fa-star';
-            starsDiv.appendChild(star);
-        }
+        for (let i = 1; i <= 5; i++) { const star = document.createElement('i'); star.className = i <= Math.round(avg) ? 'fas fa-star' : 'far fa-star'; starsDiv.appendChild(star); }
     }
     if (!container) return;
     if (filtered.length === 0) { container.innerHTML = '<div class="cyber-no-data">[ НЕТ ОТЗЫВОВ ]</div>'; return; }
     container.innerHTML = filtered.map(r => `
         <div class="cyber-review-item">
             <div class="cyber-review-header">
-                <img src="${r.avatar || `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${r.userName}`}" class="cyber-review-avatar" alt="">
+                <img src="${r.avatar}" class="cyber-review-avatar" alt="">
                 <div class="cyber-review-user-info">
                     <span class="cyber-review-user-name">${escapeHtml(r.userName)}</span>
                     <div class="cyber-review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}${'<i class="far fa-star"></i>'.repeat(5 - r.rating)}</div>
@@ -355,7 +283,6 @@ async function renderReviews() {
         </div>
     `).join('');
 }
-
 async function renderAdminReviews() {
     const reviews = await getReviews();
     const container = document.getElementById('adminReviewsList');
@@ -371,9 +298,7 @@ async function renderAdminReviews() {
             <button class="cyber-delete-review-btn" data-id="${r.id}"><i class="fas fa-trash"></i> DELETE</button>
         </div>
     `).join('');
-    container.querySelectorAll('.cyber-delete-review-btn').forEach(btn => {
-        btn.addEventListener('click', () => deleteReview(btn.dataset.id));
-    });
+    container.querySelectorAll('.cyber-delete-review-btn').forEach(btn => { btn.addEventListener('click', () => deleteReview(btn.dataset.id)); });
 }
 
 // ========== ЗВЁЗДНЫЙ РЕЙТИНГ ==========
@@ -398,102 +323,48 @@ let getSelectedRating = (function() {
 
 // ========== КОЛЕСО ФОРТУНЫ ==========
 const wheelSegments = [
-    { name: "60 UC", value: 60, color: "#00ff41" },
-    { name: "325 UC", value: 325, color: "#39ff14" },
-    { name: "LOSE", value: 0, color: "#333" },
-    { name: "LOSE", value: 0, color: "#444" },
-    { name: "LOSE", value: 0, color: "#555" },
-    { name: "LOSE", value: 0, color: "#666" },
-    { name: "LOSE", value: 0, color: "#777" },
-    { name: "LOSE", value: 0, color: "#888" }
+    { name: "60 UC", value: 60, color: "#00ff41" }, { name: "325 UC", value: 325, color: "#39ff14" },
+    { name: "LOSE", value: 0, color: "#333" }, { name: "LOSE", value: 0, color: "#444" },
+    { name: "LOSE", value: 0, color: "#555" }, { name: "LOSE", value: 0, color: "#666" },
+    { name: "LOSE", value: 0, color: "#777" }, { name: "LOSE", value: 0, color: "#888" }
 ];
-
-function initWheel() {
-    const canvas = document.getElementById('wheelCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    drawWheel(ctx, canvas);
-}
-
+function initWheel() { const canvas = document.getElementById('wheelCanvas'); if (!canvas) return; drawWheel(canvas.getContext('2d'), canvas); }
 function drawWheel(ctx, canvas) {
-    const size = canvas.width;
-    const center = size / 2;
-    const radius = size / 2 - 5;
-    const angleStep = (Math.PI * 2) / wheelSegments.length;
+    const size = canvas.width, center = size / 2, radius = size / 2 - 5, angleStep = (Math.PI * 2) / wheelSegments.length;
     ctx.clearRect(0, 0, size, size);
     for (let i = 0; i < wheelSegments.length; i++) {
-        const start = i * angleStep + currentAngle;
-        const end = (i + 1) * angleStep + currentAngle;
-        ctx.beginPath();
-        ctx.moveTo(center, center);
-        ctx.arc(center, center, radius, start, end);
-        ctx.fillStyle = wheelSegments[i].color;
-        ctx.fill();
-        ctx.strokeStyle = "#fff";
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        ctx.save();
-        ctx.translate(center, center);
-        ctx.rotate(start + angleStep / 2);
-        ctx.textAlign = "center";
-        ctx.fillStyle = wheelSegments[i].name === "LOSE" ? "#aaa" : "#000";
-        ctx.font = "bold 10px 'Space Mono'";
-        ctx.fillText(wheelSegments[i].name, radius * 0.65, 5);
-        ctx.restore();
+        const start = i * angleStep + currentAngle, end = (i + 1) * angleStep + currentAngle;
+        ctx.beginPath(); ctx.moveTo(center, center); ctx.arc(center, center, radius, start, end);
+        ctx.fillStyle = wheelSegments[i].color; ctx.fill(); ctx.strokeStyle = "#fff"; ctx.lineWidth = 1; ctx.stroke();
+        ctx.save(); ctx.translate(center, center); ctx.rotate(start + angleStep / 2); ctx.textAlign = "center";
+        ctx.fillStyle = wheelSegments[i].name === "LOSE" ? "#aaa" : "#000"; ctx.font = "bold 10px 'Space Mono'";
+        ctx.fillText(wheelSegments[i].name, radius * 0.65, 5); ctx.restore();
     }
-    ctx.beginPath();
-    ctx.moveTo(center - 8, 8);
-    ctx.lineTo(center + 8, 8);
-    ctx.lineTo(center, 22);
-    ctx.fillStyle = "#fff";
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(center - 8, 8);
-    ctx.lineTo(center + 8, 8);
-    ctx.lineTo(center, -4);
-    ctx.fillStyle = "#ffcc00";
-    ctx.fill();
+    ctx.beginPath(); ctx.moveTo(center - 8, 8); ctx.lineTo(center + 8, 8); ctx.lineTo(center, 22); ctx.fillStyle = "#fff"; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(center - 8, 8); ctx.lineTo(center + 8, 8); ctx.lineTo(center, -4); ctx.fillStyle = "#ffcc00"; ctx.fill();
 }
-
 function spinWheel() {
     if (spinning) return;
     if (!currentTelegramUser) { showToast('Login to spin!', 'error'); document.getElementById('profileLink').click(); return; }
     if (getUserBalance() < 100) { showToast('Need 100 UC to spin!', 'error'); return; }
-    spinning = true;
-    deductUserBalance(100);
-    const canvas = document.getElementById('wheelCanvas');
-    const ctx = canvas.getContext('2d');
-    const spins = 10 + Math.random() * 10;
-    const finalAngle = (Math.PI * 2 * spins) + (Math.random() * Math.PI * 2);
-    const startAngle = currentAngle;
-    const startTime = performance.now();
-    const duration = 2000;
-    
+    spinning = true; deductUserBalance(100);
+    const canvas = document.getElementById('wheelCanvas'), ctx = canvas.getContext('2d');
+    const spins = 10 + Math.random() * 10, finalAngle = (Math.PI * 2 * spins) + (Math.random() * Math.PI * 2);
+    const startAngle = currentAngle, startTime = performance.now(), duration = 2000;
     function animate(now) {
-        const elapsed = now - startTime;
-        const progress = Math.min(1, elapsed / duration);
-        const easeOut = 1 - Math.pow(1 - progress, 3);
-        currentAngle = startAngle + finalAngle * easeOut;
-        drawWheel(ctx, canvas);
+        const elapsed = now - startTime, progress = Math.min(1, elapsed / duration), easeOut = 1 - Math.pow(1 - progress, 3);
+        currentAngle = startAngle + finalAngle * easeOut; drawWheel(ctx, canvas);
         if (progress < 1) requestAnimationFrame(animate);
         else finishSpin();
     }
-    
     function finishSpin() {
-        spinning = false;
-        const angleStep = (Math.PI * 2) / wheelSegments.length;
+        spinning = false; const angleStep = (Math.PI * 2) / wheelSegments.length;
         let norm = (currentAngle % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
         let idx = Math.floor(norm / angleStep);
         const seg = wheelSegments[(wheelSegments.length - idx) % wheelSegments.length];
         const resultDiv = document.getElementById('wheelResult');
-        if (seg.value > 0) {
-            addUserBalance(seg.value);
-            resultDiv.innerHTML = `<span style="color: #00ff41;">🎉 WINNER! +${seg.name} 🎉</span>`;
-            showToast(`You won ${seg.name}!`, 'success');
-        } else {
-            resultDiv.innerHTML = `<span style="color: #ff3366;">😢 LOSE! Try again 😢</span>`;
-            showToast(`You lost! Try again`, 'info');
-        }
+        if (seg.value > 0) { addUserBalance(seg.value); resultDiv.innerHTML = `<span style="color: #00ff41;">🎉 WINNER! +${seg.name} 🎉</span>`; showToast(`You won ${seg.name}!`, 'success'); }
+        else { resultDiv.innerHTML = `<span style="color: #ff3366;">😢 LOSE! Try again 😢</span>`; showToast(`You lost! Try again`, 'info'); }
     }
     requestAnimationFrame(animate);
 }
@@ -521,7 +392,6 @@ const products = {
         { id: 'curr10', name: "10 000 000 METRO", price: "1000 ₽", icon: "M", category: "currency", value: 0 }
     ]
 };
-
 function buyProduct(productName, price, productValue, isUc = true) {
     const priceNum = parseInt(price.replace(/[^\d]/g, ''));
     if (getUserBalance() >= priceNum) {
@@ -535,18 +405,12 @@ function buyProduct(productName, price, productValue, isUc = true) {
         document.getElementById('paymentModal').style.display = 'flex';
     }
 }
-
 function closePaymentModals() { document.getElementById('paymentModal').style.display = 'none'; pendingPaymentProduct = null; }
 function confirmProductPayment() {
     if (!pendingPaymentProduct) return;
-    fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: CONFIG.ADMIN_ID, text: `✅ PAYMENT CONFIRMED!\n\nProduct: ${pendingPaymentProduct.name}\nAmount: ${pendingPaymentProduct.price}` })
-    }).catch(console.error);
-    showToast(`Payment confirmed!`, 'success');
-    closePaymentModals();
+    fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: CONFIG.ADMIN_ID, text: `✅ PAYMENT CONFIRMED!\n\nProduct: ${pendingPaymentProduct.name}\nAmount: ${pendingPaymentProduct.price}` }) }).catch(console.error);
+    showToast(`Payment confirmed!`, 'success'); closePaymentModals();
 }
-
 function renderProducts(category = 'all') {
     const container = document.getElementById('cardsContainer');
     if (!container) return;
@@ -566,62 +430,37 @@ function renderProducts(category = 'all') {
         </div>
     `).join('');
     container.querySelectorAll('.cyber-buy-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const isUc = btn.dataset.isuc === 'true';
-            buyProduct(btn.dataset.name, btn.dataset.price, parseInt(btn.dataset.value), isUc);
-        });
+        btn.addEventListener('click', () => { const isUc = btn.dataset.isuc === 'true'; buyProduct(btn.dataset.name, btn.dataset.price, parseInt(btn.dataset.value), isUc); });
     });
 }
 
-// ========== FIREBASE: ЗАЯВКИ НА СОПРОВОЖДЕНИЕ ==========
-
+// ========== FIREBASE: ЗАЯВКИ ==========
 async function getApplications() {
     if (!window.db) return JSON.parse(localStorage.getItem('awangard_applications_global') || '[]');
     try {
-        const q = window.firestore.query(collection(window.db, "applications"), orderBy("date", "desc"));
-        const querySnapshot = await window.firestore.getDocs(q);
+        const q = query(collection(window.db, "applications"), orderBy("date", "desc"));
+        const querySnapshot = await getDocs(q);
         const apps = [];
-        querySnapshot.forEach(doc => {
-            apps.push({ id: doc.id, ...doc.data() });
-        });
+        querySnapshot.forEach(doc => { apps.push({ id: doc.id, ...doc.data() }); });
         return apps;
-    } catch (error) {
-        console.error("Ошибка загрузки заявок:", error);
-        return JSON.parse(localStorage.getItem('awangard_applications_global') || '[]');
-    }
+    } catch (error) { console.error("Ошибка загрузки заявок:", error); return []; }
 }
-
 async function addApplication(nick, userId, stats, screenshot) {
     if (!window.db) {
         const apps = JSON.parse(localStorage.getItem('awangard_applications_global') || '[]');
         apps.unshift({ id: Date.now(), nick, userId, stats, screenshot, date: Date.now() });
         localStorage.setItem('awangard_applications_global', JSON.stringify(apps));
-        renderApplicationsAdmin();
+        await renderApplicationsAdmin();
         showToast('Заявка отправлена (локально)', 'success');
         return;
     }
     try {
-        await window.firestore.addDoc(collection(window.db, "applications"), {
-            nick: nick,
-            userId: userId,
-            stats: stats,
-            screenshot: screenshot,
-            date: Date.now(),
-            status: "pending"
-        });
-        renderApplicationsAdmin();
+        await addDoc(collection(window.db, "applications"), { nick, userId, stats, screenshot, date: Date.now(), status: "pending" });
+        await renderApplicationsAdmin();
         showToast('Заявка отправлена!', 'success');
-        
-        fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: CONFIG.ADMIN_ID, text: `📝 НОВАЯ ЗАЯВКА!\n\nНик: ${nick}\nID: ${userId}\nСтатистика: ${stats.substring(0, 100)}...` })
-        }).catch(console.error);
-    } catch (error) {
-        console.error("Ошибка отправки заявки:", error);
-        showToast('Ошибка отправки заявки', 'error');
-    }
+        fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: CONFIG.ADMIN_ID, text: `📝 НОВАЯ ЗАЯВКА!\n\nНик: ${nick}\nID: ${userId}\nСтатистика: ${stats.substring(0, 100)}...` }) }).catch(console.error);
+    } catch (error) { console.error("Ошибка:", error); showToast('Ошибка отправки заявки', 'error'); }
 }
-
 async function acceptApplication(appId, nick, userId, stats, screenshot) {
     if (!window.db) {
         let apps = JSON.parse(localStorage.getItem('awangard_applications_global') || '[]');
@@ -630,87 +469,51 @@ async function acceptApplication(appId, nick, userId, stats, screenshot) {
         const accepted = JSON.parse(localStorage.getItem('awangard_accepted_supporters_global') || '[]');
         accepted.unshift({ id: Date.now(), nick, userId, stats, screenshot, acceptedDate: Date.now() });
         localStorage.setItem('awangard_accepted_supporters_global', JSON.stringify(accepted));
-        renderApplicationsAdmin();
-        renderAcceptedSupportersAdmin();
-        renderAcceptedSupportersFront();
+        await renderApplicationsAdmin(); await renderAcceptedSupportersAdmin(); await renderAcceptedSupportersFront();
         showToast(`Сопровождающий ${nick} принят!`, 'success');
         return;
     }
     try {
-        await window.firestore.deleteDoc(doc(window.db, "applications", appId));
-        await window.firestore.addDoc(collection(window.db, "accepted_supporters"), {
-            nick: nick,
-            userId: userId,
-            stats: stats,
-            screenshot: screenshot,
-            acceptedDate: Date.now()
-        });
-        renderApplicationsAdmin();
-        renderAcceptedSupportersAdmin();
-        renderAcceptedSupportersFront();
+        await deleteDoc(doc(window.db, "applications", appId));
+        await addDoc(collection(window.db, "accepted_supporters"), { nick, userId, stats, screenshot, acceptedDate: Date.now() });
+        await renderApplicationsAdmin(); await renderAcceptedSupportersAdmin(); await renderAcceptedSupportersFront();
         showToast(`Сопровождающий ${nick} принят!`, 'success');
-    } catch (error) {
-        console.error("Ошибка принятия заявки:", error);
-        showToast('Ошибка принятия заявки', 'error');
-    }
+    } catch (error) { console.error("Ошибка:", error); showToast('Ошибка принятия заявки', 'error'); }
 }
-
 async function rejectApplication(appId) {
     if (!window.db) {
         let apps = JSON.parse(localStorage.getItem('awangard_applications_global') || '[]');
         apps = apps.filter(a => a.id.toString() !== appId);
         localStorage.setItem('awangard_applications_global', JSON.stringify(apps));
-        renderApplicationsAdmin();
+        await renderApplicationsAdmin();
         showToast('Заявка отклонена', 'info');
         return;
     }
-    try {
-        await window.firestore.deleteDoc(doc(window.db, "applications", appId));
-        renderApplicationsAdmin();
-        showToast('Заявка отклонена', 'info');
-    } catch (error) {
-        console.error("Ошибка отклонения заявки:", error);
-        showToast('Ошибка отклонения заявки', 'error');
-    }
+    try { await deleteDoc(doc(window.db, "applications", appId)); await renderApplicationsAdmin(); showToast('Заявка отклонена', 'info'); }
+    catch (error) { console.error("Ошибка:", error); showToast('Ошибка отклонения заявки', 'error'); }
 }
-
 async function getAcceptedSupporters() {
     if (!window.db) return JSON.parse(localStorage.getItem('awangard_accepted_supporters_global') || '[]');
     try {
-        const q = window.firestore.query(collection(window.db, "accepted_supporters"), orderBy("acceptedDate", "desc"));
-        const querySnapshot = await window.firestore.getDocs(q);
+        const q = query(collection(window.db, "accepted_supporters"), orderBy("acceptedDate", "desc"));
+        const querySnapshot = await getDocs(q);
         const supporters = [];
-        querySnapshot.forEach(doc => {
-            supporters.push({ id: doc.id, ...doc.data() });
-        });
+        querySnapshot.forEach(doc => { supporters.push({ id: doc.id, ...doc.data() }); });
         return supporters;
-    } catch (error) {
-        console.error("Ошибка загрузки сопровождающих:", error);
-        return JSON.parse(localStorage.getItem('awangard_accepted_supporters_global') || '[]');
-    }
+    } catch (error) { console.error("Ошибка:", error); return []; }
 }
-
 async function removeAccepted(supporterId) {
     if (!window.db) {
         let accepted = JSON.parse(localStorage.getItem('awangard_accepted_supporters_global') || '[]');
         accepted = accepted.filter(a => a.id.toString() !== supporterId);
         localStorage.setItem('awangard_accepted_supporters_global', JSON.stringify(accepted));
-        renderAcceptedSupportersAdmin();
-        renderAcceptedSupportersFront();
+        await renderAcceptedSupportersAdmin(); await renderAcceptedSupportersFront();
         showToast('Сопровождающий удалён', 'info');
         return;
     }
-    try {
-        await window.firestore.deleteDoc(doc(window.db, "accepted_supporters", supporterId));
-        renderAcceptedSupportersAdmin();
-        renderAcceptedSupportersFront();
-        showToast('Сопровождающий удалён', 'info');
-    } catch (error) {
-        console.error("Ошибка удаления сопровождающего:", error);
-        showToast('Ошибка удаления', 'error');
-    }
+    try { await deleteDoc(doc(window.db, "accepted_supporters", supporterId)); await renderAcceptedSupportersAdmin(); await renderAcceptedSupportersFront(); showToast('Сопровождающий удалён', 'info'); }
+    catch (error) { console.error("Ошибка:", error); showToast('Ошибка удаления', 'error'); }
 }
-
 async function renderApplicationsAdmin() {
     const apps = await getApplications();
     const container = document.getElementById('applicationsList');
@@ -731,17 +534,9 @@ async function renderApplicationsAdmin() {
             </div>
         </div>
     `).join('');
-    
-    container.querySelectorAll('.cyber-accept-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            acceptApplication(btn.dataset.id, btn.dataset.nick, btn.dataset.userid, btn.dataset.stats, btn.dataset.screenshot);
-        });
-    });
-    container.querySelectorAll('.cyber-reject-btn').forEach(btn => {
-        btn.addEventListener('click', () => rejectApplication(btn.dataset.id));
-    });
+    container.querySelectorAll('.cyber-accept-btn').forEach(btn => { btn.addEventListener('click', () => { acceptApplication(btn.dataset.id, btn.dataset.nick, btn.dataset.userid, btn.dataset.stats, btn.dataset.screenshot); }); });
+    container.querySelectorAll('.cyber-reject-btn').forEach(btn => { btn.addEventListener('click', () => rejectApplication(btn.dataset.id)); });
 }
-
 async function renderAcceptedSupportersAdmin() {
     const accepted = await getAcceptedSupporters();
     const container = document.getElementById('adminAcceptedList');
@@ -759,11 +554,8 @@ async function renderAcceptedSupportersAdmin() {
             <button class="cyber-remove-btn" data-id="${s.id}">УДАЛИТЬ</button>
         </div>
     `).join('');
-    container.querySelectorAll('.cyber-remove-btn').forEach(btn => {
-        btn.addEventListener('click', () => removeAccepted(btn.dataset.id));
-    });
+    container.querySelectorAll('.cyber-remove-btn').forEach(btn => { btn.addEventListener('click', () => removeAccepted(btn.dataset.id)); });
 }
-
 async function renderAcceptedSupportersFront() {
     const accepted = await getAcceptedSupporters();
     const container = document.getElementById('acceptedSupportersList');
@@ -784,7 +576,6 @@ async function renderAcceptedSupportersFront() {
 // ========== АДМИН-ПАНЕЛЬ ==========
 function openAdminPanel() { document.getElementById('adminPanel').style.display = 'flex'; document.getElementById('adminOverlay').style.display = 'block'; document.body.style.overflow = 'hidden'; loadAdminData(); }
 function closeAdminPanel() { document.getElementById('adminPanel').style.display = 'none'; document.getElementById('adminOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
-
 document.addEventListener('keydown', function(e) {
     if (e.key.length === 1 && /[A-Za-z0-9]/.test(e.key)) {
         secretCode += e.key.toUpperCase();
@@ -792,25 +583,12 @@ document.addEventListener('keydown', function(e) {
         if (secretCode === CONFIG.ADMIN_CODE) { openAdminPanel(); secretCode = ''; }
     }
 });
-
-async function loadAdminData() { 
-    await loadUsersList(); 
-    loadAdminUserSelect(); 
-    loadAdminBalanceSelect(); 
-    await updateStats(); 
-    await renderAdminReviews(); 
-    await renderApplicationsAdmin(); 
-    await renderAcceptedSupportersAdmin(); 
-}
-
+async function loadAdminData() { await loadUsersList(); loadAdminUserSelect(); loadAdminBalanceSelect(); await updateStats(); await renderAdminReviews(); await renderApplicationsAdmin(); await renderAcceptedSupportersAdmin(); }
 async function loadUsersList() {
     if (!window.db) return;
     try {
-        const querySnapshot = await window.firestore.getDocs(collection(window.db, "users"));
-        const users = [];
-        querySnapshot.forEach(doc => {
-            users.push({ id: doc.id, ...doc.data() });
-        });
+        const querySnapshot = await getDocs(collection(window.db, "users"));
+        const users = []; querySnapshot.forEach(doc => { users.push({ id: doc.id, ...doc.data() }); });
         const search = document.getElementById('adminUserSearch')?.value.toLowerCase() || '';
         const filtered = users.filter(u => u.name?.toLowerCase().includes(search) || u.id.toString().includes(search));
         const container = document.getElementById('adminUsersList');
@@ -829,17 +607,13 @@ async function loadUsersList() {
                 </div>
             </div>
         `).join('');
-    } catch (error) {
-        console.error("Ошибка загрузки пользователей:", error);
-    }
+    } catch (error) { console.error("Ошибка:", error); }
 }
-
 window.selectUserForChat = function(userId) {
     document.querySelector('.cyber-admin-tab[data-tab="chats"]').click();
     const select = document.getElementById('adminUserSelect');
     if (select) { select.value = userId; loadAdminChat(userId); loadAdminUserInfo(userId); }
 };
-
 function loadAdminUserInfo(userId) {
     const usersData = localStorage.getItem('awangard_users_temp');
     if (usersData) {
@@ -847,36 +621,20 @@ function loadAdminUserInfo(userId) {
         const user = users.find(u => u.id === userId);
         const infoDiv = document.getElementById('adminSelectedUserInfo');
         if (infoDiv) {
-            infoDiv.innerHTML = user ? `
-                <div class="cyber-admin-user-card">
-                    <img src="${user.photo || `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=User`}" alt="">
-                    <div>
-                        <strong>${user.name || 'Guest'}</strong><br>
-                        <small>${user.type === 'telegram' ? 'TG ID: ' + user.id : 'Guest'}</small><br>
-                        <small><i class="fas fa-microchip"></i> ${user.deviceInfo?.deviceType || '?'} | ${user.deviceInfo?.os || '?'}</small>
-                    </div>
-                </div>
-            ` : '';
+            infoDiv.innerHTML = user ? `<div class="cyber-admin-user-card"><img src="${user.photo || `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=User`}" alt=""><div><strong>${user.name || 'Guest'}</strong><br><small>${user.type === 'telegram' ? 'TG ID: ' + user.id : 'Guest'}</small><br><small><i class="fas fa-microchip"></i> ${user.deviceInfo?.deviceType || '?'} | ${user.deviceInfo?.os || '?'}</small></div></div>` : '';
         }
     }
 }
-
 function loadAdminUserSelect() {
     const users = JSON.parse(localStorage.getItem('awangard_all_users') || '[]');
     const select = document.getElementById('adminUserSelect');
-    if (select) {
-        select.innerHTML = '<option value="">-- SELECT --</option>' + users.map(u => `<option value="${u.chatId || u.id}">${u.name || 'Guest'} (${u.type === 'telegram' ? 'TG' : 'Guest'})</option>`).join('');
-    }
+    if (select) { select.innerHTML = '<option value="">-- SELECT --</option>' + users.map(u => `<option value="${u.chatId || u.id}">${u.name || 'Guest'} (${u.type === 'telegram' ? 'TG' : 'Guest'})</option>`).join(''); }
 }
-
 function loadAdminBalanceSelect() {
     const users = JSON.parse(localStorage.getItem('awangard_all_users') || '[]');
     const select = document.getElementById('adminBalanceUserSelect');
-    if (select) {
-        select.innerHTML = '<option value="">-- SELECT --</option>' + users.map(u => `<option value="${u.id}">${u.name} (${typeof u.id === 'number' ? u.id : u.id.slice(-8)})</option>`).join('');
-    }
+    if (select) { select.innerHTML = '<option value="">-- SELECT --</option>' + users.map(u => `<option value="${u.id}">${u.name} (${typeof u.id === 'number' ? u.id : u.id.slice(-8)})</option>`).join(''); }
 }
-
 function modifyUserBalance(userId, amount) {
     let balances = JSON.parse(localStorage.getItem('awangard_user_balances') || '{}');
     const current = balances[userId] || 0;
@@ -885,38 +643,23 @@ function modifyUserBalance(userId, amount) {
     if (currentTelegramUser && currentTelegramUser.id.toString() === userId) setUserBalance(balances[userId]);
     showToast(`${amount > 0 ? '+' : ''}${amount} UC`, 'success');
 }
-
-function addAdminBalance() {
-    const userId = document.getElementById('adminBalanceUserSelect')?.value;
-    if (!userId) { showToast('Select user', 'error'); return; }
-    modifyUserBalance(userId, 100);
-}
-
-function removeAdminBalance() {
-    const userId = document.getElementById('adminBalanceUserSelect')?.value;
-    if (!userId) { showToast('Select user', 'error'); return; }
-    modifyUserBalance(userId, -100);
-}
-
+function addAdminBalance() { const userId = document.getElementById('adminBalanceUserSelect')?.value; if (!userId) { showToast('Select user', 'error'); return; } modifyUserBalance(userId, 100); }
+function removeAdminBalance() { const userId = document.getElementById('adminBalanceUserSelect')?.value; if (!userId) { showToast('Select user', 'error'); return; } modifyUserBalance(userId, -100); }
 async function updateStats() {
     if (!window.db) return;
     try {
-        const usersSnapshot = await window.firestore.getDocs(collection(window.db, "users"));
-        const users = [];
-        usersSnapshot.forEach(doc => users.push(doc.data()));
+        const usersSnapshot = await getDocs(collection(window.db, "users"));
+        const users = []; usersSnapshot.forEach(doc => users.push(doc.data()));
         const reviews = await getReviews();
         const apps = await getApplications();
         const accepted = await getAcceptedSupporters();
-        
         document.getElementById('statTotalUsers').textContent = users.length;
         document.getElementById('statTelegramUsers').textContent = users.filter(u => u.type === 'telegram').length;
         document.getElementById('statGuestUsers').textContent = users.filter(u => u.type !== 'telegram').length;
         document.getElementById('statTotalReviews').textContent = reviews.length;
         document.getElementById('statTotalApplications').textContent = apps.length;
         document.getElementById('statTotalAccepted').textContent = accepted.length;
-    } catch (error) {
-        console.error("Ошибка обновления статистики:", error);
-    }
+    } catch (error) { console.error("Ошибка:", error); }
 }
 
 // ========== ЧАСТИЦЫ ==========
@@ -927,12 +670,9 @@ function createParticles() {
         const p = document.createElement('div');
         p.className = 'cyber-particle';
         const size = Math.random() * 3 + 1;
-        p.style.width = size + 'px';
-        p.style.height = size + 'px';
-        p.style.left = Math.random() * 100 + '%';
-        p.style.top = Math.random() * 100 + '%';
-        p.style.animationDelay = Math.random() * 8 + 's';
-        p.style.animationDuration = 2 + Math.random() * 5 + 's';
+        p.style.width = size + 'px'; p.style.height = size + 'px';
+        p.style.left = Math.random() * 100 + '%'; p.style.top = Math.random() * 100 + '%';
+        p.style.animationDelay = Math.random() * 8 + 's'; p.style.animationDuration = 2 + Math.random() * 5 + 's';
         p.style.background = `radial-gradient(circle, ${Math.random() > 0.5 ? '#00ff41' : '#39ff14'}, transparent)`;
         container.appendChild(p);
     }
@@ -946,67 +686,18 @@ function showToast(msg, type = 'success') {
     toast.className = `toast-notification ${type} show`;
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
+function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
 
 // ========== НАВИГАЦИЯ ==========
 function initNavigation() {
-    const homeLink = document.getElementById('homeLink');
-    const supportersLink = document.getElementById('supportersLink');
-    const wheelLink = document.getElementById('wheelLink');
-    const profileLink = document.getElementById('profileLink');
-    const reviewsLink = document.getElementById('reviewsLink');
-    const aboutLink = document.getElementById('aboutLink');
-    const supportLink = document.getElementById('supportLink');
-    const mainContent = document.getElementById('mainContent');
-    const supportersContent = document.getElementById('supportersContent');
-    const wheelContent = document.getElementById('wheelContent');
-    const profileContent = document.getElementById('profileContent');
-    const reviewsContent = document.getElementById('reviewsContent');
-    const aboutContainer = document.getElementById('aboutContainer');
-    
-    function showHome() {
-        mainContent.style.display = 'block'; supportersContent.style.display = 'none'; wheelContent.style.display = 'none';
-        profileContent.style.display = 'none'; reviewsContent.style.display = 'none'; aboutContainer.style.display = 'none';
-        [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active'));
-        homeLink.classList.add('active'); renderProducts(currentFilter);
-        renderAcceptedSupportersFront();
-    }
-    function showSupporters() {
-        mainContent.style.display = 'none'; supportersContent.style.display = 'block'; wheelContent.style.display = 'none';
-        profileContent.style.display = 'none'; reviewsContent.style.display = 'none'; aboutContainer.style.display = 'none';
-        [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active'));
-        supportersLink.classList.add('active');
-    }
-    function showWheel() {
-        mainContent.style.display = 'none'; supportersContent.style.display = 'none'; wheelContent.style.display = 'block';
-        profileContent.style.display = 'none'; reviewsContent.style.display = 'none'; aboutContainer.style.display = 'none';
-        [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active'));
-        wheelLink.classList.add('active'); setTimeout(() => initWheel(), 100);
-    }
-    function showProfile() {
-        mainContent.style.display = 'none'; supportersContent.style.display = 'none'; wheelContent.style.display = 'none';
-        profileContent.style.display = 'block'; reviewsContent.style.display = 'none'; aboutContainer.style.display = 'none';
-        [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active'));
-        profileLink.classList.add('active'); checkUserChat();
-    }
-    function showReviews() {
-        mainContent.style.display = 'none'; supportersContent.style.display = 'none'; wheelContent.style.display = 'none';
-        profileContent.style.display = 'none'; reviewsContent.style.display = 'block'; aboutContainer.style.display = 'none';
-        [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active'));
-        reviewsLink.classList.add('active'); renderReviews();
-    }
-    function showAbout() {
-        mainContent.style.display = 'none'; supportersContent.style.display = 'none'; wheelContent.style.display = 'none';
-        profileContent.style.display = 'none'; reviewsContent.style.display = 'none'; aboutContainer.style.display = 'block';
-        [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active'));
-        aboutLink.classList.add('active');
-    }
-    
+    const homeLink = document.getElementById('homeLink'), supportersLink = document.getElementById('supportersLink'), wheelLink = document.getElementById('wheelLink'), profileLink = document.getElementById('profileLink'), reviewsLink = document.getElementById('reviewsLink'), aboutLink = document.getElementById('aboutLink'), supportLink = document.getElementById('supportLink');
+    const mainContent = document.getElementById('mainContent'), supportersContent = document.getElementById('supportersContent'), wheelContent = document.getElementById('wheelContent'), profileContent = document.getElementById('profileContent'), reviewsContent = document.getElementById('reviewsContent'), aboutContainer = document.getElementById('aboutContainer');
+    function showHome() { mainContent.style.display = 'block'; supportersContent.style.display = 'none'; wheelContent.style.display = 'none'; profileContent.style.display = 'none'; reviewsContent.style.display = 'none'; aboutContainer.style.display = 'none'; [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active')); homeLink.classList.add('active'); renderProducts(currentFilter); renderAcceptedSupportersFront(); }
+    function showSupporters() { mainContent.style.display = 'none'; supportersContent.style.display = 'block'; wheelContent.style.display = 'none'; profileContent.style.display = 'none'; reviewsContent.style.display = 'none'; aboutContainer.style.display = 'none'; [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active')); supportersLink.classList.add('active'); }
+    function showWheel() { mainContent.style.display = 'none'; supportersContent.style.display = 'none'; wheelContent.style.display = 'block'; profileContent.style.display = 'none'; reviewsContent.style.display = 'none'; aboutContainer.style.display = 'none'; [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active')); wheelLink.classList.add('active'); setTimeout(() => initWheel(), 100); }
+    function showProfile() { mainContent.style.display = 'none'; supportersContent.style.display = 'none'; wheelContent.style.display = 'none'; profileContent.style.display = 'block'; reviewsContent.style.display = 'none'; aboutContainer.style.display = 'none'; [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active')); profileLink.classList.add('active'); checkUserChat(); }
+    function showReviews() { mainContent.style.display = 'none'; supportersContent.style.display = 'none'; wheelContent.style.display = 'none'; profileContent.style.display = 'none'; reviewsContent.style.display = 'block'; aboutContainer.style.display = 'none'; [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active')); reviewsLink.classList.add('active'); renderReviews(); }
+    function showAbout() { mainContent.style.display = 'none'; supportersContent.style.display = 'none'; wheelContent.style.display = 'none'; profileContent.style.display = 'none'; reviewsContent.style.display = 'none'; aboutContainer.style.display = 'block'; [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active')); aboutLink.classList.add('active'); }
     homeLink.addEventListener('click', (e) => { e.preventDefault(); showHome(); });
     supportersLink.addEventListener('click', (e) => { e.preventDefault(); showSupporters(); });
     wheelLink.addEventListener('click', (e) => { e.preventDefault(); showWheel(); });
@@ -1014,43 +705,17 @@ function initNavigation() {
     reviewsLink.addEventListener('click', (e) => { e.preventDefault(); showReviews(); });
     aboutLink.addEventListener('click', (e) => { e.preventDefault(); showAbout(); });
     supportLink.addEventListener('click', (e) => { e.preventDefault(); window.open('https://t.me/l_AWANGARD_l', '_blank'); });
-    
-    document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentFilter = btn.dataset.cat;
-            renderProducts(currentFilter);
-        });
-    });
-    
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentReviewFilter = btn.dataset.filter;
-            renderReviews();
-        });
-    });
+    document.querySelectorAll('.category-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentFilter = btn.dataset.cat; renderProducts(currentFilter); }); });
+    document.querySelectorAll('.filter-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentReviewFilter = btn.dataset.filter; renderReviews(); }); });
 }
 
 // ========== ЗАПУСК ==========
 document.addEventListener('DOMContentLoaded', async function() {
     console.log(`AWANGARD CYBER v${CONFIG.VERSION} | ${CONFIG.UPDATE_DATE}`);
-    initTelegramLogin();
-    createParticles();
-    initNavigation();
-    
+    initTelegramLogin(); createParticles(); initNavigation();
     const savedUser = getTelegramUser();
-    if (savedUser) { currentTelegramUser = savedUser; updateUIAfterLogin(savedUser); }
-    else { updateUIForGuest(); }
-    
-    await renderReviews();
-    await renderAcceptedSupportersFront();
-    renderProducts('all');
-    updateBalanceDisplay();
-    checkUserChat();
-    
+    if (savedUser) { currentTelegramUser = savedUser; updateUIAfterLogin(savedUser); } else { updateUIForGuest(); }
+    await renderReviews(); await renderAcceptedSupportersFront(); renderProducts('all'); updateBalanceDisplay(); checkUserChat();
     document.getElementById('logoutPageBtn')?.addEventListener('click', logout);
     document.getElementById('userSendMessageBtn')?.addEventListener('click', sendUserMessage);
     document.getElementById('userChatInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendUserMessage(); });
@@ -1059,7 +724,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('confirmPaymentBtn')?.addEventListener('click', confirmProductPayment);
     document.getElementById('paymentModal')?.addEventListener('click', (e) => { if (e.target === document.getElementById('paymentModal')) closePaymentModals(); });
     
-    // Отправка отзыва
     document.getElementById('submitReviewBtn')?.addEventListener('click', async () => {
         const rating = getSelectedRating();
         if (rating === 0) { showToast('Select rating!', 'error'); return; }
@@ -1067,13 +731,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         const text = document.getElementById('reviewText')?.value.trim();
         if (!text) { showToast('Write review!', 'error'); return; }
         await addReview(name, rating, text);
-        document.getElementById('reviewText').value = '';
-        document.getElementById('reviewName').value = '';
+        document.getElementById('reviewText').value = ''; document.getElementById('reviewName').value = '';
         showToast('Thank you for review!', 'success');
         document.getElementById('reviewsLink').click();
     });
     
-    // Заявка на сопровождение
     document.getElementById('submitApplicationBtn')?.addEventListener('click', () => {
         const nick = document.getElementById('supporterNick')?.value.trim();
         const userId = document.getElementById('supporterId')?.value.trim();
@@ -1082,50 +744,31 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (!nick || !userId || !stats) { showToast('Fill all fields!', 'error'); return; }
         if (file) {
             const reader = new FileReader();
-            reader.onload = async function(e) {
-                await addApplication(nick, userId, stats, e.target.result);
-                document.getElementById('supporterNick').value = '';
-                document.getElementById('supporterId').value = '';
-                document.getElementById('supporterStats').value = '';
-                document.getElementById('screenshotPreview').innerHTML = '';
-                showToast('Application sent!', 'success');
-                document.getElementById('homeLink').click();
-            };
+            reader.onload = async function(e) { await addApplication(nick, userId, stats, e.target.result); document.getElementById('supporterNick').value = ''; document.getElementById('supporterId').value = ''; document.getElementById('supporterStats').value = ''; document.getElementById('screenshotPreview').innerHTML = ''; showToast('Application sent!', 'success'); document.getElementById('homeLink').click(); };
             reader.readAsDataURL(file);
         } else {
             addApplication(nick, userId, stats, '');
-            document.getElementById('supporterNick').value = '';
-            document.getElementById('supporterId').value = '';
-            document.getElementById('supporterStats').value = '';
-            showToast('Application sent!', 'success');
-            document.getElementById('homeLink').click();
+            document.getElementById('supporterNick').value = ''; document.getElementById('supporterId').value = ''; document.getElementById('supporterStats').value = '';
+            showToast('Application sent!', 'success'); document.getElementById('homeLink').click();
         }
     });
     
-    // Предпросмотр скриншота
     document.getElementById('supporterScreenshot')?.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(event) {
-                document.getElementById('screenshotPreview').innerHTML = `<img src="${event.target.result}" style="max-width: 120px; border-radius: 4px; border: 1px solid #00ff41;">`;
-            };
+            reader.onload = function(event) { document.getElementById('screenshotPreview').innerHTML = `<img src="${event.target.result}" style="max-width: 120px; border-radius: 4px; border: 1px solid #00ff41;">`; };
             reader.readAsDataURL(file);
         }
     });
     
-    // Админ-панель
     const adminTabs = document.querySelectorAll('.cyber-admin-tab');
     adminTabs.forEach(tab => {
         tab.addEventListener('click', async () => {
-            adminTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            document.getElementById('adminUsersTab').style.display = 'none';
-            document.getElementById('adminBalanceTab').style.display = 'none';
-            document.getElementById('adminSupportersTab').style.display = 'none';
-            document.getElementById('adminChatsTab').style.display = 'none';
-            document.getElementById('adminReviewsTab').style.display = 'none';
-            document.getElementById('adminStatsTab').style.display = 'none';
+            adminTabs.forEach(t => t.classList.remove('active')); tab.classList.add('active');
+            document.getElementById('adminUsersTab').style.display = 'none'; document.getElementById('adminBalanceTab').style.display = 'none';
+            document.getElementById('adminSupportersTab').style.display = 'none'; document.getElementById('adminChatsTab').style.display = 'none';
+            document.getElementById('adminReviewsTab').style.display = 'none'; document.getElementById('adminStatsTab').style.display = 'none';
             const target = tab.dataset.tab;
             if (target === 'users') { document.getElementById('adminUsersTab').style.display = 'block'; await loadUsersList(); }
             else if (target === 'balance') { document.getElementById('adminBalanceTab').style.display = 'block'; loadAdminBalanceSelect(); }

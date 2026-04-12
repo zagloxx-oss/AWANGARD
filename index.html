@@ -15,7 +15,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, setDoc, getDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
         
-        // Ваши данные Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyB_Bkxiuia16G4Bn0-cyLMEp2IsB6fR4Qo",
             authDomain: "awangard-7b58f.firebaseapp.com",
@@ -28,7 +27,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         
-        // Сохраняем в глобальную переменную
         window.db = db;
         window.firestore = { collection, getDocs, addDoc, deleteDoc, doc, setDoc, getDoc, query, orderBy };
         
@@ -36,7 +34,6 @@
     </script>
 </head>
 <body>
-    <!-- КИБЕРПАНК ФОН -->
     <div class="cyber-bg">
         <div class="cyber-grid"></div>
         <div class="cyber-scan-line"></div>
@@ -55,7 +52,6 @@
         <div class="cyber-circle"></div><div class="cyber-circle"></div><div class="cyber-circle"></div><div class="cyber-circle"></div>
     </div>
     
-    <!-- НАВИГАЦИЯ -->
     <nav class="cyber-nav">
         <div class="nav-container">
             <div class="logo">
@@ -88,7 +84,6 @@
     
     <div class="main-wrapper">
         <main class="content-area">
-            <!-- ГЛАВНАЯ СТРАНИЦА -->
             <div id="mainContent">
                 <div class="cyber-hero">
                     <div class="cyber-glitch-wrapper">
@@ -100,7 +95,6 @@
                     </div>
                 </div>
                 
-                <!-- БЛОК ТОВАРОВ -->
                 <div class="cyber-section-title">
                     <i class="fas fa-shopping-cart"></i>
                     <h2>МАГАЗИН</h2>
@@ -113,7 +107,6 @@
                 </div>
                 <div id="cardsContainer" class="cyber-cards-grid"></div>
                 
-                <!-- БЛОК СОПРОВОЖДАЮЩИХ -->
                 <div class="cyber-section-title">
                     <i class="fas fa-user-shield"></i>
                     <h2>ЭЛИТНЫЕ СОПРОВОЖДАЮЩИЕ</h2>
@@ -124,7 +117,6 @@
                 </div>
             </div>
             
-            <!-- СТРАНИЦА СОПРОВОЖДАЮЩИХ -->
             <div id="supportersContent" style="display: none;">
                 <div class="cyber-card">
                     <div class="cyber-card-header">
@@ -158,7 +150,6 @@
                 </div>
             </div>
             
-            <!-- СТРАНИЦА КОЛЕСА ФОРТУНЫ -->
             <div id="wheelContent" style="display: none;">
                 <div class="cyber-card">
                     <div class="cyber-card-header">
@@ -176,7 +167,6 @@
                 </div>
             </div>
             
-            <!-- СТРАНИЦА ПРОФИЛЯ -->
             <div id="profileContent" style="display: none;">
                 <div class="cyber-card">
                     <div class="cyber-card-header">
@@ -214,7 +204,6 @@
                     </div>
                 </div>
                 
-                <!-- ЧАТ ПОДДЕРЖКИ -->
                 <div class="cyber-chat" id="userChatContainer" style="display: none;">
                     <div class="cyber-chat-header">
                         <i class="fas fa-headset"></i>
@@ -233,7 +222,6 @@
                 </div>
             </div>
             
-            <!-- СТРАНИЦА ОТЗЫВОВ -->
             <div id="reviewsContent" style="display: none;">
                 <div class="cyber-card">
                     <div class="cyber-card-header">
@@ -280,7 +268,6 @@
                 </div>
             </div>
             
-            <!-- СТРАНИЦА "О НАС" -->
             <div id="aboutContainer" style="display: none;">
                 <div class="cyber-card">
                     <div class="cyber-card-header">
@@ -294,7 +281,6 @@
         </main>
     </div>
     
-    <!-- МОДАЛЬНОЕ ОКНО ОПЛАТЫ -->
     <div id="paymentModal" class="payment-modal" style="display: none;">
         <div class="payment-modal-content">
             <div class="payment-modal-header">
@@ -319,7 +305,6 @@
         </div>
     </div>
     
-    <!-- АДМИН-ПАНЕЛЬ -->
     <div id="adminPanel" class="cyber-admin-panel" style="display: none;">
         <div class="cyber-admin-header">
             <h2><i class="fas fa-shield-alt"></i> ADMIN ACCESS</h2>
