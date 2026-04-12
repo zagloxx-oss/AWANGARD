@@ -3,7 +3,7 @@
 const CONFIG = {
     VERSION: '1.0',
     DONATION_URL: 'https://www.donationalerts.com/r/limitblitzoffical',
-    BOT_TOKEN: '8403893049:AAHbnFG-2PfMyj2fmhgRq0ELePOiK0VgIn0', // Новый токен
+    BOT_TOKEN: '8403893049:AAHbnFG-2PfMyj2fmhgRq0ELePOiK0VgIn0',
     ADMIN_ID: 'ВАШ_TELEGRAM_ID', // ЗАМЕНИТЕ НА ВАШ TELEGRAM ID
     ADMIN_CODE: 'AWANGARD'
 };
@@ -17,18 +17,109 @@ let spinning = false;
 let currentAngle = 0;
 let pendingPaymentProduct = null;
 let currentTelegramUser = null;
+let userLocation = { country: "Неизвестно", city: "Неизвестно", ip: "Неизвестно" };
 
-// Сектора колеса фортуны
-const wheelSegments = [
-    { name: "60 UC", value: 60, color: "#bf4bf6" },
-    { name: "325 UC", value: 325, color: "#ff44cc" },
-    { name: "ПРОИГРЫШ", value: 0, color: "#333" },
-    { name: "ПРОИГРЫШ", value: 0, color: "#444" },
-    { name: "ПРОИГРЫШ", value: 0, color: "#555" },
-    { name: "ПРОИГРЫШ", value: 0, color: "#666" },
-    { name: "ПРОИГРЫШ", value: 0, color: "#777" },
-    { name: "ПРОИГРЫШ", value: 0, color: "#888" }
-];
+// ========== ОПРЕДЕЛЕНИЕ ГЕОЛОКАЦИИ ==========
+async function getUserLocation() {
+    try {
+        const response = await fetch('https://ipapi.co/json/');
+        const data = await response.json();
+        userLocation = {
+            country: data.country_name || "Неизвестно",
+            city: data.city || "Неизвестно",
+            ip: data.ip || "Неизвестно",
+            region: data.region || "Неизвестно"
+        };
+        return userLocation;
+    } catch (error) {
+        console.error('Ошибка получения геолокации:', error);
+        userLocation = { country: "Неизвестно", city: "Неизвестно", ip: "Неизвестно" };
+        return userLocation;
+    }
+}
+
+// ========== ОПРЕДЕЛЕНИЕ УСТРОЙСТВА ==========
+function getDeviceFullInfo() {
+    const ua = navigator.userAgent;
+    const platform = navigator.platform;
+    const language = navigator.language;
+    const screenResolution = `${screen.width}x${screen.height}`;
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    
+    let os = "Unknown";
+    if (/Windows NT 10/.test(ua)) os = "Windows 10";
+    else if (/Windows NT 6.1/.test(ua)) os = "Windows 7";
+    else if (/Mac OS X/.test(ua)) os = "macOS";
+    else if (/Android/.test(ua)) os = "Android";
+    else if (/iPhone|iPad|iPod/.test(ua)) os = "iOS";
+    else if (/Linux/.test(ua)) os = "Linux";
+    
+    let browser = "Unknown";
+    if (/Chrome/.test(ua) && !/Edg/.test(ua)) browser = "Chrome";
+    else if (/Firefox/.test(ua)) browser = "Firefox";
+    else if (/Safari/.test(ua) && !/Chrome/.test(ua)) browser = "Safari";
+    else if (/Edg/.test(ua)) browser = "Edge";
+    else if (/Opera|OPR/.test(ua)) browser = "Opera";
+    
+    let deviceType = "Desktop";
+    if (/Mobi|Android|iPhone|iPad|iPod/.test(ua)) {
+        deviceType = /iPad|Android(?!.*Mobile)/i.test(ua) ? "Tablet" : "Mobile";
+    }
+    
+    return { os, browser, deviceType, platform, language, screenResolution, timezone, userAgent: ua.substring(0, 200) };
+}
+
+// ========== РЕГИСТРАЦИЯ ПОЛЬЗОВАТЕЛЯ (АВТОМАТИЧЕСКАЯ) ==========
+function generateUniqueId() { 
+    return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9); 
+}
+
+async function registerUser(id, type, name, photo = null, telegramId = null) {
+    let users = JSON.parse(localStorage.getItem('awangard_all_users') || '[]');
+    const deviceInfo = getDeviceFullInfo();
+    const location = await getUserLocation();
+    
+    const existingIndex = users.findIndex(u => u.id === id);
+    
+    if (existingIndex === -1) {
+        const newUser = { 
+            id, type, name, photo, telegramId, 
+            deviceInfo: deviceInfo,
+            location: location,
+            firstSeen: new Date().toISOString(), 
+            lastSeen: new Date().toISOString(), 
+            chatId: id, 
+            orders: 0,
+            visitCount: 1,
+            balance: 0
+        };
+        users.push(newUser);
+        localStorage.setItem('awangard_all_users', JSON.stringify(users));
+        console.log('✅ Новый пользователь зарегистрирован:', name, id);
+    } else {
+        // Обновляем существующего пользователя (последний визит)
+        users[existingIndex].lastSeen = new Date().toISOString();
+        users[existingIndex].visitCount = (users[existingIndex].visitCount || 0) + 1;
+        users[existingIndex].deviceInfo = deviceInfo;
+        users[existingIndex].location = location;
+        localStorage.setItem('awangard_all_users', JSON.stringify(users));
+        console.log('🔄 Обновлён пользователь:', users[existingIndex].name);
+    }
+}
+
+// ========== ПОЛУЧЕНИЕ УНИКАЛЬНОГО ID ГОСТЯ ==========
+function getOrCreateGuestId() {
+    let guestId = localStorage.getItem('awangard_guest_id');
+    if (!guestId) {
+        guestId = generateUniqueId();
+        localStorage.setItem('awangard_guest_id', guestId);
+        // Регистрируем гостя
+        registerUser(guestId, 'guest', 'Гость');
+    }
+    return guestId;
+}
+
+const CURRENT_GUEST_ID = getOrCreateGuestId();
 
 // ========== БАЛАНС ПОЛЬЗОВАТЕЛЯ ==========
 function getUserBalance() {
@@ -75,6 +166,10 @@ function getTelegramUser() {
 function saveTelegramUser(userData) {
     localStorage.setItem('awangard_telegram_user', JSON.stringify(userData));
     currentTelegramUser = userData;
+    
+    // Регистрируем Telegram пользователя в общем списке
+    registerUser(userData.id.toString(), 'telegram', userData.first_name + ' ' + (userData.last_name || ''), userData.photo_url, userData.id);
+    
     updateUIAfterLogin(userData);
 }
 
@@ -94,7 +189,7 @@ function updateUIAfterLogin(userData) {
 function updateUIForGuest() {
     document.getElementById('profileNameLarge').textContent = 'Гость';
     document.getElementById('profileUsernameLarge').textContent = '';
-    document.getElementById('profileIdLarge').textContent = 'guest';
+    document.getElementById('profileIdLarge').textContent = CURRENT_GUEST_ID.slice(-8);
     document.getElementById('profileAvatarLarge').src = 'https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=Guest';
     document.getElementById('telegramLoginEnhanced').style.display = 'block';
     document.getElementById('logoutEnhancedBtn').style.display = 'none';
@@ -108,25 +203,14 @@ function logout() {
     showToast('Вы вышли из аккаунта', 'info');
 }
 
-// МАКСИМАЛЬНО ВИДИМАЯ КНОПКА TELEGRAM
 function initTelegramLogin() {
     const container = document.getElementById('telegramLoginEnhanced');
     if (container) {
         container.innerHTML = '';
         
-        // Создаём кастомную обёртку для кнопки
         const wrapper = document.createElement('div');
         wrapper.className = 'telegram-login-wrapper';
         
-        // Добавляем иконку и текст
-        const icon = document.createElement('i');
-        icon.className = 'fab fa-telegram';
-        icon.style.marginRight = '8px';
-        
-        const text = document.createElement('span');
-        text.textContent = 'Войти через Telegram';
-        
-        // Создаём виджет
         const script = document.createElement('script');
         script.async = true;
         script.src = 'https://telegram.org/js/telegram-widget.js?23';
@@ -141,7 +225,14 @@ function initTelegramLogin() {
     }
 }
 
-// Слушаем событие от глобальной функции
+// Глобальная функция для Telegram
+window.onTelegramAuth = function(user) {
+    if (user && user.id) {
+        const event = new CustomEvent('telegramAuth', { detail: user });
+        document.dispatchEvent(event);
+    }
+};
+
 document.addEventListener('telegramAuth', (e) => {
     const user = e.detail;
     if (user && user.id) {
@@ -176,7 +267,7 @@ function confirmProductPayment() {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
             chat_id: CONFIG.ADMIN_ID, 
-            text: `✅ ПОДТВЕРЖДЕНИЕ ОПЛАТЫ!\n\n📦 Товар: ${pendingPaymentProduct.name}\n💰 Сумма: ${pendingPaymentProduct.price}\n👤 Пользователь: ${currentTelegramUser?.first_name || 'Гость'}\n\nПроверьте DonationAlerts и выдайте товар!` 
+            text: `✅ ПОДТВЕРЖДЕНИЕ ОПЛАТЫ!\n\n📦 Товар: ${pendingPaymentProduct.name}\n💰 Сумма: ${pendingPaymentProduct.price}\n👤 Пользователь: ${currentTelegramUser?.first_name || 'Гость'}\n🆔 ID: ${currentTelegramUser?.id || CURRENT_GUEST_ID}\n\nПроверьте DonationAlerts и выдайте товар!` 
         })
     }).catch(console.error);
     
@@ -197,7 +288,7 @@ function buyProduct(productName, price, productValue, isUc = true) {
             showToast(`✅ Вы купили ${productName}! Ожидайте выдачи.`, 'success');
             fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: CONFIG.ADMIN_ID, text: `🛍️ ПОКУПКА!\n\n📦 Товар: ${productName}\n💰 Списано: ${priceNum} UC\n👤 Пользователь: ${currentTelegramUser?.first_name || 'Гость'}` })
+                body: JSON.stringify({ chat_id: CONFIG.ADMIN_ID, text: `🛍️ ПОКУПКА!\n\n📦 Товар: ${productName}\n💰 Списано: ${priceNum} UC\n👤 Пользователь: ${currentTelegramUser?.first_name || 'Гость'}\n🆔 ID: ${currentTelegramUser?.id || CURRENT_GUEST_ID}` })
             }).catch(console.error);
         }
     } else {
@@ -206,6 +297,17 @@ function buyProduct(productName, price, productValue, isUc = true) {
 }
 
 // ========== КОЛЕСО ФОРТУНЫ ==========
+const wheelSegments = [
+    { name: "60 UC", value: 60, color: "#bf4bf6" },
+    { name: "325 UC", value: 325, color: "#ff44cc" },
+    { name: "ПРОИГРЫШ", value: 0, color: "#333" },
+    { name: "ПРОИГРЫШ", value: 0, color: "#444" },
+    { name: "ПРОИГРЫШ", value: 0, color: "#555" },
+    { name: "ПРОИГРЫШ", value: 0, color: "#666" },
+    { name: "ПРОИГРЫШ", value: 0, color: "#777" },
+    { name: "ПРОИГРЫШ", value: 0, color: "#888" }
+];
+
 function initWheel() {
     const canvas = document.getElementById('wheelCanvas');
     if (!canvas) return;
@@ -369,20 +471,80 @@ function loadUsersList() {
     const container = document.getElementById('adminUsersList');
     if (!container) return;
     
-    if (filtered.length === 0) { container.innerHTML = '<div class="no-data">Нет пользователей</div>'; return; }
+    if (filtered.length === 0) { 
+        container.innerHTML = '<div class="no-data">Нет пользователей. Зайдите на сайт с другого устройства или в режиме инкогнито для теста.</div>'; 
+        return; 
+    }
     
     container.innerHTML = filtered.map(u => `
         <div class="admin-user-card" onclick="window.selectUserForChat?.('${u.chatId || u.id}')">
             <img src="${u.photo || `https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=${u.name || 'Guest'}`}" alt="">
             <div class="admin-user-info">
                 <div class="admin-user-name">${u.name || 'Гость'}</div>
-                <div class="admin-user-id">ID: ${typeof u.id === 'number' ? u.id : u.id.slice(-8)}</div>
-                <div class="admin-user-device"><i class="fas fa-desktop"></i> ${u.deviceInfo || 'Неизвестно'}</div>
-                <div class="admin-user-location"><i class="fas fa-map-marker-alt"></i> ${u.location || 'Неизвестно'}</div>
+                <div class="admin-user-id">ID: ${typeof u.id === 'number' ? u.id : u.id.slice(-12)}</div>
+                <div class="admin-user-device">
+                    <i class="fas ${u.deviceInfo?.deviceType === 'Mobile' ? 'fa-mobile-alt' : (u.deviceInfo?.deviceType === 'Tablet' ? 'fa-tablet-alt' : 'fa-desktop')}"></i>
+                    ${u.deviceInfo?.deviceType || 'Desktop'} | ${u.deviceInfo?.os || 'Unknown'} | ${u.deviceInfo?.browser || 'Unknown'}
+                </div>
+                <div class="admin-user-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    ${u.location?.city || 'Неизвестно'}, ${u.location?.country || 'Неизвестно'}
+                    <span class="admin-user-ip">IP: ${u.location?.ip || 'скрыт'}</span>
+                </div>
+                <div class="admin-user-stats">
+                    <span><i class="fas fa-calendar"></i> Впервые: ${new Date(u.firstSeen).toLocaleDateString()}</span>
+                    <span><i class="fas fa-clock"></i> Последний визит: ${new Date(u.lastSeen).toLocaleString()}</span>
+                    <span><i class="fas fa-chart-simple"></i> Визитов: ${u.visitCount || 1}</span>
+                </div>
             </div>
-            <div class="admin-user-badge ${u.type === 'telegram' ? 'tg-badge' : 'guest-badge'}">${u.type === 'telegram' ? '<i class="fab fa-telegram"></i> Telegram' : '<i class="fas fa-user"></i> Гость'}</div>
+            <div class="admin-user-badge ${u.type === 'telegram' ? 'tg-badge' : 'guest-badge'}">
+                ${u.type === 'telegram' ? '<i class="fab fa-telegram"></i> Telegram' : '<i class="fas fa-user"></i> Гость'}
+            </div>
         </div>
     `).join('');
+}
+
+window.selectUserForChat = function(userId) {
+    document.querySelector('.admin-tab-enhanced[data-tab="chats"]').click();
+    const select = document.getElementById('adminUserSelect');
+    if (select) { select.value = userId; loadAdminChat(userId); loadAdminUserInfo(userId); }
+};
+
+function loadAdminUserInfo(userId) {
+    const users = JSON.parse(localStorage.getItem('awangard_all_users') || '[]');
+    const user = users.find(u => (u.chatId || u.id).toString() === userId);
+    const container = document.getElementById('adminSelectedUserInfo');
+    if (container) {
+        container.innerHTML = user ? `
+            <div class="admin-user-detail">
+                <img src="${user.photo || 'https://ui-avatars.com/api/?background=1a0a2e&color=bf4bf6&bold=true&name=User'}" alt="">
+                <div class="admin-user-detail-info">
+                    <strong>${user.name || 'Гость'}</strong>
+                    <small>${user.type === 'telegram' ? 'Telegram ID: ' + user.id : 'Гость'}</small>
+                    <div class="detail-device">
+                        <i class="fas ${user.deviceInfo?.deviceType === 'Mobile' ? 'fa-mobile-alt' : 'fa-desktop'}"></i>
+                        ${user.deviceInfo?.deviceType || 'Desktop'} | ${user.deviceInfo?.os || 'Unknown'} | ${user.deviceInfo?.browser || 'Unknown'}
+                    </div>
+                    <div class="detail-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        ${user.location?.city || 'Неизвестно'}, ${user.location?.country || 'Неизвестно'}
+                        <span class="detail-ip">IP: ${user.location?.ip || 'скрыт'}</span>
+                    </div>
+                    <div class="detail-screen">
+                        <i class="fas fa-desktop"></i> Экран: ${user.deviceInfo?.screenResolution || 'Неизвестно'}
+                    </div>
+                    <div class="detail-timezone">
+                        <i class="fas fa-globe"></i> Часовой пояс: ${user.deviceInfo?.timezone || 'Неизвестно'}
+                    </div>
+                    <div class="detail-stats">
+                        <span><i class="fas fa-calendar"></i> Впервые: ${new Date(user.firstSeen).toLocaleString()}</span>
+                        <span><i class="fas fa-clock"></i> Последний визит: ${new Date(user.lastSeen).toLocaleString()}</span>
+                        <span><i class="fas fa-chart-simple"></i> Всего визитов: ${user.visitCount || 1}</span>
+                    </div>
+                </div>
+            </div>
+        ` : '';
+    }
 }
 
 function loadAdminBalanceSelect() {
@@ -390,7 +552,7 @@ function loadAdminBalanceSelect() {
     const select = document.getElementById('adminBalanceUserSelect');
     if (select) {
         select.innerHTML = '<option value="">-- Выберите пользователя --</option>' + 
-            users.filter(u => u.type === 'telegram').map(u => `<option value="${u.id}">${u.name} (ID: ${u.id})</option>`).join('');
+            users.map(u => `<option value="${u.id}">${u.name} (ID: ${typeof u.id === 'number' ? u.id : u.id.slice(-8)})</option>`).join('');
     }
 }
 
@@ -446,7 +608,7 @@ function loadAdminChat(userId) {
     const messages = JSON.parse(localStorage.getItem('awangard_chat_' + userId) || '[]');
     const container = document.getElementById('adminChatMessages');
     if (!container) return;
-    if (!messages.length) { container.innerHTML = '<div class="placeholder">Нет сообщений</div>'; return; }
+    if (!messages.length) { container.innerHTML = '<div class="placeholder">Нет сообщений от этого пользователя</div>'; return; }
     container.innerHTML = messages.map(m => `
         <div class="admin-chat-msg ${m.isUser ? 'user' : 'admin'}">
             <div class="msg-header"><strong>${m.isUser ? '👤 Пользователь' : (m.isAdminReply ? '👑 Админ' : '🤖 Поддержка')}</strong><span>${m.time}</span></div>
@@ -456,17 +618,20 @@ function loadAdminChat(userId) {
     container.scrollTop = container.scrollHeight;
 }
 
-function sendAdminReply() {
-    const userId = document.getElementById('adminUserSelect')?.value;
-    const text = document.getElementById('adminReplyInput')?.value.trim();
-    if (!userId || !text) return;
-    
+function addAdminMessageToUser(userId, text) {
     let messages = JSON.parse(localStorage.getItem('awangard_chat_' + userId) || '[]');
     const now = new Date();
     const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
     messages.push({ isUser: false, isAdminReply: true, text, time: timeStr });
     localStorage.setItem('awangard_chat_' + userId, JSON.stringify(messages));
+}
+
+function sendAdminReply() {
+    const userId = document.getElementById('adminUserSelect')?.value;
+    const text = document.getElementById('adminReplyInput')?.value.trim();
+    if (!userId || !text) return;
     
+    addAdminMessageToUser(userId, text);
     document.getElementById('adminReplyInput').value = '';
     loadAdminChat(userId);
     showToast('Ответ отправлен!', 'success');
@@ -493,7 +658,7 @@ function addReview(userName, rating, text) {
     const reviews = getReviews();
     reviews.unshift({ 
         id: Date.now(), 
-        userId: currentTelegramUser?.id || 'guest',
+        userId: currentTelegramUser?.id || CURRENT_GUEST_ID,
         userName: userName || 'Аноним', 
         rating: rating, 
         text: text, 
@@ -700,7 +865,6 @@ function initNavigation() {
     aboutLink.addEventListener('click', (e) => { e.preventDefault(); showAbout(); });
     supportLink.addEventListener('click', (e) => { e.preventDefault(); window.open('https://t.me/l_AWANGARD_l', '_blank'); });
     
-    // Категории товаров
     document.querySelectorAll('.category-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
@@ -710,7 +874,6 @@ function initNavigation() {
         });
     });
     
-    // Фильтры отзывов
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -798,7 +961,6 @@ function initParticleCanvas() {
     return () => cancelAnimationFrame(animationId);
 }
 
-// ========== ЗВЁЗДНЫЙ РЕЙТИНГ ==========
 function initStarsInput() {
     const stars = document.querySelectorAll('#starsInputEnhanced i');
     stars.forEach(star => {
@@ -839,7 +1001,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     document.getElementById('logoutEnhancedBtn')?.addEventListener('click', logout);
     
-    // Отправка отзыва
     const submitBtn = document.getElementById('submitReviewEnhancedBtn');
     const reviewName = document.getElementById('reviewNameEnhanced');
     const reviewText = document.getElementById('reviewTextEnhanced');
@@ -864,15 +1025,12 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('reviewsLink').click();
     });
     
-    // Модальные окна
     document.getElementById('closePaymentModal')?.addEventListener('click', closePaymentModals);
     document.getElementById('confirmPaymentBtn')?.addEventListener('click', confirmProductPayment);
     document.getElementById('paymentModal')?.addEventListener('click', (e) => { if (e.target === document.getElementById('paymentModal')) closePaymentModals(); });
     
-    // Колесо фортуны
     document.getElementById('spinWheelBtn')?.addEventListener('click', spinWheel);
     
-    // Админ-панель
     document.querySelectorAll('.admin-tab-enhanced').forEach(tab => {
         tab.addEventListener('click', () => {
             document.querySelectorAll('.admin-tab-enhanced').forEach(t => t.classList.remove('active'));
