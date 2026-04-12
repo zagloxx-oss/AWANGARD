@@ -14,7 +14,8 @@
     <script src="https://telegram.org/js/telegram-widget.js?23" async></script>
 </head>
 <body>
-    <div class="version-badge">v1.0</div>
+    <!-- Версия сайта -->
+    <div class="version-badge" id="versionBadge">v1.0</div>
     
     <div class="neon-bg">
         <canvas id="particleCanvas"></canvas>
@@ -102,7 +103,7 @@
                 </div>
             </div>
             
-            <!-- Страница профиля -->
+            <!-- Страница профиля с чатом -->
             <div id="profileContent" style="display: none;">
                 <div class="profile-container">
                     <div class="profile-card-enhanced">
@@ -124,13 +125,29 @@
                             </div>
                         </div>
                         <div class="profile-actions-enhanced">
-                            <!-- МАКСИМАЛЬНО ВИДИМАЯ КНОПКА ТЕЛЕГРАМ -->
                             <div id="telegramLoginEnhanced" class="telegram-login-enhanced"></div>
                             <button id="logoutEnhancedBtn" class="neon-btn logout-btn-enhanced" style="display: none;">
                                 <i class="fas fa-sign-out-alt"></i><span>Выйти</span>
                             </button>
                         </div>
                     </div>
+                    
+                    <!-- Чат с поддержкой (появляется только когда админ написал) -->
+                    <div id="userChatContainer" class="support-chat-readonly" style="display: none;">
+                        <div class="chat-header-readonly">
+                            <i class="fas fa-headset"></i>
+                            <span>Поддержка AWANGARD</span>
+                            <span class="online-status">● Онлайн</span>
+                        </div>
+                        <div id="userChatMessages" class="chat-messages-readonly"></div>
+                        <div class="chat-input-area-user">
+                            <input type="text" id="userChatInput" placeholder="Напишите сообщение..." class="chat-input-user" maxlength="500">
+                            <button id="userSendMessageBtn" class="send-btn-user">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
                     <div class="profile-info-card">
                         <h3><i class="fas fa-chart-line"></i> Ваша активность</h3>
                         <div class="activity-stats">
@@ -190,7 +207,7 @@
                     <div class="about-hero">
                         <i class="fas fa-crown"></i>
                         <h2>AWANGARD NEON v1.0</h2>
-                        <p>Ваш надёжный магазин игровых товаров</p>
+                        <p>Обновлено: 12.04.2026 15:30</p>
                     </div>
                     <div class="about-features">
                         <div class="feature"><i class="fas fa-bolt"></i><h3>Моментальная доставка</h3><p>После оплаты товар приходит в течение 5-10 минут</p></div>
@@ -255,15 +272,19 @@
         </div>
         
         <div id="adminChatsTab" class="admin-content-enhanced" style="display: none;">
-            <div class="admin-chat-sidebar">
-                <select id="adminUserSelect" class="admin-select-enhanced"><option value="">-- Выберите пользователя --</option></select>
-                <div id="adminSelectedUserInfo" class="admin-user-card-detail"></div>
+            <h3><i class="fas fa-comments"></i> Переписка с пользователями</h3>
+            <div class="admin-chat-selector">
+                <label>Выберите пользователя:</label>
+                <select id="adminUserSelect" class="admin-select-enhanced">
+                    <option value="">-- Выберите пользователя --</option>
+                </select>
             </div>
-            <div class="admin-chat-main">
+            <div id="adminSelectedUserInfo" class="admin-user-card-detail"></div>
+            <div class="admin-chat-area">
                 <div id="adminChatMessages" class="admin-chat-messages-enhanced"></div>
-                <div class="admin-chat-input">
-                    <input type="text" id="adminReplyInput" placeholder="Введите ответ...">
-                    <button id="sendReplyBtn"><i class="fas fa-paper-plane"></i> Ответить</button>
+                <div class="admin-chat-input-area">
+                    <input type="text" id="adminReplyInput" placeholder="Введите сообщение..." class="admin-chat-input">
+                    <button id="sendReplyBtn" class="send-reply-btn"><i class="fas fa-paper-plane"></i> Отправить</button>
                 </div>
             </div>
         </div>
@@ -279,6 +300,7 @@
                 <div class="stat-card-enhanced"><i class="fas fa-user"></i><div class="stat-data"><span class="stat-label">Гостей</span><span id="statGuestUsers" class="stat-number">0</span></div></div>
                 <div class="stat-card-enhanced"><i class="fas fa-star"></i><div class="stat-data"><span class="stat-label">Всего отзывов</span><span id="statTotalReviews" class="stat-number">0</span></div></div>
                 <div class="stat-card-enhanced"><i class="fas fa-chart-line"></i><div class="stat-data"><span class="stat-label">Средний рейтинг</span><span id="statAvgRating" class="stat-number">0</span></div></div>
+                <div class="stat-card-enhanced"><i class="fas fa-comments"></i><div class="stat-data"><span class="stat-label">Активных чатов</span><span id="statActiveChats" class="stat-number">0</span></div></div>
             </div>
         </div>
     </div>
@@ -287,12 +309,11 @@
     <div id="toastNotification" class="toast-notification"></div>
     
     <footer class="neon-footer-enhanced">
-        <p>© 2026 AWANGARD NEON v1.0 | PUBG Mobile Store | Все права защищены</p>
+        <p>© 2026 AWANGARD NEON v1.0 | PUBG Mobile Store | Обновлено: 12.04.2026 15:30 | Все права защищены</p>
     </footer>
 
     <script src="script.js"></script>
     <script>
-        // Глобальная функция для Telegram
         window.onTelegramAuth = function(user) {
             if (user && user.id) {
                 const event = new CustomEvent('telegramAuth', { detail: user });
