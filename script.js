@@ -3,7 +3,7 @@
 const CONFIG = {
     VERSION: '1.0',
     DONATION_URL: 'https://www.donationalerts.com/r/limitblitzoffical',
-    BOT_TOKEN: '8745985444:AAGA1jByHKR78uThXfkurejklLrIp53bp6M',
+    BOT_TOKEN: '8403893049:AAHbnFG-2PfMyj2fmhgRq0ELePOiK0VgIn0', // Новый токен
     ADMIN_ID: 'ВАШ_TELEGRAM_ID', // ЗАМЕНИТЕ НА ВАШ TELEGRAM ID
     ADMIN_CODE: 'AWANGARD'
 };
@@ -16,6 +16,7 @@ let selectedRating = 0;
 let spinning = false;
 let currentAngle = 0;
 let pendingPaymentProduct = null;
+let currentTelegramUser = null;
 
 // Сектора колеса фортуны
 const wheelSegments = [
@@ -66,8 +67,6 @@ function updateBalanceDisplay() {
 }
 
 // ========== TELEGRAM ВХОД ==========
-let currentTelegramUser = null;
-
 function getTelegramUser() {
     const saved = localStorage.getItem('awangard_telegram_user');
     return saved ? JSON.parse(saved) : null;
@@ -109,18 +108,36 @@ function logout() {
     showToast('Вы вышли из аккаунта', 'info');
 }
 
+// МАКСИМАЛЬНО ВИДИМАЯ КНОПКА TELEGRAM
 function initTelegramLogin() {
     const container = document.getElementById('telegramLoginEnhanced');
     if (container) {
         container.innerHTML = '';
+        
+        // Создаём кастомную обёртку для кнопки
+        const wrapper = document.createElement('div');
+        wrapper.className = 'telegram-login-wrapper';
+        
+        // Добавляем иконку и текст
+        const icon = document.createElement('i');
+        icon.className = 'fab fa-telegram';
+        icon.style.marginRight = '8px';
+        
+        const text = document.createElement('span');
+        text.textContent = 'Войти через Telegram';
+        
+        // Создаём виджет
         const script = document.createElement('script');
         script.async = true;
         script.src = 'https://telegram.org/js/telegram-widget.js?23';
-        script.setAttribute('data-telegram-login', 'awangard_shop_bot');
+        script.setAttribute('data-telegram-login', 'Awangard_shops_bot');
         script.setAttribute('data-size', 'large');
+        script.setAttribute('data-userpic', 'false');
         script.setAttribute('data-onauth', 'onTelegramAuth');
         script.setAttribute('data-request-access', 'write');
-        container.appendChild(script);
+        
+        container.appendChild(wrapper);
+        wrapper.appendChild(script);
     }
 }
 
@@ -382,14 +399,12 @@ function modifyUserBalance(userId, amount) {
     const user = users.find(u => u.id === userId);
     if (!user) return false;
     
-    // Сохраняем баланс пользователя в отдельном хранилище
     let userBalances = JSON.parse(localStorage.getItem('awangard_user_balances') || '{}');
     const currentBalance = userBalances[userId] || 0;
-    const newBalance = currentBalance + amount;
-    userBalances[userId] = Math.max(0, newBalance);
+    const newBalance = Math.max(0, currentBalance + amount);
+    userBalances[userId] = newBalance;
     localStorage.setItem('awangard_user_balances', JSON.stringify(userBalances));
     
-    // Если это текущий пользователь, обновляем отображение
     if (currentTelegramUser && currentTelegramUser.id.toString() === userId) {
         setUserBalance(newBalance);
     }

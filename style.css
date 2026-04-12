@@ -2037,3 +2037,64 @@ body {
         flex-direction: column;
     }
 }
+/* ========== МАКСИМАЛЬНО ВИДИМАЯ КНОПКА TELEGRAM ========== */
+.telegram-login-enhanced {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem 0;
+}
+
+.telegram-login-wrapper {
+    display: inline-block;
+    width: 100%;
+    max-width: 280px;
+}
+
+.telegram-login-wrapper iframe {
+    width: 100% !important;
+    min-width: 200px !important;
+    border-radius: 50px !important;
+    box-shadow: 0 0 20px rgba(0, 136, 204, 0.5) !important;
+    transition: all 0.3s ease !important;
+}
+
+.telegram-login-wrapper iframe:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(0, 136, 204, 0.8) !important;
+}
+
+/* Адаптация для телефонов */
+@media (max-width: 768px) {
+    .telegram-login-wrapper {
+        max-width: 240px;
+    }
+    
+    .telegram-login-wrapper iframe {
+        min-width: 180px !important;
+    }
+}
+
+/* Кнопка выхода */
+.logout-btn-enhanced {
+    background: linear-gradient(135deg, #ff3366, #ff6633);
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+}
+
+.logout-btn-enhanced:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(255, 51, 102, 0.5);
+}
