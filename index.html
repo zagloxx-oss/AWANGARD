@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-widget.js?23" async></script>
 </head>
 <body>
     <div class="version-badge">v1.0</div>
@@ -35,6 +36,7 @@
             <div class="logo" data-text="AWANGARD">AWANGARD</div>
             <div class="nav-links">
                 <a href="#" id="homeLink" class="active"><i class="fas fa-home"></i><span>Главная</span><span class="nav-glow"></span></a>
+                <a href="#" id="wheelLink"><i class="fas fa-gamepad"></i><span>Колесо</span><span class="nav-glow"></span></a>
                 <a href="#" id="profileLink"><i class="fas fa-user-astronaut"></i><span>Профиль</span><span class="nav-glow"></span></a>
                 <a href="#" id="reviewsLink"><i class="fas fa-star"></i><span>Отзывы</span><span class="nav-glow"></span></a>
                 <a href="#" id="supportLink"><i class="fas fa-headset"></i><span>Поддержка</span><span class="nav-glow"></span></a>
@@ -56,6 +58,7 @@
     
     <div class="main-wrapper">
         <main class="content-area">
+            <!-- Главная страница -->
             <div id="mainContent">
                 <div class="hero-section">
                     <div class="hero-content">
@@ -75,18 +78,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- Колесо фортуны -->
-                <div class="wheel-section">
-                    <h2><i class="fas fa-gem"></i> Колесо фортуны</h2>
-                    <p class="wheel-desc">Всего 100₽ за вращение! Выиграй до 325 UC!</p>
-                    <div class="wheel-container">
-                        <canvas id="wheelCanvas" width="400" height="400"></canvas>
-                        <button id="spinWheelBtn" class="spin-btn"><i class="fas fa-play"></i> Крутить (100₽)</button>
-                    </div>
-                    <div id="wheelResult" class="wheel-result"></div>
-                </div>
-                
                 <div class="products-header">
                     <h2><i class="fas fa-gem"></i> Наши товары</h2>
                     <div class="category-tabs">
@@ -98,6 +89,20 @@
                 <div id="cardsContainer" class="cards-grid-neon"></div>
             </div>
             
+            <!-- Страница колеса фортуны -->
+            <div id="wheelContent" style="display: none;">
+                <div class="wheel-page-card">
+                    <h2><i class="fas fa-gamepad"></i> Колесо фортуны</h2>
+                    <p class="wheel-desc-page">Всего 100 UC за вращение! Выиграй до 325 UC!</p>
+                    <div class="wheel-container-page">
+                        <canvas id="wheelCanvas" width="400" height="400"></canvas>
+                        <button id="spinWheelBtn" class="spin-btn-page"><i class="fas fa-play"></i> Крутить (100 UC)</button>
+                    </div>
+                    <div id="wheelResult" class="wheel-result-page"></div>
+                </div>
+            </div>
+            
+            <!-- Страница профиля -->
             <div id="profileContent" style="display: none;">
                 <div class="profile-container">
                     <div class="profile-card-enhanced">
@@ -136,6 +141,7 @@
                 </div>
             </div>
             
+            <!-- Страница отзывов -->
             <div id="reviewsContent" style="display: none;">
                 <div class="reviews-container">
                     <div class="reviews-header">
@@ -177,6 +183,7 @@
                 </div>
             </div>
             
+            <!-- Страница "О нас" -->
             <div id="aboutContainer" style="display: none;">
                 <div class="about-enhanced">
                     <div class="about-hero">
@@ -214,25 +221,7 @@
         </div>
     </div>
     
-    <!-- Модальное окно проверки оплаты для колеса -->
-    <div id="wheelPaymentModal" class="payment-modal" style="display: none;">
-        <div class="payment-modal-content">
-            <div class="payment-modal-header">
-                <h3><i class="fas fa-credit-card"></i> Оплата вращения</h3>
-                <button class="close-modal" id="closeWheelPaymentModal"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="payment-modal-body">
-                <p>Вращение колеса фортуны</p>
-                <p>Сумма: <strong>100 ₽</strong></p>
-                <p class="payment-warning">После оплаты нажмите "Я оплатил" чтобы крутить колесо</p>
-                <div class="payment-buttons">
-                    <a href="https://www.donationalerts.com/r/limitblitzoffical" target="_blank" class="payment-link-btn">Перейти к оплате</a>
-                    <button id="confirmWheelPaymentBtn" class="confirm-payment-btn">✅ Я оплатил</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
+    <!-- Админ-панель -->
     <div id="adminPanel" class="admin-panel-enhanced" style="display: none;">
         <div class="admin-header-enhanced">
             <h2><i class="fas fa-shield-alt"></i> Админ-панель v1.0</h2>
@@ -240,6 +229,7 @@
         </div>
         <div class="admin-tabs-enhanced">
             <button class="admin-tab-enhanced active" data-tab="users"><i class="fas fa-users"></i> Пользователи</button>
+            <button class="admin-tab-enhanced" data-tab="balance"><i class="fas fa-coins"></i> Баланс</button>
             <button class="admin-tab-enhanced" data-tab="chats"><i class="fas fa-comments"></i> Чаты</button>
             <button class="admin-tab-enhanced" data-tab="reviews"><i class="fas fa-star"></i> Отзывы</button>
             <button class="admin-tab-enhanced" data-tab="stats"><i class="fas fa-chart-line"></i> Статистика</button>
@@ -248,6 +238,19 @@
         <div id="adminUsersTab" class="admin-content-enhanced active">
             <div class="admin-search"><i class="fas fa-search"></i><input type="text" id="adminUserSearch" placeholder="Поиск по имени или ID..."></div>
             <div id="adminUsersList" class="admin-users-list"></div>
+        </div>
+        
+        <div id="adminBalanceTab" class="admin-content-enhanced" style="display: none;">
+            <h3><i class="fas fa-coins"></i> Управление балансом</h3>
+            <div class="admin-balance-form">
+                <label>Выберите пользователя:</label>
+                <select id="adminBalanceUserSelect" class="admin-select-enhanced"></select>
+                <div class="balance-actions">
+                    <button id="add100BalanceBtn" class="admin-balance-btn add-btn"><i class="fas fa-plus-circle"></i> Начислить 100 UC</button>
+                    <button id="remove100BalanceBtn" class="admin-balance-btn remove-btn"><i class="fas fa-minus-circle"></i> Списать 100 UC</button>
+                </div>
+                <div id="adminBalanceInfo" class="admin-balance-info"></div>
+            </div>
         </div>
         
         <div id="adminChatsTab" class="admin-content-enhanced" style="display: none;">
@@ -287,5 +290,14 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Глобальная функция для Telegram
+        window.onTelegramAuth = function(user) {
+            if (user && user.id) {
+                const event = new CustomEvent('telegramAuth', { detail: user });
+                document.dispatchEvent(event);
+            }
+        };
+    </script>
 </body>
 </html>
