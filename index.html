@@ -2,352 +2,509 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>AWANGARD | GRADIENT NEON</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>AWANGARD | PUBG STORE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.35/ua-parser.min.js"></script>
-    
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, setDoc, getDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         
-        const firebaseConfig = {
-            apiKey: "AIzaSyB_Bkxiuia16G4Bn0-cyLMEp2IsB6fR4Qo",
-            authDomain: "awangard-7b58f.firebaseapp.com",
-            projectId: "awangard-7b58f",
-            storageBucket: "awangard-7b58f.firebasestorage.app",
-            messagingSenderId: "1095576840101",
-            appId: "1:1095576840101:web:859309f3b32afde3b16a4c"
-        };
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            min-height: 100vh;
+        }
         
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        .navbar {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
         
-        window.db = db;
-        window.firestore = { collection, getDocs, addDoc, deleteDoc, doc, setDoc, getDoc, query, orderBy };
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
         
-        console.log("✅ Firebase подключен!");
-        document.dispatchEvent(new Event('firebase-ready'));
-    </script>
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-btn:hover, .nav-btn.active {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        }
+        
+        .balance {
+            background: rgba(0,0,0,0.5);
+            padding: 8px 16px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .balance i { color: #ffd700; }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .page {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .product-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: 0.3s;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: #4ecdc4;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .product-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .product-name {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .product-old-price {
+            text-decoration: line-through;
+            font-size: 12px;
+            color: #aaa;
+        }
+        
+        .product-price {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #4ecdc4;
+        }
+        
+        .buy-btn {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+        
+        .glass-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        
+        button:hover {
+            transform: scale(1.02);
+        }
+        
+        .supporters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .supporter-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .supporter-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: #24243e;
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #4ecdc4, #ff6b6b);
+            padding: 12px 24px;
+            border-radius: 25px;
+            transform: translateX(400px);
+            transition: 0.3s;
+            z-index: 1001;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .wheel-container {
+            text-align: center;
+        }
+        
+        #wheelCanvas {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .cat-btn {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 16px;
+            border-radius: 25px;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .cat-btn.active {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        }
+        
+        .profile-info {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .profile-avatar i {
+            font-size: 40px;
+        }
+        
+        .profile-details {
+            flex: 1;
+        }
+        
+        .profile-details p {
+            margin: 5px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+            }
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="gradient-bg">
-        <div class="gradient-orb orb1"></div>
-        <div class="gradient-orb orb2"></div>
-        <div class="gradient-orb orb3"></div>
-        <div class="gradient-orb orb4"></div>
+    <div class="navbar">
+        <div class="logo">AWANGARD</div>
+        <div class="nav-links">
+            <button class="nav-btn active" data-page="main"><i class="fas fa-home"></i> Главная</button>
+            <button class="nav-btn" data-page="supporters"><i class="fas fa-users"></i> Сопровождение</button>
+            <button class="nav-btn" data-page="wheel"><i class="fas fa-gift"></i> Фортуна</button>
+            <button class="nav-btn" data-page="profile"><i class="fas fa-user"></i> Профиль</button>
+            <button class="nav-btn" data-page="reviews"><i class="fas fa-star"></i> Отзывы</button>
+            <button class="nav-btn" data-page="about"><i class="fas fa-info-circle"></i> О нас</button>
+        </div>
+        <div class="balance">
+            <i class="fas fa-coins"></i>
+            <span id="balanceDisplay">0</span> UC
+        </div>
     </div>
     
-    <div class="particles" id="particlesContainer"></div>
-    
-    <nav class="gradient-nav">
-        <div class="nav-container">
-            <div class="logo">
-                <i class="fas fa-crown"></i>
-                <span>AWANGARD</span>
-            </div>
-            <div class="nav-links">
-                <a href="#" id="homeLink" class="active"><i class="fas fa-home"></i><span>Главная</span></a>
-                <a href="#" id="supportersLink"><i class="fas fa-users"></i><span>Сопровождение</span></a>
-                <a href="#" id="wheelLink"><i class="fas fa-gift"></i><span>Фортуна</span></a>
-                <a href="#" id="profileLink"><i class="fas fa-user"></i><span>Профиль</span></a>
-                <a href="#" id="reviewsLink"><i class="fas fa-star"></i><span>Отзывы</span></a>
-                <a href="#" id="supportLink"><i class="fas fa-headset"></i><span>Поддержка</span></a>
-                <a href="#" id="aboutLink"><i class="fas fa-info-circle"></i><span>О нас</span></a>
-            </div>
-            <div class="user-status">
-                <div class="balance-card">
-                    <i class="fas fa-coins"></i>
-                    <span id="userBalance">0</span> UC
+    <div class="container">
+        <!-- Главная страница -->
+        <div id="mainPage" class="page active">
+            <div class="glass-card" style="text-align: center;">
+                <h1>AWANGARD STORE</h1>
+                <p>PUBG Mobile | UC | Метровалюта</p>
+                <div style="background: rgba(255,255,255,0.05); border-radius: 50px; padding: 10px; margin-top: 15px;">
+                    <i class="fas fa-bolt"></i> Добро пожаловать! Покупайте UC, крутите колесо фортуны!
                 </div>
-                <div id="userBadge" class="user-badge" style="display: none;">
-                    <img id="userAvatarMini" src="">
-                    <span id="userNameMini"></span>
+            </div>
+            
+            <div class="card-header">
+                <i class="fas fa-shopping-cart"></i>
+                <h2>Товары</h2>
+            </div>
+            <div class="category-tabs">
+                <button class="cat-btn active" data-cat="all">Все</button>
+                <button class="cat-btn" data-cat="uc">UC</button>
+                <button class="cat-btn" data-cat="currency">Метровалюта</button>
+            </div>
+            <div id="productsGrid" class="products-grid"></div>
+            
+            <div class="card-header" style="margin-top: 30px;">
+                <i class="fas fa-user-shield"></i>
+                <h2>Наши сопровождающие</h2>
+            </div>
+            <div id="supportersGrid" class="supporters-grid">
+                <div class="supporter-card">
+                    <div class="supporter-avatar"><i class="fas fa-user-shield"></i></div>
+                    <div>
+                        <div style="font-weight: bold;">Присоединяйтесь!</div>
+                        <div style="font-size: 12px; color: #aaa;">Станьте частью команды</div>
+                    </div>
                 </div>
             </div>
         </div>
-    </nav>
-    
-    <div class="main-wrapper">
-        <main class="content-area">
-            <!-- Главная -->
-            <div id="mainContent">
-                <div class="hero">
-                    <h1 class="gradient-text">AWANGARD</h1>
-                    <p class="subtitle">PUBG Mobile | UC | Метровалюта</p>
-                    <div class="info-card">
-                        <i class="fas fa-bolt"></i>
-                        <span>Добро пожаловать! Покупай UC, крути колесо фортуны, становись сопровождающим!</span>
-                    </div>
+        
+        <!-- Сопровождение (Telegram) -->
+        <div id="supportersPage" class="page">
+            <div class="glass-card" style="text-align: center;">
+                <div class="card-header">
+                    <i class="fas fa-users"></i>
+                    <h2>Сопровождение</h2>
                 </div>
-                
-                <div class="section-header">
-                    <i class="fas fa-shopping-cart"></i>
-                    <h2>Товары</h2>
+                <p>Перейдите в Telegram для связи с нашими сопровождающими</p>
+                <button id="openSupportersBtn" style="margin-top: 20px;">
+                    <i class="fab fa-telegram"></i> Перейти в Telegram
+                </button>
+            </div>
+        </div>
+        
+        <!-- Колесо фортуны -->
+        <div id="wheelPage" class="page">
+            <div class="glass-card" style="text-align: center;">
+                <div class="card-header">
+                    <i class="fas fa-gift"></i>
+                    <h2>Колесо фортуны</h2>
                 </div>
-                <div class="category-tabs">
-                    <button class="cat-btn active" data-cat="all">Все</button>
-                    <button class="cat-btn" data-cat="uc">UC</button>
-                    <button class="cat-btn" data-cat="currency">Метровалюта</button>
-                </div>
-                <div id="cardsContainer" class="products-grid"></div>
-                
-                <div class="section-header">
-                    <i class="fas fa-user-shield"></i>
-                    <h2>Наши сопровождающие</h2>
-                </div>
-                <div id="acceptedSupportersList" class="supporters-grid">
-                    <div class="empty-state">Загрузка...</div>
+                <p>Стоимость вращения: <strong style="color: #ffd700;">100 UC</strong></p>
+                <div class="wheel-container">
+                    <canvas id="wheelCanvas" width="300" height="300"></canvas>
+                    <button id="spinBtn" style="margin-top: 20px;">Крутить!</button>
+                    <div id="wheelResult" style="margin-top: 15px;"></div>
                 </div>
             </div>
-            
-            <!-- Заявка на сопровождение -->
-            <div id="supportersContent" style="display: none;">
-                <div class="glass-card">
-                    <div class="card-header">
-                        <i class="fas fa-user-plus"></i>
-                        <h2>Стать сопровождающим</h2>
+        </div>
+        
+        <!-- Профиль -->
+        <div id="profilePage" class="page">
+            <div class="glass-card">
+                <div class="card-header">
+                    <i class="fas fa-user-circle"></i>
+                    <h2>Профиль</h2>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
                     </div>
-                    <p>Заполните форму для отправки заявки</p>
-                    <div class="form-group">
-                        <label><i class="fas fa-user"></i> Ваш ник</label>
-                        <input type="text" id="supporterNick" placeholder="Введите ваш ник" class="gradient-input">
+                    <div class="profile-details">
+                        <h3 id="profileName">Гость</h3>
+                        <p><i class="fas fa-fingerprint"></i> ID: <span id="profileId">guest</span></p>
+                        <p><i class="fas fa-coins"></i> Баланс: <span id="profileBalance">0</span> UC</p>
+                        <p><i class="fas fa-microchip"></i> <span id="deviceInfo">Определение...</span></p>
                     </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-id-card"></i> Ваш ID</label>
-                        <input type="text" id="supporterId" placeholder="Введите ваш ID" class="gradient-input">
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-chart-line"></i> Статистика сезона</label>
-                        <textarea id="supporterStats" placeholder="Ранг, K/D, победы..." rows="4" class="gradient-textarea"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-image"></i> Скриншот статистики</label>
-                        <input type="file" id="supporterScreenshot" accept="image/*" class="gradient-file">
-                        <div id="screenshotPreview" class="preview"></div>
-                    </div>
-                    <button id="submitApplicationBtn" class="gradient-btn">Отправить заявку</button>
+                </div>
+                <div style="margin-top: 20px; text-align: center;">
+                    <button id="loginBtn" style="background: linear-gradient(45deg, #0088cc, #006699);">
+                        <i class="fab fa-telegram"></i> Войти через Telegram
+                    </button>
+                    <button id="logoutBtn" style="display: none; background: linear-gradient(45deg, #ff6b6b, #ff4444);">
+                        <i class="fas fa-sign-out-alt"></i> Выйти
+                    </button>
                 </div>
             </div>
-            
-            <!-- Колесо фортуны -->
-            <div id="wheelContent" style="display: none;">
-                <div class="glass-card">
-                    <div class="card-header">
-                        <i class="fas fa-gift"></i>
-                        <h2>Колесо фортуны</h2>
-                    </div>
-                    <p>Стоимость вращения: <span class="highlight">100 UC</span></p>
-                    <div class="wheel-container">
-                        <canvas id="wheelCanvas" width="350" height="350"></canvas>
-                        <button id="spinWheelBtn" class="gradient-btn spin-btn">Крутить!</button>
-                        <div id="wheelResult" class="wheel-result"></div>
-                    </div>
+        </div>
+        
+        <!-- Отзывы (Telegram канал) -->
+        <div id="reviewsPage" class="page">
+            <div class="glass-card" style="text-align: center;">
+                <div class="card-header">
+                    <i class="fas fa-star"></i>
+                    <h2>Отзывы</h2>
                 </div>
+                <p>Перейдите в наш Telegram канал, чтобы оставить отзыв или посмотреть отзывы других клиентов</p>
+                <button id="openReviewsBtn" style="margin-top: 20px;">
+                    <i class="fab fa-telegram"></i> Перейти в канал отзывов
+                </button>
             </div>
-            
-            <!-- Профиль -->
-            <div id="profileContent" style="display: none;">
-                <div class="glass-card">
-                    <div class="card-header">
-                        <i class="fas fa-user-circle"></i>
-                        <h2>Профиль</h2>
-                    </div>
-                    <div class="profile-info">
-                        <div class="profile-avatar">
-                            <img id="profileAvatar" src="https://ui-avatars.com/api/?background=6a11cb&color=fff&bold=true&name=Guest">
-                            <div class="avatar-ring"></div>
-                        </div>
-                        <div class="profile-details">
-                            <h3 id="profileName">Гость</h3>
-                            <p id="profileUsername"></p>
-                            <div class="profile-id">
-                                <i class="fas fa-fingerprint"></i>
-                                <span id="profileId">guest</span>
-                            </div>
-                            <div class="profile-balance">
-                                <i class="fas fa-coins"></i>
-                                <span id="profileBalance">0</span> UC
-                            </div>
-                            <div class="profile-device">
-                                <i class="fas fa-microchip"></i>
-                                <span id="deviceInfoText">Определение...</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="profile-actions">
-                        <div id="telegramLoginBlock"></div>
-                        <button id="logoutBtn" class="gradient-btn outline" style="display: none;">Выйти</button>
-                    </div>
+        </div>
+        
+        <!-- О нас -->
+        <div id="aboutPage" class="page">
+            <div class="glass-card">
+                <div class="card-header">
+                    <i class="fas fa-info-circle"></i>
+                    <h2>О нас</h2>
                 </div>
-                
-                <div class="glass-card" id="userChatBlock" style="display: none;">
-                    <div class="card-header">
-                        <i class="fas fa-headset"></i>
-                        <h2>Чат с поддержкой</h2>
-                    </div>
-                    <div class="chat-messages" id="chatMessages">
-                        <div class="empty-chat">Нет сообщений</div>
-                    </div>
-                    <div class="chat-input">
-                        <input type="text" id="chatInput" placeholder="Напишите сообщение..." class="gradient-input">
-                        <button id="sendChatBtn" class="gradient-btn small">Отправить</button>
-                    </div>
-                </div>
+                <p>AWANGARD — надёжный магазин игровых товаров для PUBG Mobile. Лучшие цены, моментальная доставка.</p>
+                <p style="margin-top: 15px;">По всем вопросам: <strong>@l_AWANGARD_l</strong></p>
             </div>
-            
-            <!-- Отзывы -->
-            <div id="reviewsContent" style="display: none;">
-                <div class="glass-card">
-                    <div class="card-header">
-                        <i class="fas fa-star"></i>
-                        <h2>Отзывы клиентов</h2>
-                    </div>
-                    <div class="reviews-stats">
-                        <div class="rating-box">
-                            <span class="rating-value" id="avgRating">0</span>
-                            <div class="stars" id="avgStars"></div>
-                            <span>(<span id="reviewsCount">0</span> отзывов)</span>
-                        </div>
-                    </div>
-                    <div class="reviews-filters">
-                        <button class="filter-btn active" data-filter="all">Все</button>
-                        <button class="filter-btn" data-filter="5">5 ★</button>
-                        <button class="filter-btn" data-filter="4">4 ★</button>
-                        <button class="filter-btn" data-filter="3">3 ★</button>
-                        <button class="filter-btn" data-filter="2">2 ★</button>
-                        <button class="filter-btn" data-filter="1">1 ★</button>
-                    </div>
-                    <div id="reviewsList" class="reviews-list">
-                        <div class="empty-state">Загрузка отзывов...</div>
-                    </div>
-                    
-                    <div class="review-form">
-                        <h3>Оставить отзыв</h3>
-                        <div class="rating-input">
-                            <span>Оценка:</span>
-                            <div class="stars-input" id="starsInput">
-                                <i class="far fa-star" data-val="1"></i>
-                                <i class="far fa-star" data-val="2"></i>
-                                <i class="far fa-star" data-val="3"></i>
-                                <i class="far fa-star" data-val="4"></i>
-                                <i class="far fa-star" data-val="5"></i>
-                            </div>
-                        </div>
-                        <input type="text" id="reviewName" placeholder="Ваше имя" class="gradient-input">
-                        <textarea id="reviewText" placeholder="Ваш отзыв..." rows="3" class="gradient-textarea"></textarea>
-                        <div class="form-footer">
-                            <span class="char-counter" id="charCounter">0/500</span>
-                            <button id="submitReviewBtn" class="gradient-btn">Отправить отзыв</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- О нас -->
-            <div id="aboutContent" style="display: none;">
-                <div class="glass-card">
-                    <div class="card-header">
-                        <i class="fas fa-info-circle"></i>
-                        <h2>О нас</h2>
-                    </div>
-                    <div class="about-icon"><i class="fas fa-store"></i></div>
-                    <p>AWANGARD — надёжный магазин игровых товаров для PUBG Mobile. Лучшие цены, моментальная доставка, элитное сопровождение.</p>
-                </div>
-            </div>
-        </main>
+        </div>
     </div>
     
     <!-- Модалка оплаты -->
     <div id="paymentModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3>Оплата</h3>
-                <button class="modal-close">&times;</button>
+            <h3><i class="fas fa-credit-card"></i> Оплата</h3>
+            <p id="paymentProduct" style="margin: 15px 0;"></p>
+            <p id="paymentPrice" style="margin: 15px 0;"></p>
+            <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; margin: 15px 0;">
+                <i class="fas fa-info-circle"></i> После оплаты нажмите "Подтвердить"
             </div>
-            <div class="modal-body">
-                <p>Товар: <strong id="paymentProduct"></strong></p>
-                <p>Сумма: <strong id="paymentAmount"></strong></p>
-                <div class="payment-warning">
-                    <i class="fas fa-info-circle"></i> После оплаты нажмите "Подтвердить"
-                </div>
-                <a href="https://www.donationalerts.com/r/limitblitzoffical" target="_blank" class="gradient-btn" style="display: block; text-align: center; margin-bottom: 10px;">Перейти к оплате</a>
-                <button id="confirmPaymentBtn" class="gradient-btn outline" style="width: 100%;">Подтвердить оплату</button>
-            </div>
+            <a href="https://www.donationalerts.com/r/limitblitzoffical" target="_blank" id="paymentLink" style="display: block; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); padding: 12px; border-radius: 25px; text-decoration: none; color: white; margin-bottom: 10px;">
+                Перейти к оплате
+            </a>
+            <button id="confirmPaymentBtn" style="width: 100%;">Подтвердить оплату</button>
+            <button id="closeModalBtn" style="background: rgba(255,255,255,0.2); margin-top: 10px;">Закрыть</button>
         </div>
     </div>
     
-    <!-- Админ-панель -->
-    <div id="adminPanel" class="admin-panel">
-        <div class="admin-header">
-            <h2><i class="fas fa-shield-alt"></i> ADMIN PANEL</h2>
-            <button id="closeAdminBtn" class="admin-close">&times;</button>
-        </div>
-        <div class="admin-tabs">
-            <button class="admin-tab active" data-tab="users">Пользователи</button>
-            <button class="admin-tab" data-tab="balance">Баланс</button>
-            <button class="admin-tab" data-tab="applications">Заявки</button>
-            <button class="admin-tab" data-tab="accepted">Принятые</button>
-            <button class="admin-tab" data-tab="reviews">Отзывы</button>
-            <button class="admin-tab" data-tab="stats">Статистика</button>
-        </div>
-        
-        <div id="adminUsersTab" class="admin-content active">
-            <h3>Все пользователи</h3>
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="userSearch" placeholder="Поиск...">
-            </div>
-            <div id="usersList" class="users-list">Загрузка...</div>
-        </div>
-        
-        <div id="adminBalanceTab" class="admin-content" style="display: none;">
-            <h3>Управление балансом</h3>
-            <div class="balance-form">
-                <select id="balanceUserSelect" class="gradient-select"></select>
-                <div class="balance-buttons">
-                    <button id="addBalanceBtn" class="gradient-btn small">+100 UC</button>
-                    <button id="removeBalanceBtn" class="gradient-btn small outline">-100 UC</button>
-                </div>
-            </div>
-        </div>
-        
-        <div id="adminApplicationsTab" class="admin-content" style="display: none;">
-            <h3>Заявки на сопровождение</h3>
-            <div id="applicationsList" class="applications-list">Загрузка...</div>
-        </div>
-        
-        <div id="adminAcceptedTab" class="admin-content" style="display: none;">
-            <h3>Принятые сопровождающие</h3>
-            <div id="acceptedList" class="accepted-list">Загрузка...</div>
-        </div>
-        
-        <div id="adminReviewsTab" class="admin-content" style="display: none;">
-            <h3>Управление отзывами</h3>
-            <div id="adminReviewsList" class="reviews-list">Загрузка...</div>
-        </div>
-        
-        <div id="adminStatsTab" class="admin-content" style="display: none;">
-            <h3>Статистика</h3>
-            <div class="stats-grid">
-                <div class="stat-card"><i class="fas fa-users"></i><div><span>Пользователей</span><strong id="statUsers">0</strong></div></div>
-                <div class="stat-card"><i class="fab fa-telegram"></i><div><span>Telegram</span><strong id="statTelegram">0</strong></div></div>
-                <div class="stat-card"><i class="fas fa-star"></i><div><span>Отзывов</span><strong id="statReviews">0</strong></div></div>
-                <div class="stat-card"><i class="fas fa-user-plus"></i><div><span>Заявок</span><strong id="statApps">0</strong></div></div>
-                <div class="stat-card"><i class="fas fa-user-check"></i><div><span>Принято</span><strong id="statAccepted">0</strong></div></div>
-            </div>
-        </div>
-    </div>
-    <div id="adminOverlay" class="admin-overlay"></div>
-    
-    <footer class="gradient-footer">
-        <p>AWANGARD | GRADIENT NEON EDITION</p>
-    </footer>
-
     <div id="toast" class="toast"></div>
 
     <script src="script.js"></script>
