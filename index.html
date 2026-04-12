@@ -310,23 +310,26 @@
             gap: 15px;
             margin-bottom: 25px;
             flex-wrap: wrap;
+            justify-content: center;
         }
         
         .cat-btn {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(0,255,204,0.3);
-            padding: 8px 25px;
+            padding: 10px 30px;
             border-radius: 30px;
             color: #aaa;
             cursor: pointer;
             transition: 0.3s;
             font-weight: 500;
+            font-size: 14px;
         }
         
         .cat-btn:hover, .cat-btn.active {
             background: linear-gradient(45deg, #00ffcc, #ff00cc);
             color: #0a0a0a;
             border-color: transparent;
+            box-shadow: 0 0 15px rgba(0,255,204,0.5);
         }
         
         .products-grid {
@@ -687,6 +690,15 @@
             .product-price {
                 font-size: 18px;
             }
+            
+            .category-tabs {
+                gap: 8px;
+            }
+            
+            .cat-btn {
+                padding: 6px 16px;
+                font-size: 12px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -729,20 +741,17 @@
         <div id="mainPage" class="page active">
             <div class="hero">
                 <h1>AWANGARD STORE</h1>
-                <p>PUBG Mobile | UC | Метровалюта</p>
+                <p>PUBG Mobile | UC | Метровалюта | Metro Royal</p>
                 <div class="hero-badge">
                     <i class="fas fa-bolt"></i> Добро пожаловать в киберпространство!
                 </div>
             </div>
             
-            <div class="section-title">
-                <i class="fas fa-shopping-cart"></i>
-                <h2>Товары</h2>
-            </div>
+            <!-- Категории товаров (без кнопки "Все") -->
             <div class="category-tabs">
-                <button class="cat-btn active" data-cat="all">Все</button>
-                <button class="cat-btn" data-cat="uc">UC</button>
+                <button class="cat-btn active" data-cat="uc">UC</button>
                 <button class="cat-btn" data-cat="currency">Метровалюта</button>
+                <button class="cat-btn" data-cat="metro">Обмундирование Metro Royal</button>
             </div>
             <div id="productsGrid" class="products-grid"></div>
         </div>
@@ -830,24 +839,28 @@
         // Товары
         const products = {
             uc: [
-                { name: "60 UC", price: 100, oldPrice: 150, icon: "UC", value: 60 },
-                { name: "300+25 UC", price: 450, oldPrice: 600, icon: "UC", value: 325 },
-                { name: "600+60 UC", price: 900, oldPrice: 1200, icon: "UC", value: 660 },
-                { name: "1500+300 UC", price: 2200, oldPrice: 3000, icon: "UC", value: 1800 },
-                { name: "3000+850 UC", price: 4500, oldPrice: 6000, icon: "UC", value: 3850 },
-                { name: "6000+2100 UC", price: 9000, oldPrice: 12000, icon: "UC", value: 8100 }
+                { name: "60 UC", price: 100, oldPrice: 150, icon: "UC" },
+                { name: "300+25 UC", price: 450, oldPrice: 600, icon: "UC" },
+                { name: "600+60 UC", price: 900, oldPrice: 1200, icon: "UC" },
+                { name: "1500+300 UC", price: 2200, oldPrice: 3000, icon: "UC" },
+                { name: "3000+850 UC", price: 4500, oldPrice: 6000, icon: "UC" },
+                { name: "6000+2100 UC", price: 9000, oldPrice: 12000, icon: "UC" }
             ],
             currency: [
-                { name: "1 000 000 метровалюты", price: 100, icon: "M", value: 0 },
-                { name: "2 000 000 метровалюты", price: 200, icon: "M", value: 0 },
-                { name: "3 000 000 метровалюты", price: 300, icon: "M", value: 0 },
-                { name: "4 000 000 метровалюты", price: 400, icon: "M", value: 0 },
-                { name: "5 000 000 метровалюты", price: 500, icon: "M", value: 0 },
-                { name: "6 000 000 метровалюты", price: 600, icon: "M", value: 0 },
-                { name: "7 000 000 метровалюты", price: 700, icon: "M", value: 0 },
-                { name: "8 000 000 метровалюты", price: 800, icon: "M", value: 0 },
-                { name: "9 000 000 метровалюты", price: 900, icon: "M", value: 0 },
-                { name: "10 000 000 метровалюты", price: 1000, icon: "M", value: 0 }
+                { name: "1 000 000 метровалюты", price: 100, icon: "M" },
+                { name: "2 000 000 метровалюты", price: 200, icon: "M" },
+                { name: "3 000 000 метровалюты", price: 300, icon: "M" },
+                { name: "4 000 000 метровалюты", price: 400, icon: "M" },
+                { name: "5 000 000 метровалюты", price: 500, icon: "M" },
+                { name: "6 000 000 метровалюты", price: 600, icon: "M" },
+                { name: "7 000 000 метровалюты", price: 700, icon: "M" },
+                { name: "8 000 000 метровалюты", price: 800, icon: "M" },
+                { name: "9 000 000 метровалюты", price: 900, icon: "M" },
+                { name: "10 000 000 метровалюты", price: 1000, icon: "M" }
+            ],
+            metro: [
+                { name: "Комплект брони UR 6", price: 25, oldPrice: 3500, icon: "🛡️" },
+                { name: "MK 14 выс.качества", price: 15, oldPrice: 2500, icon: "🔫" }
             ]
         };
         
@@ -862,20 +875,30 @@
         }
         
         // ========== ТОВАРЫ ==========
-        function renderProducts(category = 'all') {
+        function renderProducts(category = 'uc') {
             const container = document.getElementById('productsGrid');
             if (!container) return;
             
-            let allProducts = [];
-            if (category === 'all') {
-                allProducts = [...products.uc, ...products.currency];
-            } else if (category === 'uc') {
-                allProducts = [...products.uc];
-            } else {
-                allProducts = [...products.currency];
+            let categoryProducts = [];
+            let categoryName = '';
+            
+            if (category === 'uc') {
+                categoryProducts = products.uc;
+                categoryName = 'UC';
+            } else if (category === 'currency') {
+                categoryProducts = products.currency;
+                categoryName = 'Метровалюта';
+            } else if (category === 'metro') {
+                categoryProducts = products.metro;
+                categoryName = 'Metro Royal';
             }
             
-            container.innerHTML = allProducts.map(p => `
+            if (categoryProducts.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 50px; color: #888;">Товары в разработке</div>';
+                return;
+            }
+            
+            container.innerHTML = categoryProducts.map(p => `
                 <div class="product-card" data-name="${p.name}" data-price="${p.price}">
                     <div class="product-icon">${p.icon}</div>
                     <div class="product-name">${p.name}</div>
@@ -899,6 +922,7 @@
         
         function showPaymentModal(productName, price) {
             pendingProduct = { name: productName, price: price };
+            document.getElementById('modalProduct').textContent = `Товар: ${productName} | Сумма: ${price} ₽`;
             document.getElementById('paymentModal').classList.add('active');
         }
         
@@ -909,9 +933,9 @@
         
         function confirmPayment() {
             if (pendingProduct) {
-                showToast(`Заказ на "${pendingProduct.name}" оформлен! Перейдите в Telegram для подтверждения.`, 'success');
+                window.open('https://www.donationalerts.com/r/limitblitzoffical', '_blank');
+                showToast(`Заказ на "${pendingProduct.name}" оформлен! После оплаты напишите в Telegram.`, 'success');
                 closeModal();
-                window.open('https://t.me/l_AWANGARD_l', '_blank');
             }
         }
         
@@ -933,6 +957,7 @@
                 });
             });
             
+            // Категории товаров (без кнопки "Все")
             document.querySelectorAll('.cat-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
@@ -972,7 +997,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             createParticles();
             initNavigation();
-            renderProducts('all');
+            renderProducts('uc');
             
             document.getElementById('userId').textContent = getUserId();
             
@@ -1000,25 +1025,8 @@
             `;
             document.body.appendChild(modal);
             
-            document.getElementById('confirmModalBtn')?.addEventListener('click', () => {
-                if (pendingProduct) {
-                    window.open('https://www.donationalerts.com/r/limitblitzoffical', '_blank');
-                    showToast(`Заказ на "${pendingProduct.name}" оформлен! После оплаты напишите в Telegram.`, 'success');
-                    modal.classList.remove('active');
-                    pendingProduct = null;
-                }
-            });
-            
-            document.getElementById('closeModalBtn')?.addEventListener('click', () => {
-                modal.classList.remove('active');
-                pendingProduct = null;
-            });
-            
-            window.showPaymentModal = (name, price) => {
-                pendingProduct = { name, price };
-                document.getElementById('modalProduct').textContent = `Товар: ${name} | Сумма: ${price} ₽`;
-                modal.classList.add('active');
-            };
+            document.getElementById('confirmModalBtn')?.addEventListener('click', confirmPayment);
+            document.getElementById('closeModalBtn')?.addEventListener('click', closeModal);
             
             showToast('Добро пожаловать в AWANGARD NEON!', 'success');
         });
