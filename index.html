@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>AWANGARD | CYBERPUNK EDITION</title>
+    <title>AWANGARD | GRADIENT NEON</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.35/ua-parser.min.js"></script>
@@ -34,49 +34,38 @@
     </script>
 </head>
 <body>
-    <div class="cyber-bg">
-        <div class="cyber-grid"></div>
-        <div class="cyber-scan-line"></div>
-        <div class="cyber-vignette"></div>
-        <div class="cyber-noise"></div>
+    <div class="gradient-bg">
+        <div class="gradient-orb orb1"></div>
+        <div class="gradient-orb orb2"></div>
+        <div class="gradient-orb orb3"></div>
+        <div class="gradient-orb orb4"></div>
     </div>
     
-    <div class="cyber-particles" id="particlesContainer"></div>
+    <div class="particles" id="particlesContainer"></div>
     
-    <div class="cyber-floating-lines">
-        <div class="cyber-line"></div><div class="cyber-line"></div><div class="cyber-line"></div><div class="cyber-line"></div>
-        <div class="cyber-line"></div><div class="cyber-line"></div><div class="cyber-line"></div><div class="cyber-line"></div>
-    </div>
-    
-    <div class="cyber-floating-circles">
-        <div class="cyber-circle"></div><div class="cyber-circle"></div><div class="cyber-circle"></div><div class="cyber-circle"></div>
-    </div>
-    
-    <nav class="cyber-nav">
+    <nav class="gradient-nav">
         <div class="nav-container">
             <div class="logo">
-                <i class="fas fa-brain"></i>
+                <i class="fas fa-crown"></i>
                 <span>AWANGARD</span>
-                <span class="cyber-badge">v2.0</span>
             </div>
             <div class="nav-links">
-                <a href="#" id="homeLink" class="active"><i class="fas fa-home"></i><span>ХАБ</span></a>
-                <a href="#" id="supportersLink"><i class="fas fa-users"></i><span>СОПРОВОДА</span></a>
-                <a href="#" id="wheelLink"><i class="fas fa-gift"></i><span>ФОРТУНА</span></a>
-                <a href="#" id="profileLink"><i class="fas fa-user"></i><span>ПРОФИЛЬ</span></a>
-                <a href="#" id="reviewsLink"><i class="fas fa-star"></i><span>ОТЗЫВЫ</span></a>
-                <a href="#" id="supportLink"><i class="fas fa-headset"></i><span>HELP</span></a>
-                <a href="#" id="aboutLink"><i class="fas fa-info-circle"></i><span>О НАС</span></a>
+                <a href="#" id="homeLink" class="active"><i class="fas fa-home"></i><span>Главная</span></a>
+                <a href="#" id="supportersLink"><i class="fas fa-users"></i><span>Сопровождение</span></a>
+                <a href="#" id="wheelLink"><i class="fas fa-gift"></i><span>Фортуна</span></a>
+                <a href="#" id="profileLink"><i class="fas fa-user"></i><span>Профиль</span></a>
+                <a href="#" id="reviewsLink"><i class="fas fa-star"></i><span>Отзывы</span></a>
+                <a href="#" id="supportLink"><i class="fas fa-headset"></i><span>Поддержка</span></a>
+                <a href="#" id="aboutLink"><i class="fas fa-info-circle"></i><span>О нас</span></a>
             </div>
             <div class="user-status">
-                <div class="balance-display">
+                <div class="balance-card">
                     <i class="fas fa-coins"></i>
                     <span id="userBalance">0</span> UC
                 </div>
                 <div id="userBadge" class="user-badge" style="display: none;">
-                    <img id="userAvatarMini" src="" alt="">
+                    <img id="userAvatarMini" src="">
                     <span id="userNameMini"></span>
-                    <div class="user-badge-glow"></div>
                 </div>
             </div>
         </div>
@@ -84,311 +73,281 @@
     
     <div class="main-wrapper">
         <main class="content-area">
+            <!-- Главная -->
             <div id="mainContent">
-                <div class="cyber-hero">
-                    <div class="cyber-glitch-wrapper">
-                        <h1 class="cyber-glitch" data-text="AWANGARD CYBER">AWANGARD CYBER</h1>
-                    </div>
-                    <p class="cyber-subtitle">PUBG MOBILE | UC | МЕТРОВАЛЮТА</p>
-                    <div class="cyber-info-text">
-                        <i class="fas fa-bolt"></i> ДОБРО ПОЖАЛОВАТЬ В КИБЕРПРОСТРАНСТВО AWANGARD! ПОКУПАЙ UC И МЕТРОВАЛЮТУ, КРУТИ КОЛЕСО ФОРТУНЫ, СТАНЬ СОПРОВОЖДАЮЩИМ. УДАЧНЫХ ПОКУПОК! <i class="fas fa-bolt"></i>
+                <div class="hero">
+                    <h1 class="gradient-text">AWANGARD</h1>
+                    <p class="subtitle">PUBG Mobile | UC | Метровалюта</p>
+                    <div class="info-card">
+                        <i class="fas fa-bolt"></i>
+                        <span>Добро пожаловать! Покупай UC, крути колесо фортуны, становись сопровождающим!</span>
                     </div>
                 </div>
                 
-                <div class="cyber-section-title">
+                <div class="section-header">
                     <i class="fas fa-shopping-cart"></i>
-                    <h2>МАГАЗИН</h2>
-                    <div class="section-line"></div>
+                    <h2>Товары</h2>
                 </div>
                 <div class="category-tabs">
-                    <button class="category-btn active" data-cat="all">ВСЕ</button>
-                    <button class="category-btn" data-cat="uc">UC</button>
-                    <button class="category-btn" data-cat="currency">МЕТРОВАЛЮТА</button>
+                    <button class="cat-btn active" data-cat="all">Все</button>
+                    <button class="cat-btn" data-cat="uc">UC</button>
+                    <button class="cat-btn" data-cat="currency">Метровалюта</button>
                 </div>
-                <div id="cardsContainer" class="cyber-cards-grid"></div>
+                <div id="cardsContainer" class="products-grid"></div>
                 
-                <div class="cyber-section-title">
+                <div class="section-header">
                     <i class="fas fa-user-shield"></i>
-                    <h2>ЭЛИТНЫЕ СОПРОВОЖДАЮЩИЕ</h2>
-                    <div class="section-line"></div>
+                    <h2>Наши сопровождающие</h2>
                 </div>
-                <div id="acceptedSupportersList" class="cyber-supporters-list">
-                    <div class="cyber-no-data">[ ЗАГРУЗКА... ]</div>
+                <div id="acceptedSupportersList" class="supporters-grid">
+                    <div class="empty-state">Загрузка...</div>
                 </div>
             </div>
             
+            <!-- Заявка на сопровождение -->
             <div id="supportersContent" style="display: none;">
-                <div class="cyber-card">
-                    <div class="cyber-card-header">
+                <div class="glass-card">
+                    <div class="card-header">
                         <i class="fas fa-user-plus"></i>
-                        <h2>СТАТЬ СОПРОВОЖДАЮЩИМ</h2>
+                        <h2>Стать сопровождающим</h2>
                     </div>
-                    <p class="cyber-card-desc">Заполните форму для отправки заявки в элитный отряд сопровождения</p>
-                    
-                    <div class="cyber-form">
-                        <div class="cyber-form-group">
-                            <label><i class="fas fa-user"></i> ИГРОВОЙ НИК</label>
-                            <input type="text" id="supporterNick" placeholder="Введите ваш ник..." class="cyber-input">
-                        </div>
-                        <div class="cyber-form-group">
-                            <label><i class="fas fa-id-card"></i> ИГРОВОЙ ID</label>
-                            <input type="text" id="supporterId" placeholder="Введите ваш ID..." class="cyber-input">
-                        </div>
-                        <div class="cyber-form-group">
-                            <label><i class="fas fa-chart-line"></i> СТАТИСТИКА СЕЗОНА</label>
-                            <textarea id="supporterStats" placeholder="Ранг, K/D, процент побед, достижения..." class="cyber-textarea" rows="4"></textarea>
-                        </div>
-                        <div class="cyber-form-group">
-                            <label><i class="fas fa-image"></i> СКРИНШОТ СТАТИСТИКИ</label>
-                            <input type="file" id="supporterScreenshot" accept="image/*" class="cyber-file">
-                            <div id="screenshotPreview" class="cyber-preview"></div>
-                        </div>
-                        <button id="submitApplicationBtn" class="cyber-btn cyber-btn-glow">
-                            <i class="fas fa-paper-plane"></i> ОТПРАВИТЬ ЗАЯВКУ
-                        </button>
+                    <p>Заполните форму для отправки заявки</p>
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Ваш ник</label>
+                        <input type="text" id="supporterNick" placeholder="Введите ваш ник" class="gradient-input">
                     </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-id-card"></i> Ваш ID</label>
+                        <input type="text" id="supporterId" placeholder="Введите ваш ID" class="gradient-input">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-chart-line"></i> Статистика сезона</label>
+                        <textarea id="supporterStats" placeholder="Ранг, K/D, победы..." rows="4" class="gradient-textarea"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-image"></i> Скриншот статистики</label>
+                        <input type="file" id="supporterScreenshot" accept="image/*" class="gradient-file">
+                        <div id="screenshotPreview" class="preview"></div>
+                    </div>
+                    <button id="submitApplicationBtn" class="gradient-btn">Отправить заявку</button>
                 </div>
             </div>
             
+            <!-- Колесо фортуны -->
             <div id="wheelContent" style="display: none;">
-                <div class="cyber-card">
-                    <div class="cyber-card-header">
+                <div class="glass-card">
+                    <div class="card-header">
                         <i class="fas fa-gift"></i>
-                        <h2>КОЛЕСО ФОРТУНЫ</h2>
+                        <h2>Колесо фортуны</h2>
                     </div>
-                    <p class="cyber-card-desc">Стоимость вращения: <span class="cyber-highlight">100 UC</span></p>
+                    <p>Стоимость вращения: <span class="highlight">100 UC</span></p>
                     <div class="wheel-container">
-                        <canvas id="wheelCanvas" width="400" height="400"></canvas>
-                        <button id="spinWheelBtn" class="cyber-btn cyber-btn-glow spin-btn">
-                            <i class="fas fa-play"></i> ЗАПУСТИТЬ
-                        </button>
+                        <canvas id="wheelCanvas" width="350" height="350"></canvas>
+                        <button id="spinWheelBtn" class="gradient-btn spin-btn">Крутить!</button>
                         <div id="wheelResult" class="wheel-result"></div>
                     </div>
                 </div>
             </div>
             
+            <!-- Профиль -->
             <div id="profileContent" style="display: none;">
-                <div class="cyber-card">
-                    <div class="cyber-card-header">
+                <div class="glass-card">
+                    <div class="card-header">
                         <i class="fas fa-user-circle"></i>
-                        <h2>ПРОФИЛЬ</h2>
+                        <h2>Профиль</h2>
                     </div>
-                    <div class="cyber-profile-info">
-                        <div class="cyber-profile-avatar">
-                            <img id="profilePageAvatar" src="https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=Guest" alt="Avatar">
-                            <div class="cyber-avatar-pulse"></div>
+                    <div class="profile-info">
+                        <div class="profile-avatar">
+                            <img id="profileAvatar" src="https://ui-avatars.com/api/?background=6a11cb&color=fff&bold=true&name=Guest">
+                            <div class="avatar-ring"></div>
                         </div>
-                        <div class="cyber-profile-details">
-                            <h3 id="profilePageName">UNKNOWN</h3>
-                            <p id="profilePageUsername"></p>
-                            <div class="cyber-profile-id">
+                        <div class="profile-details">
+                            <h3 id="profileName">Гость</h3>
+                            <p id="profileUsername"></p>
+                            <div class="profile-id">
                                 <i class="fas fa-fingerprint"></i>
-                                <span id="profilePageId">guest</span>
+                                <span id="profileId">guest</span>
                             </div>
-                            <div class="cyber-profile-balance">
+                            <div class="profile-balance">
                                 <i class="fas fa-coins"></i>
                                 <span id="profileBalance">0</span> UC
                             </div>
-                            <div class="cyber-profile-device" id="profilePageDeviceInfo">
+                            <div class="profile-device">
                                 <i class="fas fa-microchip"></i>
-                                <span id="deviceInfoTextPage">SCANNING...</span>
+                                <span id="deviceInfoText">Определение...</span>
                             </div>
                         </div>
                     </div>
-                    <div class="cyber-profile-actions">
-                        <div id="telegramLoginPage" class="cyber-telegram-login"></div>
-                        <button id="logoutPageBtn" class="cyber-btn cyber-logout-btn" style="display: none;">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span>ВЫЙТИ</span>
-                        </button>
+                    <div class="profile-actions">
+                        <div id="telegramLoginBlock"></div>
+                        <button id="logoutBtn" class="gradient-btn outline" style="display: none;">Выйти</button>
                     </div>
                 </div>
                 
-                <div class="cyber-chat" id="userChatContainer" style="display: none;">
-                    <div class="cyber-chat-header">
+                <div class="glass-card" id="userChatBlock" style="display: none;">
+                    <div class="card-header">
                         <i class="fas fa-headset"></i>
-                        <span>ПОДДЕРЖКА ONLINE</span>
-                        <span class="online-status">● АКТИВЕН</span>
+                        <h2>Чат с поддержкой</h2>
                     </div>
-                    <div class="cyber-chat-messages" id="userChatMessages">
-                        <div class="cyber-chat-empty">💬 СООБЩЕНИЙ НЕТ</div>
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="empty-chat">Нет сообщений</div>
                     </div>
-                    <div class="cyber-chat-input">
-                        <input type="text" id="userChatInput" placeholder="ВВЕДИТЕ СООБЩЕНИЕ..." class="cyber-chat-field">
-                        <button id="userSendMessageBtn" class="cyber-chat-send">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
+                    <div class="chat-input">
+                        <input type="text" id="chatInput" placeholder="Напишите сообщение..." class="gradient-input">
+                        <button id="sendChatBtn" class="gradient-btn small">Отправить</button>
                     </div>
                 </div>
             </div>
             
+            <!-- Отзывы -->
             <div id="reviewsContent" style="display: none;">
-                <div class="cyber-card">
-                    <div class="cyber-card-header">
+                <div class="glass-card">
+                    <div class="card-header">
                         <i class="fas fa-star"></i>
-                        <h2>ОТЗЫВЫ КЛИЕНТОВ</h2>
+                        <h2>Отзывы клиентов</h2>
                     </div>
-                    <div class="cyber-reviews-stats">
-                        <div class="cyber-average-rating">
-                            <span class="cyber-average-value" id="averageRating">0</span>
-                            <div class="cyber-stars-display" id="averageStars"></div>
-                            <span class="cyber-reviews-count">(<span id="reviewsCount">0</span>)</span>
+                    <div class="reviews-stats">
+                        <div class="rating-box">
+                            <span class="rating-value" id="avgRating">0</span>
+                            <div class="stars" id="avgStars"></div>
+                            <span>(<span id="reviewsCount">0</span> отзывов)</span>
                         </div>
                     </div>
                     <div class="reviews-filters">
-                        <button class="filter-btn active" data-filter="all">ВСЕ</button>
+                        <button class="filter-btn active" data-filter="all">Все</button>
                         <button class="filter-btn" data-filter="5">5 ★</button>
                         <button class="filter-btn" data-filter="4">4 ★</button>
                         <button class="filter-btn" data-filter="3">3 ★</button>
                         <button class="filter-btn" data-filter="2">2 ★</button>
                         <button class="filter-btn" data-filter="1">1 ★</button>
                     </div>
-                    <div id="reviewsList" class="cyber-reviews-list">
-                        <div class="cyber-no-data">[ ЗАГРУЗКА ОТЗЫВОВ... ]</div>
+                    <div id="reviewsList" class="reviews-list">
+                        <div class="empty-state">Загрузка отзывов...</div>
                     </div>
-                    <div class="cyber-review-form">
-                        <h3><i class="fas fa-edit"></i> ОСТАВИТЬ ОТЗЫВ</h3>
-                        <div class="cyber-rating-input">
-                            <span>ОЦЕНКА:</span>
-                            <div class="cyber-stars-input" id="starsInput">
-                                <i class="far fa-star" data-value="1"></i>
-                                <i class="far fa-star" data-value="2"></i>
-                                <i class="far fa-star" data-value="3"></i>
-                                <i class="far fa-star" data-value="4"></i>
-                                <i class="far fa-star" data-value="5"></i>
+                    
+                    <div class="review-form">
+                        <h3>Оставить отзыв</h3>
+                        <div class="rating-input">
+                            <span>Оценка:</span>
+                            <div class="stars-input" id="starsInput">
+                                <i class="far fa-star" data-val="1"></i>
+                                <i class="far fa-star" data-val="2"></i>
+                                <i class="far fa-star" data-val="3"></i>
+                                <i class="far fa-star" data-val="4"></i>
+                                <i class="far fa-star" data-val="5"></i>
                             </div>
                         </div>
-                        <input type="text" id="reviewName" placeholder="ВАШЕ ИМЯ" class="cyber-input" maxlength="50">
-                        <textarea id="reviewText" placeholder="ТЕКСТ ОТЗЫВА..." maxlength="500" class="cyber-textarea"></textarea>
-                        <div class="cyber-review-actions">
-                            <span class="cyber-char-counter">0/500</span>
-                            <button id="submitReviewBtn" class="cyber-btn cyber-btn-glow">ОТПРАВИТЬ</button>
+                        <input type="text" id="reviewName" placeholder="Ваше имя" class="gradient-input">
+                        <textarea id="reviewText" placeholder="Ваш отзыв..." rows="3" class="gradient-textarea"></textarea>
+                        <div class="form-footer">
+                            <span class="char-counter" id="charCounter">0/500</span>
+                            <button id="submitReviewBtn" class="gradient-btn">Отправить отзыв</button>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div id="aboutContainer" style="display: none;">
-                <div class="cyber-card">
-                    <div class="cyber-card-header">
+            <!-- О нас -->
+            <div id="aboutContent" style="display: none;">
+                <div class="glass-card">
+                    <div class="card-header">
                         <i class="fas fa-info-circle"></i>
-                        <h2>О СИСТЕМЕ</h2>
+                        <h2>О нас</h2>
                     </div>
-                    <div class="cyber-about-icon"><i class="fas fa-brain"></i></div>
-                    <p>AWANGARD CYBER — передовая платформа для приобретения игровых ценностей PUBG Mobile. Молниеносная доставка, лучшие цены, элитное сопровождение.</p>
+                    <div class="about-icon"><i class="fas fa-store"></i></div>
+                    <p>AWANGARD — надёжный магазин игровых товаров для PUBG Mobile. Лучшие цены, моментальная доставка, элитное сопровождение.</p>
                 </div>
             </div>
         </main>
     </div>
     
-    <div id="paymentModal" class="payment-modal" style="display: none;">
-        <div class="payment-modal-content">
-            <div class="payment-modal-header">
-                <h3><i class="fas fa-credit-card"></i> ОПЛАТА</h3>
-                <button id="closePaymentModal" class="close-modal"><i class="fas fa-times"></i></button>
+    <!-- Модалка оплаты -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Оплата</h3>
+                <button class="modal-close">&times;</button>
             </div>
-            <div class="payment-modal-body">
-                <p>ТОВАР: <strong id="paymentProductName"></strong></p>
-                <p>СУММА: <strong id="paymentAmount"></strong></p>
+            <div class="modal-body">
+                <p>Товар: <strong id="paymentProduct"></strong></p>
+                <p>Сумма: <strong id="paymentAmount"></strong></p>
                 <div class="payment-warning">
-                    <i class="fas fa-info-circle"></i> ПОСЛЕ ОПЛАТЫ НАЖМИТЕ "ПОДТВЕРДИТЬ"
+                    <i class="fas fa-info-circle"></i> После оплаты нажмите "Подтвердить"
                 </div>
-                <div class="payment-buttons">
-                    <a href="https://www.donationalerts.com/r/limitblitzoffical" target="_blank" class="payment-link-btn">
-                        <i class="fas fa-external-link-alt"></i> ПЕРЕЙТИ К ОПЛАТЕ
-                    </a>
-                    <button id="confirmPaymentBtn" class="confirm-payment-btn">
-                        <i class="fas fa-check"></i> ПОДТВЕРДИТЬ
-                    </button>
-                </div>
+                <a href="https://www.donationalerts.com/r/limitblitzoffical" target="_blank" class="gradient-btn" style="display: block; text-align: center; margin-bottom: 10px;">Перейти к оплате</a>
+                <button id="confirmPaymentBtn" class="gradient-btn outline" style="width: 100%;">Подтвердить оплату</button>
             </div>
         </div>
     </div>
     
-    <div id="adminPanel" class="cyber-admin-panel" style="display: none;">
-        <div class="cyber-admin-header">
-            <h2><i class="fas fa-shield-alt"></i> ADMIN ACCESS</h2>
-            <button id="closeAdminBtn" class="cyber-admin-close"><i class="fas fa-times"></i></button>
+    <!-- Админ-панель -->
+    <div id="adminPanel" class="admin-panel">
+        <div class="admin-header">
+            <h2><i class="fas fa-shield-alt"></i> ADMIN PANEL</h2>
+            <button id="closeAdminBtn" class="admin-close">&times;</button>
         </div>
-        <div class="cyber-admin-tabs">
-            <button class="cyber-admin-tab active" data-tab="users"><i class="fas fa-users"></i> ПОЛЬЗОВАТЕЛИ</button>
-            <button class="cyber-admin-tab" data-tab="balance"><i class="fas fa-coins"></i> БАЛАНС</button>
-            <button class="cyber-admin-tab" data-tab="supporters"><i class="fas fa-user-plus"></i> ЗАЯВКИ</button>
-            <button class="cyber-admin-tab" data-tab="chats"><i class="fas fa-comments"></i> ЧАТЫ</button>
-            <button class="cyber-admin-tab" data-tab="reviews"><i class="fas fa-star"></i> ОТЗЫВЫ</button>
-            <button class="cyber-admin-tab" data-tab="stats"><i class="fas fa-chart-line"></i> СТАТИСТИКА</button>
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="users">Пользователи</button>
+            <button class="admin-tab" data-tab="balance">Баланс</button>
+            <button class="admin-tab" data-tab="applications">Заявки</button>
+            <button class="admin-tab" data-tab="accepted">Принятые</button>
+            <button class="admin-tab" data-tab="reviews">Отзывы</button>
+            <button class="admin-tab" data-tab="stats">Статистика</button>
         </div>
         
-        <div id="adminUsersTab" class="cyber-admin-content active">
-            <h3><i class="fas fa-users"></i> ВСЕ ПОЛЬЗОВАТЕЛИ</h3>
-            <div class="cyber-search">
+        <div id="adminUsersTab" class="admin-content active">
+            <h3>Все пользователи</h3>
+            <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="adminUserSearch" placeholder="ПОИСК..." class="cyber-search-input">
+                <input type="text" id="userSearch" placeholder="Поиск...">
             </div>
-            <div id="adminUsersList" class="cyber-users-list"><div class="cyber-loading">ЗАГРУЗКА...</div></div>
+            <div id="usersList" class="users-list">Загрузка...</div>
         </div>
         
-        <div id="adminBalanceTab" class="cyber-admin-content" style="display: none;">
-            <h3><i class="fas fa-coins"></i> УПРАВЛЕНИЕ БАЛАНСОМ</h3>
-            <div class="cyber-balance-form">
-                <label>ВЫБЕРИТЕ ПОЛЬЗОВАТЕЛЯ:</label>
-                <select id="adminBalanceUserSelect" class="cyber-select"></select>
-                <div class="cyber-balance-actions">
-                    <button id="add100BalanceBtn" class="cyber-balance-btn add-btn"><i class="fas fa-plus"></i> +100 UC</button>
-                    <button id="remove100BalanceBtn" class="cyber-balance-btn remove-btn"><i class="fas fa-minus"></i> -100 UC</button>
+        <div id="adminBalanceTab" class="admin-content" style="display: none;">
+            <h3>Управление балансом</h3>
+            <div class="balance-form">
+                <select id="balanceUserSelect" class="gradient-select"></select>
+                <div class="balance-buttons">
+                    <button id="addBalanceBtn" class="gradient-btn small">+100 UC</button>
+                    <button id="removeBalanceBtn" class="gradient-btn small outline">-100 UC</button>
                 </div>
             </div>
         </div>
         
-        <div id="adminSupportersTab" class="cyber-admin-content" style="display: none;">
-            <h3><i class="fas fa-user-plus"></i> ЗАЯВКИ НА СОПРОВОЖДЕНИЕ</h3>
-            <div id="applicationsList" class="cyber-applications-list"><div class="cyber-loading">ЗАГРУЗКА...</div></div>
-            <h3 style="margin-top: 2rem;"><i class="fas fa-user-check"></i> ПРИНЯТЫЕ СОПРОВОЖДАЮЩИЕ</h3>
-            <div id="adminAcceptedList" class="cyber-accepted-list"><div class="cyber-loading">ЗАГРУЗКА...</div></div>
+        <div id="adminApplicationsTab" class="admin-content" style="display: none;">
+            <h3>Заявки на сопровождение</h3>
+            <div id="applicationsList" class="applications-list">Загрузка...</div>
         </div>
         
-        <div id="adminChatsTab" class="cyber-admin-content" style="display: none;">
-            <h3><i class="fas fa-comments"></i> ЧАТЫ ПОЛЬЗОВАТЕЛЕЙ</h3>
-            <div class="cyber-chat-selector">
-                <label>ВЫБЕРИТЕ ПОЛЬЗОВАТЕЛЯ:</label>
-                <select id="adminUserSelect" class="cyber-select"><option value="">-- ВЫБЕРИТЕ --</option></select>
-            </div>
-            <div class="cyber-chat-area">
-                <div id="adminSelectedUserInfo" class="cyber-user-info"></div>
-                <div id="adminChatMessages" class="cyber-chat-messages"><div class="cyber-placeholder">ВЫБЕРИТЕ ПОЛЬЗОВАТЕЛЯ</div></div>
-                <div class="cyber-chat-input-area">
-                    <input type="text" id="adminReplyInput" placeholder="ОТВЕТ ПОЛЬЗОВАТЕЛЮ..." class="cyber-chat-input">
-                    <button id="sendReplyBtn" class="cyber-send-btn"><i class="fas fa-paper-plane"></i> ОТПРАВИТЬ</button>
-                </div>
-            </div>
+        <div id="adminAcceptedTab" class="admin-content" style="display: none;">
+            <h3>Принятые сопровождающие</h3>
+            <div id="acceptedList" class="accepted-list">Загрузка...</div>
         </div>
         
-        <div id="adminReviewsTab" class="cyber-admin-content" style="display: none;">
-            <h3><i class="fas fa-star"></i> УПРАВЛЕНИЕ ОТЗЫВАМИ</h3>
-            <div id="adminReviewsList" class="cyber-reviews-admin-list"><div class="cyber-loading">ЗАГРУЗКА...</div></div>
+        <div id="adminReviewsTab" class="admin-content" style="display: none;">
+            <h3>Управление отзывами</h3>
+            <div id="adminReviewsList" class="reviews-list">Загрузка...</div>
         </div>
         
-        <div id="adminStatsTab" class="cyber-admin-content" style="display: none;">
-            <h3><i class="fas fa-chart-line"></i> СТАТИСТИКА</h3>
-            <div class="cyber-stats-grid">
-                <div class="cyber-stat-card"><i class="fas fa-users"></i><div class="cyber-stat-info"><span class="cyber-stat-label">ВСЕГО</span><span id="statTotalUsers" class="cyber-stat-value">0</span></div></div>
-                <div class="cyber-stat-card"><i class="fab fa-telegram"></i><div class="cyber-stat-info"><span class="cyber-stat-label">TELEGRAM</span><span id="statTelegramUsers" class="cyber-stat-value">0</span></div></div>
-                <div class="cyber-stat-card"><i class="fas fa-user"></i><div class="cyber-stat-info"><span class="cyber-stat-label">ГОСТИ</span><span id="statGuestUsers" class="cyber-stat-value">0</span></div></div>
-                <div class="cyber-stat-card"><i class="fas fa-star"></i><div class="cyber-stat-info"><span class="cyber-stat-label">ОТЗЫВОВ</span><span id="statTotalReviews" class="cyber-stat-value">0</span></div></div>
-                <div class="cyber-stat-card"><i class="fas fa-user-plus"></i><div class="cyber-stat-info"><span class="cyber-stat-label">ЗАЯВОК</span><span id="statTotalApplications" class="cyber-stat-value">0</span></div></div>
-                <div class="cyber-stat-card"><i class="fas fa-user-check"></i><div class="cyber-stat-info"><span class="cyber-stat-label">ПРИНЯТО</span><span id="statTotalAccepted" class="cyber-stat-value">0</span></div></div>
+        <div id="adminStatsTab" class="admin-content" style="display: none;">
+            <h3>Статистика</h3>
+            <div class="stats-grid">
+                <div class="stat-card"><i class="fas fa-users"></i><div><span>Пользователей</span><strong id="statUsers">0</strong></div></div>
+                <div class="stat-card"><i class="fab fa-telegram"></i><div><span>Telegram</span><strong id="statTelegram">0</strong></div></div>
+                <div class="stat-card"><i class="fas fa-star"></i><div><span>Отзывов</span><strong id="statReviews">0</strong></div></div>
+                <div class="stat-card"><i class="fas fa-user-plus"></i><div><span>Заявок</span><strong id="statApps">0</strong></div></div>
+                <div class="stat-card"><i class="fas fa-user-check"></i><div><span>Принято</span><strong id="statAccepted">0</strong></div></div>
             </div>
         </div>
     </div>
-    <div id="adminOverlay" class="cyber-admin-overlay" style="display: none;"></div>
+    <div id="adminOverlay" class="admin-overlay"></div>
     
-    <footer class="cyber-footer">
-        <p>AWANGARD CYBER v2.0 | PUBG MOBILE MARKET</p>
-        <div class="footer-glow"></div>
+    <footer class="gradient-footer">
+        <p>AWANGARD | GRADIENT NEON EDITION</p>
     </footer>
 
-    <div id="toastNotification" class="toast-notification"></div>
-    <div class="version-badge">CYBER MODE | v2.0</div>
+    <div id="toast" class="toast"></div>
 
     <script src="script.js"></script>
 </body>

@@ -1,10 +1,9 @@
-// ========== AWANGARD CYBER v2.0 ==========
+// ========== AWANGARD GRADIENT NEON ==========
 const CONFIG = {
-    VERSION: '2.0',
-    UPDATE_DATE: '12.04.2026',
+    VERSION: '3.0',
     DONATION_URL: 'https://www.donationalerts.com/r/limitblitzoffical',
     BOT_TOKEN: '8745985444:AAGA1jByHKR78uThXfkurejklLrIp53bp6M',
-    ADMIN_ID: 'ВАШ_TELEGRAM_ID', // ЗАМЕНИТЕ НА ВАШ TELEGRAM ID
+    ADMIN_ID: '@Awangard_shops_bot',
     ADMIN_CODE: 'AWANGARD'
 };
 
@@ -14,88 +13,70 @@ let currentReviewFilter = 'all';
 let selectedRating = 0;
 let spinning = false;
 let currentAngle = 0;
-let pendingPaymentProduct = null;
-let currentTelegramUser = null;
+let pendingProduct = null;
+let currentUser = null;
 
 // ========== ОПРЕДЕЛЕНИЕ УСТРОЙСТВА ==========
-function getDeviceFullInfo() {
+function getDeviceInfo() {
     const ua = navigator.userAgent;
     let os = "Unknown";
     if (/Windows NT 10/.test(ua)) os = "Windows 10";
-    else if (/Windows NT 6.1/.test(ua)) os = "Windows 7";
     else if (/Mac OS X/.test(ua)) os = "macOS";
     else if (/Android/.test(ua)) os = "Android";
     else if (/iPhone|iPad|iPod/.test(ua)) os = "iOS";
-    else if (/Linux/.test(ua)) os = "Linux";
-    
-    let browser = "Unknown";
-    if (/Chrome/.test(ua) && !/Edg/.test(ua)) browser = "Chrome";
-    else if (/Firefox/.test(ua)) browser = "Firefox";
-    else if (/Safari/.test(ua) && !/Chrome/.test(ua)) browser = "Safari";
-    else if (/Edg/.test(ua)) browser = "Edge";
-    
-    let deviceType = "Desktop";
-    if (/Mobi|Android|iPhone|iPad|iPod/.test(ua)) {
-        deviceType = /iPad|Android(?!.*Mobile)/i.test(ua) ? "Tablet" : "Mobile";
+    let deviceType = /Mobi|Android|iPhone|iPad|iPod/.test(ua) ? "Mobile" : "Desktop";
+    return { os, deviceType, full: `${deviceType} | ${os}` };
+}
+
+const deviceInfo = getDeviceInfo();
+document.getElementById('deviceInfoText').textContent = deviceInfo.full;
+
+// ========== ID ПОЛЬЗОВАТЕЛЯ ==========
+function getUserId() {
+    let id = localStorage.getItem('awangard_user_id');
+    if (!id) {
+        id = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
+        localStorage.setItem('awangard_user_id', id);
     }
-    return { os, browser, deviceType };
+    return id;
 }
-
-const deviceInfo = getDeviceFullInfo();
-const deviceInfoElement = document.getElementById('deviceInfoTextPage');
-if (deviceInfoElement) deviceInfoElement.textContent = `${deviceInfo.deviceType} | ${deviceInfo.os} | ${deviceInfo.browser}`;
-
-// ========== УНИКАЛЬНЫЙ ID ==========
-function generateUniqueId() { return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9); }
-function getOrCreateUserId() {
-    let userId = localStorage.getItem('awangard_user_id');
-    if (!userId) { userId = generateUniqueId(); localStorage.setItem('awangard_user_id', userId); registerUser(userId, 'guest', 'Guest'); }
-    return userId;
-}
-
-async function registerUser(id, type, name, photo = null, telegramId = null) {
-    if (!window.db) return;
-    try {
-        const userRef = doc(window.db, "users", id);
-        const userSnap = await getDoc(userRef);
-        if (!userSnap.exists()) {
-            await setDoc(userRef, { id, type, name, photo, telegramId, deviceInfo, firstSeen: Date.now(), lastSeen: Date.now(), visitCount: 1 });
-        } else {
-            await setDoc(userRef, { ...userSnap.data(), lastSeen: Date.now(), visitCount: (userSnap.data().visitCount || 0) + 1 }, { merge: true });
-        }
-    } catch (error) { console.error("Ошибка регистрации:", error); }
-}
-
-const CURRENT_USER_ID = getOrCreateUserId();
+const CURRENT_USER_ID = getUserId();
 
 // ========== БАЛАНС ==========
-function getUserBalance() { return parseInt(localStorage.getItem('awangard_balance') || '0'); }
-function setUserBalance(amount) { localStorage.setItem('awangard_balance', amount); updateBalanceDisplay(); return amount; }
-function addUserBalance(amount) { const newBalance = getUserBalance() + amount; setUserBalance(newBalance); showToast(`+${amount} UC`, 'success'); return newBalance; }
-function deductUserBalance(amount) { const current = getUserBalance(); if (current < amount) return false; setUserBalance(current - amount); return true; }
-function updateBalanceDisplay() { document.querySelectorAll('#userBalance, #profileBalance').forEach(el => { if (el) el.textContent = getUserBalance(); }); }
+function getBalance() { return parseInt(localStorage.getItem('awangard_balance') || '0'); }
+function setBalance(amount) { localStorage.setItem('awangard_balance', amount); updateBalanceUI(); }
+function addBalance(amount) { setBalance(getBalance() + amount); showToast(`+${amount} UC`, 'success'); }
+function deductBalance(amount) { if (getBalance() >= amount) { setBalance(getBalance() - amount); return true; } return false; }
+function updateBalanceUI() { document.querySelectorAll('#userBalance, #profileBalance').forEach(el => { if (el) el.textContent = getBalance(); }); }
 
 // ========== TELEGRAM ВХОД ==========
-function getTelegramUser() { const saved = localStorage.getItem('awangard_telegram_user'); return saved ? JSON.parse(saved) : null; }
-function saveTelegramUser(userData) {
-    localStorage.setItem('awangard_telegram_user', JSON.stringify(userData));
-    currentTelegramUser = userData;
-    registerUser(userData.id.toString(), 'telegram', userData.first_name + ' ' + (userData.last_name || ''), userData.photo_url, userData.id);
-    updateUIAfterLogin(userData);
+function getTelegramUser() {
+    const saved = localStorage.getItem('awangard_telegram');
+    return saved ? JSON.parse(saved) : null;
+}
+function saveTelegramUser(user) {
+    localStorage.setItem('awangard_telegram', JSON.stringify(user));
+    currentUser = user;
+    updateProfileUI(user);
 }
 window.onTelegramAuth = function(user) {
     if (user && user.id) {
-        saveTelegramUser({ id: user.id, first_name: user.first_name, last_name: user.last_name || '', username: user.username || '', photo_url: user.photo_url || '' });
-        alert(`Welcome, ${user.first_name}!`);
+        saveTelegramUser({
+            id: user.id,
+            name: user.first_name + ' ' + (user.last_name || ''),
+            username: user.username || '',
+            photo: user.photo_url || ''
+        });
+        showToast(`Добро пожаловать, ${user.first_name}!`, 'success');
         document.getElementById('profileLink').click();
     }
 };
-function initTelegramLogin() {
-    const container = document.getElementById('telegramLoginPage');
+function initTelegram() {
+    const container = document.getElementById('telegramLoginBlock');
     if (container) {
         container.innerHTML = '';
         const wrapper = document.createElement('div');
-        wrapper.className = 'telegram-login-wrapper';
+        wrapper.className = 'telegram-wrapper';
         const script = document.createElement('script');
         script.async = true;
         script.src = 'https://telegram.org/js/telegram-widget.js?23';
@@ -107,179 +88,101 @@ function initTelegramLogin() {
         wrapper.appendChild(script);
     }
 }
-function updateUIAfterLogin(userData) {
-    document.getElementById('profilePageName').textContent = userData.first_name + ' ' + (userData.last_name || '');
-    document.getElementById('profilePageUsername').textContent = userData.username ? '@' + userData.username : '';
-    document.getElementById('profilePageId').textContent = userData.id;
-    document.getElementById('profilePageAvatar').src = userData.photo_url || `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${userData.first_name}`;
-    document.getElementById('telegramLoginPage').style.display = 'none';
-    document.getElementById('logoutPageBtn').style.display = 'flex';
-    document.getElementById('userBadge').style.display = 'flex';
-    document.getElementById('userAvatarMini').src = userData.photo_url || `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${userData.first_name}`;
-    document.getElementById('userNameMini').textContent = userData.first_name;
-    showToast(`Welcome, ${userData.first_name}!`, 'success');
-}
-function updateUIForGuest() {
-    document.getElementById('profilePageName').textContent = 'UNKNOWN';
-    document.getElementById('profilePageUsername').textContent = '';
-    document.getElementById('profilePageId').textContent = CURRENT_USER_ID.slice(-8);
-    document.getElementById('profilePageAvatar').src = 'https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=Guest';
-    document.getElementById('telegramLoginPage').style.display = 'block';
-    document.getElementById('logoutPageBtn').style.display = 'none';
-    document.getElementById('userBadge').style.display = 'none';
-}
-function logout() { localStorage.removeItem('awangard_telegram_user'); currentTelegramUser = null; updateUIForGuest(); showToast('Logged out', 'info'); }
-
-// ========== ЧАТ ==========
-function getCurrentUserId() { return currentTelegramUser ? currentTelegramUser.id.toString() : CURRENT_USER_ID; }
-function getCurrentUserName() { return currentTelegramUser ? (currentTelegramUser.first_name + ' ' + (currentTelegramUser.last_name || '')) : 'Guest'; }
-function checkUserChat() {
-    const userId = getCurrentUserId();
-    const messages = JSON.parse(localStorage.getItem(`awangard_chat_${userId}`) || '[]');
-    const container = document.getElementById('userChatContainer');
-    if (container) container.style.display = messages.length > 0 ? 'block' : 'none';
-    renderUserChat(messages);
-}
-function renderUserChat(messages) {
-    const container = document.getElementById('userChatMessages');
-    if (!container) return;
-    if (messages.length === 0) { container.innerHTML = '<div class="cyber-chat-empty">💬 NO MESSAGES YET</div>'; return; }
-    container.innerHTML = messages.map(msg => `
-        <div class="cyber-chat-message-${msg.isAdmin ? 'admin' : 'user'}">
-            <div class="cyber-message-avatar-${msg.isAdmin ? 'admin' : 'user'}">
-                <i class="${msg.isAdmin ? 'fas fa-headset' : 'fas fa-user'}"></i>
-            </div>
-            <div class="cyber-message-content-${msg.isAdmin ? 'admin' : 'user'}">
-                <div class="cyber-message-name-${msg.isAdmin ? 'admin' : 'user'}">${msg.isAdmin ? 'SUPPORT' : 'YOU'}</div>
-                <div class="cyber-message-text-${msg.isAdmin ? 'admin' : 'user'}">${escapeHtml(msg.text)}</div>
-                <div class="cyber-message-time-${msg.isAdmin ? 'admin' : 'user'}">${msg.time}</div>
-            </div>
-        </div>
-    `).join('');
-    container.scrollTop = container.scrollHeight;
-}
-function sendUserMessage() {
-    const input = document.getElementById('userChatInput');
-    const text = input.value.trim();
-    if (!text) return;
-    const userId = getCurrentUserId();
-    const messages = JSON.parse(localStorage.getItem(`awangard_chat_${userId}`) || '[]');
-    const now = new Date();
-    const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-    messages.push({ isAdmin: false, text, time: timeStr, timestamp: now.toISOString() });
-    localStorage.setItem(`awangard_chat_${userId}`, JSON.stringify(messages));
-    renderUserChat(messages);
-    input.value = '';
-    fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: CONFIG.ADMIN_ID, text: `💬 NEW MESSAGE!\n\nUser: ${getCurrentUserName()}\nID: ${userId}\nMessage: ${text}` })
-    }).catch(console.error);
-}
-
-// ========== АДМИН-ЧАТ ==========
-function loadAdminChat(userId) {
-    const messages = JSON.parse(localStorage.getItem(`awangard_chat_${userId}`) || '[]');
-    const container = document.getElementById('adminChatMessages');
-    if (!container) return;
-    if (messages.length === 0) { container.innerHTML = '<div class="cyber-placeholder">NO MESSAGES</div>'; return; }
-    container.innerHTML = messages.map(msg => `
-        <div class="cyber-admin-chat-message ${msg.isAdmin ? 'cyber-admin-msg' : 'cyber-user-msg'}">
-            <div class="cyber-admin-message-header">
-                <strong>${msg.isAdmin ? '👑 ADMIN' : '👤 USER'}</strong>
-                <span>${msg.time}</span>
-            </div>
-            <div class="cyber-admin-message-text">${escapeHtml(msg.text)}</div>
-        </div>
-    `).join('');
-    container.scrollTop = container.scrollHeight;
-}
-function sendAdminReply() {
-    const userId = document.getElementById('adminUserSelect')?.value;
-    const text = document.getElementById('adminReplyInput')?.value.trim();
-    if (!userId || !text) return;
-    const messages = JSON.parse(localStorage.getItem(`awangard_chat_${userId}`) || '[]');
-    const now = new Date();
-    const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-    messages.push({ isAdmin: true, text, time: timeStr, timestamp: now.toISOString() });
-    localStorage.setItem(`awangard_chat_${userId}`, JSON.stringify(messages));
-    document.getElementById('adminReplyInput').value = '';
-    loadAdminChat(userId);
-    showToast('Reply sent!', 'success');
-    if ((currentTelegramUser && currentTelegramUser.id.toString() === userId) || CURRENT_USER_ID === userId) {
-        renderUserChat(messages);
-        document.getElementById('userChatContainer').style.display = 'block';
+function updateProfileUI(user) {
+    if (user) {
+        document.getElementById('profileName').textContent = user.name;
+        document.getElementById('profileUsername').textContent = user.username ? '@' + user.username : '';
+        document.getElementById('profileId').textContent = user.id;
+        document.getElementById('profileAvatar').src = user.photo || `https://ui-avatars.com/api/?background=667eea&color=fff&bold=true&name=${user.name}`;
+        document.getElementById('telegramLoginBlock').style.display = 'none';
+        document.getElementById('logoutBtn').style.display = 'inline-flex';
+        document.getElementById('userBadge').style.display = 'flex';
+        document.getElementById('userAvatarMini').src = user.photo || `https://ui-avatars.com/api/?background=667eea&color=fff&bold=true&name=${user.name}`;
+        document.getElementById('userNameMini').textContent = user.name.split(' ')[0];
+    } else {
+        document.getElementById('profileName').textContent = 'Гость';
+        document.getElementById('profileUsername').textContent = '';
+        document.getElementById('profileId').textContent = CURRENT_USER_ID.slice(-8);
+        document.getElementById('profileAvatar').src = 'https://ui-avatars.com/api/?background=667eea&color=fff&bold=true&name=Guest';
+        document.getElementById('telegramLoginBlock').style.display = 'block';
+        document.getElementById('logoutBtn').style.display = 'none';
+        document.getElementById('userBadge').style.display = 'none';
     }
+}
+function logout() {
+    localStorage.removeItem('awangard_telegram');
+    currentUser = null;
+    updateProfileUI(null);
+    showToast('Вы вышли', 'info');
 }
 
 // ========== FIREBASE: ОТЗЫВЫ ==========
 async function getReviews() {
-    if (!window.db) return JSON.parse(localStorage.getItem('awangard_reviews') || '[]');
+    if (!window.db) return [];
     try {
         const q = query(collection(window.db, "reviews"), orderBy("date", "desc"));
-        const querySnapshot = await getDocs(q);
+        const snap = await getDocs(q);
         const reviews = [];
-        querySnapshot.forEach(doc => { reviews.push({ id: doc.id, ...doc.data() }); });
+        snap.forEach(doc => reviews.push({ id: doc.id, ...doc.data() }));
         return reviews;
-    } catch (error) { console.error("Ошибка загрузки отзывов:", error); return []; }
+    } catch (e) { console.error(e); return []; }
 }
-async function addReview(userName, rating, text) {
-    if (!window.db) {
-        const reviews = JSON.parse(localStorage.getItem('awangard_reviews') || '[]');
-        reviews.unshift({ id: Date.now(), userName, rating, text, date: Date.now(), avatar: `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${userName}` });
-        localStorage.setItem('awangard_reviews', JSON.stringify(reviews));
-        await renderReviews();
-        showToast('Отзыв добавлен (локально)', 'success');
-        return;
-    }
+async function addReview(name, rating, text) {
+    if (!window.db) { showToast('Firebase не подключен', 'error'); return; }
     try {
-        await addDoc(collection(window.db, "reviews"), { userName, rating, text, date: Date.now(), avatar: `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${userName}` });
+        await addDoc(collection(window.db, "reviews"), {
+            userName: name || 'Аноним',
+            rating: rating,
+            text: text,
+            date: Date.now(),
+            avatar: `https://ui-avatars.com/api/?background=667eea&color=fff&bold=true&name=${name || 'Аноним'}`
+        });
         await renderReviews();
         showToast('Отзыв добавлен!', 'success');
-    } catch (error) { console.error("Ошибка:", error); showToast('Ошибка добавления отзыва', 'error'); }
+    } catch (e) { console.error(e); showToast('Ошибка', 'error'); }
 }
-async function deleteReview(reviewId) {
-    if (!window.db) {
-        let reviews = JSON.parse(localStorage.getItem('awangard_reviews') || '[]');
-        reviews = reviews.filter(r => r.id.toString() !== reviewId);
-        localStorage.setItem('awangard_reviews', JSON.stringify(reviews));
-        await renderReviews();
-        showToast('Отзыв удалён (локально)', 'info');
-        return;
-    }
+async function deleteReview(id) {
+    if (!window.db) return;
     try {
-        await deleteDoc(doc(window.db, "reviews", reviewId));
+        await deleteDoc(doc(window.db, "reviews", id));
         await renderReviews();
-        showToast('Отзыв удалён!', 'info');
-    } catch (error) { console.error("Ошибка:", error); showToast('Ошибка удаления отзыва', 'error'); }
+        await renderAdminReviews();
+        showToast('Отзыв удалён', 'info');
+    } catch (e) { console.error(e); }
 }
 async function renderReviews() {
     const reviews = await getReviews();
     const filtered = currentReviewFilter === 'all' ? reviews : reviews.filter(r => r.rating === parseInt(currentReviewFilter));
     const container = document.getElementById('reviewsList');
     const countSpan = document.getElementById('reviewsCount');
-    const avgSpan = document.getElementById('averageRating');
-    const starsDiv = document.getElementById('averageStars');
+    const avgSpan = document.getElementById('avgRating');
+    const starsDiv = document.getElementById('avgStars');
+    
     if (countSpan) countSpan.textContent = reviews.length;
     let total = 0; reviews.forEach(r => total += r.rating);
     const avg = reviews.length > 0 ? (total / reviews.length).toFixed(1) : 0;
     if (avgSpan) avgSpan.textContent = avg;
     if (starsDiv) {
         starsDiv.innerHTML = '';
-        for (let i = 1; i <= 5; i++) { const star = document.createElement('i'); star.className = i <= Math.round(avg) ? 'fas fa-star' : 'far fa-star'; starsDiv.appendChild(star); }
+        for (let i = 1; i <= 5; i++) {
+            const star = document.createElement('i');
+            star.className = i <= Math.round(avg) ? 'fas fa-star' : 'far fa-star';
+            starsDiv.appendChild(star);
+        }
     }
     if (!container) return;
-    if (filtered.length === 0) { container.innerHTML = '<div class="cyber-no-data">[ НЕТ ОТЗЫВОВ ]</div>'; return; }
+    if (filtered.length === 0) { container.innerHTML = '<div class="empty-state">Нет отзывов</div>'; return; }
     container.innerHTML = filtered.map(r => `
-        <div class="cyber-review-item">
-            <div class="cyber-review-header">
-                <img src="${r.avatar}" class="cyber-review-avatar" alt="">
-                <div class="cyber-review-user-info">
-                    <span class="cyber-review-user-name">${escapeHtml(r.userName)}</span>
-                    <div class="cyber-review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}${'<i class="far fa-star"></i>'.repeat(5 - r.rating)}</div>
+        <div class="review-card">
+            <div class="review-header">
+                <img src="${r.avatar}" class="review-avatar">
+                <div class="review-user">
+                    <div class="review-name">${escapeHtml(r.userName)}</div>
+                    <div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}${'<i class="far fa-star"></i>'.repeat(5 - r.rating)}</div>
                 </div>
-                <span class="cyber-review-date">${new Date(r.date).toLocaleDateString()}</span>
+                <div class="review-date">${new Date(r.date).toLocaleDateString()}</div>
             </div>
-            <div class="cyber-review-text">${escapeHtml(r.text)}</div>
+            <div class="review-text">${escapeHtml(r.text)}</div>
         </div>
     `).join('');
 }
@@ -287,506 +190,578 @@ async function renderAdminReviews() {
     const reviews = await getReviews();
     const container = document.getElementById('adminReviewsList');
     if (!container) return;
-    if (reviews.length === 0) { container.innerHTML = '<div class="cyber-no-data">NO REVIEWS</div>'; return; }
+    if (reviews.length === 0) { container.innerHTML = '<div class="empty-state">Нет отзывов</div>'; return; }
     container.innerHTML = reviews.map(r => `
-        <div class="cyber-admin-review-item">
-            <div class="cyber-admin-review-info">
-                <strong>${escapeHtml(r.userName)}</strong>
-                <div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div>
-                <small>${new Date(r.date).toLocaleString()}</small>
+        <div class="user-item">
+            <div class="user-info">
+                <div class="user-name">${escapeHtml(r.userName)}</div>
+                <div>⭐ ${r.rating}/5</div>
+                <div class="user-id">${escapeHtml(r.text.substring(0, 100))}...</div>
             </div>
-            <button class="cyber-delete-review-btn" data-id="${r.id}"><i class="fas fa-trash"></i> DELETE</button>
+            <button class="remove-btn" data-id="${r.id}">Удалить</button>
         </div>
     `).join('');
-    container.querySelectorAll('.cyber-delete-review-btn').forEach(btn => { btn.addEventListener('click', () => deleteReview(btn.dataset.id)); });
+    container.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', () => deleteReview(btn.dataset.id));
+    });
 }
 
-// ========== ЗВЁЗДНЫЙ РЕЙТИНГ ==========
-let getSelectedRating = (function() {
-    let selected = 0;
+// ========== ЗВЁЗДЫ ДЛЯ ОТЗЫВОВ ==========
+function initStars() {
     const stars = document.querySelectorAll('#starsInput i');
+    let selected = 0;
     stars.forEach(star => {
         star.addEventListener('mouseenter', function() {
-            const val = parseInt(this.dataset.value);
+            const val = parseInt(this.dataset.val);
             stars.forEach((s, i) => { s.className = i < val ? 'fas fa-star' : 'far fa-star'; });
         });
         star.addEventListener('mouseleave', function() {
             stars.forEach((s, i) => { s.className = i < selected ? 'fas fa-star' : 'far fa-star'; });
         });
         star.addEventListener('click', function() {
-            selected = parseInt(this.dataset.value);
+            selected = parseInt(this.dataset.val);
             stars.forEach((s, i) => { s.className = i < selected ? 'fas fa-star' : 'far fa-star'; });
         });
     });
     return () => selected;
-})();
-
-// ========== КОЛЕСО ФОРТУНЫ ==========
-const wheelSegments = [
-    { name: "60 UC", value: 60, color: "#00ff41" }, { name: "325 UC", value: 325, color: "#39ff14" },
-    { name: "LOSE", value: 0, color: "#333" }, { name: "LOSE", value: 0, color: "#444" },
-    { name: "LOSE", value: 0, color: "#555" }, { name: "LOSE", value: 0, color: "#666" },
-    { name: "LOSE", value: 0, color: "#777" }, { name: "LOSE", value: 0, color: "#888" }
-];
-function initWheel() { const canvas = document.getElementById('wheelCanvas'); if (!canvas) return; drawWheel(canvas.getContext('2d'), canvas); }
-function drawWheel(ctx, canvas) {
-    const size = canvas.width, center = size / 2, radius = size / 2 - 5, angleStep = (Math.PI * 2) / wheelSegments.length;
-    ctx.clearRect(0, 0, size, size);
-    for (let i = 0; i < wheelSegments.length; i++) {
-        const start = i * angleStep + currentAngle, end = (i + 1) * angleStep + currentAngle;
-        ctx.beginPath(); ctx.moveTo(center, center); ctx.arc(center, center, radius, start, end);
-        ctx.fillStyle = wheelSegments[i].color; ctx.fill(); ctx.strokeStyle = "#fff"; ctx.lineWidth = 1; ctx.stroke();
-        ctx.save(); ctx.translate(center, center); ctx.rotate(start + angleStep / 2); ctx.textAlign = "center";
-        ctx.fillStyle = wheelSegments[i].name === "LOSE" ? "#aaa" : "#000"; ctx.font = "bold 10px 'Space Mono'";
-        ctx.fillText(wheelSegments[i].name, radius * 0.65, 5); ctx.restore();
-    }
-    ctx.beginPath(); ctx.moveTo(center - 8, 8); ctx.lineTo(center + 8, 8); ctx.lineTo(center, 22); ctx.fillStyle = "#fff"; ctx.fill();
-    ctx.beginPath(); ctx.moveTo(center - 8, 8); ctx.lineTo(center + 8, 8); ctx.lineTo(center, -4); ctx.fillStyle = "#ffcc00"; ctx.fill();
 }
-function spinWheel() {
-    if (spinning) return;
-    if (!currentTelegramUser) { showToast('Login to spin!', 'error'); document.getElementById('profileLink').click(); return; }
-    if (getUserBalance() < 100) { showToast('Need 100 UC to spin!', 'error'); return; }
-    spinning = true; deductUserBalance(100);
-    const canvas = document.getElementById('wheelCanvas'), ctx = canvas.getContext('2d');
-    const spins = 10 + Math.random() * 10, finalAngle = (Math.PI * 2 * spins) + (Math.random() * Math.PI * 2);
-    const startAngle = currentAngle, startTime = performance.now(), duration = 2000;
-    function animate(now) {
-        const elapsed = now - startTime, progress = Math.min(1, elapsed / duration), easeOut = 1 - Math.pow(1 - progress, 3);
-        currentAngle = startAngle + finalAngle * easeOut; drawWheel(ctx, canvas);
-        if (progress < 1) requestAnimationFrame(animate);
-        else finishSpin();
-    }
-    function finishSpin() {
-        spinning = false; const angleStep = (Math.PI * 2) / wheelSegments.length;
-        let norm = (currentAngle % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
-        let idx = Math.floor(norm / angleStep);
-        const seg = wheelSegments[(wheelSegments.length - idx) % wheelSegments.length];
-        const resultDiv = document.getElementById('wheelResult');
-        if (seg.value > 0) { addUserBalance(seg.value); resultDiv.innerHTML = `<span style="color: #00ff41;">🎉 WINNER! +${seg.name} 🎉</span>`; showToast(`You won ${seg.name}!`, 'success'); }
-        else { resultDiv.innerHTML = `<span style="color: #ff3366;">😢 LOSE! Try again 😢</span>`; showToast(`You lost! Try again`, 'info'); }
-    }
-    requestAnimationFrame(animate);
+let getSelectedRating = initStars();
+
+// ========== FIREBASE: ЗАЯВКИ ==========
+async function getApplications() {
+    if (!window.db) return [];
+    try {
+        const q = query(collection(window.db, "applications"), orderBy("date", "desc"));
+        const snap = await getDocs(q);
+        const apps = [];
+        snap.forEach(doc => apps.push({ id: doc.id, ...doc.data() }));
+        return apps;
+    } catch (e) { return []; }
+}
+async function addApplication(nick, userId, stats, screenshot) {
+    if (!window.db) { showToast('Firebase не подключен', 'error'); return; }
+    try {
+        await addDoc(collection(window.db, "applications"), { nick, userId, stats, screenshot, date: Date.now() });
+        await renderApplications();
+        showToast('Заявка отправлена!', 'success');
+        fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: CONFIG.ADMIN_ID, text: `📝 Новая заявка!\nНик: ${nick}\nID: ${userId}\nСтатистика: ${stats.substring(0, 100)}` })
+        }).catch(console.error);
+    } catch (e) { showToast('Ошибка', 'error'); }
+}
+async function acceptApplication(id, nick, userId, stats, screenshot) {
+    if (!window.db) return;
+    try {
+        await deleteDoc(doc(window.db, "applications", id));
+        await addDoc(collection(window.db, "accepted_supporters"), { nick, userId, stats, screenshot, acceptedDate: Date.now() });
+        await renderApplications();
+        await renderAccepted();
+        await renderAcceptedFront();
+        showToast(`Сопровождающий ${nick} принят`, 'success');
+    } catch (e) { console.error(e); }
+}
+async function rejectApplication(id) {
+    if (!window.db) return;
+    try {
+        await deleteDoc(doc(window.db, "applications", id));
+        await renderApplications();
+        showToast('Заявка отклонена', 'info');
+    } catch (e) { console.error(e); }
+}
+async function getAccepted() {
+    if (!window.db) return [];
+    try {
+        const q = query(collection(window.db, "accepted_supporters"), orderBy("acceptedDate", "desc"));
+        const snap = await getDocs(q);
+        const acc = [];
+        snap.forEach(doc => acc.push({ id: doc.id, ...doc.data() }));
+        return acc;
+    } catch (e) { return []; }
+}
+async function removeAccepted(id) {
+    if (!window.db) return;
+    try {
+        await deleteDoc(doc(window.db, "accepted_supporters", id));
+        await renderAccepted();
+        await renderAcceptedFront();
+        showToast('Удалён', 'info');
+    } catch (e) { console.error(e); }
+}
+async function renderApplications() {
+    const apps = await getApplications();
+    const container = document.getElementById('applicationsList');
+    if (!container) return;
+    if (apps.length === 0) { container.innerHTML = '<div class="empty-state">Нет заявок</div>'; return; }
+    container.innerHTML = apps.map(app => `
+        <div class="application-item">
+            <div class="application-info">
+                <strong>${escapeHtml(app.nick)}</strong>
+                <div>ID: ${escapeHtml(app.userId)}</div>
+                <div class="application-stats">${escapeHtml(app.stats?.substring(0, 80))}...</div>
+                <small>${new Date(app.date).toLocaleString()}</small>
+                ${app.screenshot ? `<div class="screenshot-thumb"><img src="${app.screenshot}" onclick="window.open(this.src)"></div>` : ''}
+            </div>
+            <div class="application-actions">
+                <button class="accept-btn" data-id="${app.id}" data-nick="${escapeHtml(app.nick)}" data-userid="${escapeHtml(app.userId)}" data-stats="${escapeHtml(app.stats || '')}" data-screenshot="${app.screenshot || ''}">Принять</button>
+                <button class="reject-btn" data-id="${app.id}">Отклонить</button>
+            </div>
+        </div>
+    `).join('');
+    container.querySelectorAll('.accept-btn').forEach(btn => {
+        btn.addEventListener('click', () => acceptApplication(btn.dataset.id, btn.dataset.nick, btn.dataset.userid, btn.dataset.stats, btn.dataset.screenshot));
+    });
+    container.querySelectorAll('.reject-btn').forEach(btn => {
+        btn.addEventListener('click', () => rejectApplication(btn.dataset.id));
+    });
+}
+async function renderAccepted() {
+    const acc = await getAccepted();
+    const container = document.getElementById('acceptedList');
+    if (!container) return;
+    if (acc.length === 0) { container.innerHTML = '<div class="empty-state">Нет принятых</div>'; return; }
+    container.innerHTML = acc.map(a => `
+        <div class="accepted-item">
+            <div class="accepted-info">
+                <strong>${escapeHtml(a.nick)}</strong>
+                <div>ID: ${escapeHtml(a.userId)}</div>
+                <div class="accepted-date">Принят: ${new Date(a.acceptedDate).toLocaleString()}</div>
+            </div>
+            <button class="remove-btn" data-id="${a.id}">Удалить</button>
+        </div>
+    `).join('');
+    container.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', () => removeAccepted(btn.dataset.id));
+    });
+}
+async function renderAcceptedFront() {
+    const acc = await getAccepted();
+    const container = document.getElementById('acceptedSupportersList');
+    if (!container) return;
+    if (acc.length === 0) { container.innerHTML = '<div class="empty-state">Нет активных сопровождающих</div>'; return; }
+    container.innerHTML = acc.map(a => `
+        <div class="supporter-card">
+            <div class="supporter-avatar"><i class="fas fa-user-shield"></i></div>
+            <div class="supporter-info">
+                <div class="supporter-name">${escapeHtml(a.nick)}</div>
+                <div class="supporter-id">ID: ${escapeHtml(a.userId)}</div>
+                <div class="supporter-stats">${escapeHtml(a.stats?.substring(0, 50))}...</div>
+            </div>
+        </div>
+    `).join('');
 }
 
 // ========== ТОВАРЫ ==========
 const products = {
     uc: [
-        { id: 'uc1', name: "60 UC", price: "100 ₽", oldPrice: "150 ₽", icon: "UC", category: "uc", value: 60 },
-        { id: 'uc2', name: "300+25 UC", price: "450 ₽", oldPrice: "600 ₽", icon: "UC", category: "uc", value: 325 },
-        { id: 'uc3', name: "600+60 UC", price: "900 ₽", oldPrice: "1200 ₽", icon: "UC", category: "uc", value: 660 },
-        { id: 'uc4', name: "1500+300 UC", price: "2200 ₽", oldPrice: "3000 ₽", icon: "UC", category: "uc", value: 1800 },
-        { id: 'uc5', name: "3000+850 UC", price: "4500 ₽", oldPrice: "6000 ₽", icon: "UC", category: "uc", value: 3850 },
-        { id: 'uc6', name: "6000+2100 UC", price: "9000 ₽", oldPrice: "12000 ₽", icon: "UC", category: "uc", value: 8100 }
+        { name: "60 UC", price: "100 ₽", oldPrice: "150 ₽", icon: "UC", value: 60 },
+        { name: "300+25 UC", price: "450 ₽", oldPrice: "600 ₽", icon: "UC", value: 325 },
+        { name: "600+60 UC", price: "900 ₽", oldPrice: "1200 ₽", icon: "UC", value: 660 },
+        { name: "1500+300 UC", price: "2200 ₽", oldPrice: "3000 ₽", icon: "UC", value: 1800 },
+        { name: "3000+850 UC", price: "4500 ₽", oldPrice: "6000 ₽", icon: "UC", value: 3850 },
+        { name: "6000+2100 UC", price: "9000 ₽", oldPrice: "12000 ₽", icon: "UC", value: 8100 }
     ],
     currency: [
-        { id: 'curr1', name: "1 000 000 METRO", price: "100 ₽", icon: "M", category: "currency", value: 0 },
-        { id: 'curr2', name: "2 000 000 METRO", price: "200 ₽", icon: "M", category: "currency", value: 0 },
-        { id: 'curr3', name: "3 000 000 METRO", price: "300 ₽", icon: "M", category: "currency", value: 0 },
-        { id: 'curr4', name: "4 000 000 METRO", price: "400 ₽", icon: "M", category: "currency", value: 0 },
-        { id: 'curr5', name: "5 000 000 METRO", price: "500 ₽", icon: "M", category: "currency", value: 0 },
-        { id: 'curr6', name: "6 000 000 METRO", price: "600 ₽", icon: "M", category: "currency", value: 0 },
-        { id: 'curr7', name: "7 000 000 METRO", price: "700 ₽", icon: "M", category: "currency", value: 0 },
-        { id: 'curr8', name: "8 000 000 METRO", price: "800 ₽", icon: "M", category: "currency", value: 0 },
-        { id: 'curr9', name: "9 000 000 METRO", price: "900 ₽", icon: "M", category: "currency", value: 0 },
-        { id: 'curr10', name: "10 000 000 METRO", price: "1000 ₽", icon: "M", category: "currency", value: 0 }
+        { name: "1 000 000 метровалюты", price: "100 ₽", icon: "M" },
+        { name: "2 000 000 метровалюты", price: "200 ₽", icon: "M" },
+        { name: "3 000 000 метровалюты", price: "300 ₽", icon: "M" },
+        { name: "4 000 000 метровалюты", price: "400 ₽", icon: "M" },
+        { name: "5 000 000 метровалюты", price: "500 ₽", icon: "M" },
+        { name: "6 000 000 метровалюты", price: "600 ₽", icon: "M" },
+        { name: "7 000 000 метровалюты", price: "700 ₽", icon: "M" },
+        { name: "8 000 000 метровалюты", price: "800 ₽", icon: "M" },
+        { name: "9 000 000 метровалюты", price: "900 ₽", icon: "M" },
+        { name: "10 000 000 метровалюты", price: "1000 ₽", icon: "M" }
     ]
 };
-function buyProduct(productName, price, productValue, isUc = true) {
+function buyProduct(name, price, value, isUc) {
     const priceNum = parseInt(price.replace(/[^\d]/g, ''));
-    if (getUserBalance() >= priceNum) {
-        deductUserBalance(priceNum);
-        if (isUc) { addUserBalance(productValue); showToast(`+${productValue} UC added!`, 'success'); }
-        else { showToast(`Order placed! Wait for delivery.`, 'success'); }
+    if (getBalance() >= priceNum) {
+        deductBalance(priceNum);
+        if (isUc) { addBalance(value); showToast(`+${value} UC начислено!`, 'success'); }
+        else { showToast(`Заказ оформлен! Ожидайте выдачи.`, 'success'); }
     } else {
-        pendingPaymentProduct = { name: productName, price: price };
-        document.getElementById('paymentProductName').textContent = productName;
+        pendingProduct = { name, price };
+        document.getElementById('paymentProduct').textContent = name;
         document.getElementById('paymentAmount').textContent = price;
         document.getElementById('paymentModal').style.display = 'flex';
     }
 }
-function closePaymentModals() { document.getElementById('paymentModal').style.display = 'none'; pendingPaymentProduct = null; }
-function confirmProductPayment() {
-    if (!pendingPaymentProduct) return;
-    fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: CONFIG.ADMIN_ID, text: `✅ PAYMENT CONFIRMED!\n\nProduct: ${pendingPaymentProduct.name}\nAmount: ${pendingPaymentProduct.price}` }) }).catch(console.error);
-    showToast(`Payment confirmed!`, 'success'); closePaymentModals();
+function closeModal() { document.getElementById('paymentModal').style.display = 'none'; pendingProduct = null; }
+function confirmPayment() {
+    if (pendingProduct) {
+        fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: CONFIG.ADMIN_ID, text: `✅ Подтверждение оплаты!\nТовар: ${pendingProduct.name}\nСумма: ${pendingProduct.price}` })
+        }).catch(console.error);
+        showToast('Оплата подтверждена!', 'success');
+        closeModal();
+    }
 }
 function renderProducts(category = 'all') {
     const container = document.getElementById('cardsContainer');
     if (!container) return;
-    let allProducts = [...products.uc, ...products.currency];
-    if (category !== 'all') allProducts = allProducts.filter(p => p.category === category);
-    container.innerHTML = allProducts.map(p => `
-        <div class="cyber-product-card">
-            <div class="cyber-card-letter ${p.icon === 'UC' ? 'cyber-uc-letter' : 'cyber-m-letter'}">${p.icon}</div>
-            <div class="cyber-card-info">
-                <h3>${p.name}</h3>
-                ${p.oldPrice ? `<div class="cyber-old-price">${p.oldPrice}</div>` : ''}
-                <div class="cyber-price">${p.price}</div>
-                <button class="cyber-buy-btn" data-name="${p.name}" data-price="${p.price}" data-value="${p.value}" data-isuc="${p.category === 'uc'}">
-                    <i class="fas fa-shopping-cart"></i> BUY
-                </button>
-            </div>
+    let all = [...products.uc, ...products.currency];
+    if (category !== 'all') all = all.filter(p => p.icon === (category === 'uc' ? 'UC' : 'M'));
+    container.innerHTML = all.map(p => `
+        <div class="product-card">
+            <div class="product-icon ${p.icon === 'UC' ? 'uc' : 'm'}">${p.icon}</div>
+            <div class="product-title">${p.name}</div>
+            ${p.oldPrice ? `<div class="product-old-price">${p.oldPrice}</div>` : ''}
+            <div class="product-price">${p.price}</div>
+            <button class="buy-btn" data-name="${p.name}" data-price="${p.price}" data-value="${p.value || 0}" data-isuc="${p.icon === 'UC'}">Купить</button>
         </div>
     `).join('');
-    container.querySelectorAll('.cyber-buy-btn').forEach(btn => {
-        btn.addEventListener('click', () => { const isUc = btn.dataset.isuc === 'true'; buyProduct(btn.dataset.name, btn.dataset.price, parseInt(btn.dataset.value), isUc); });
+    container.querySelectorAll('.buy-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            buyProduct(btn.dataset.name, btn.dataset.price, parseInt(btn.dataset.value), btn.dataset.isuc === 'true');
+        });
     });
 }
 
-// ========== FIREBASE: ЗАЯВКИ ==========
-async function getApplications() {
-    if (!window.db) return JSON.parse(localStorage.getItem('awangard_applications_global') || '[]');
-    try {
-        const q = query(collection(window.db, "applications"), orderBy("date", "desc"));
-        const querySnapshot = await getDocs(q);
-        const apps = [];
-        querySnapshot.forEach(doc => { apps.push({ id: doc.id, ...doc.data() }); });
-        return apps;
-    } catch (error) { console.error("Ошибка загрузки заявок:", error); return []; }
+// ========== КОЛЕСО ФОРТУНЫ ==========
+const segments = [
+    { name: "60 UC", value: 60, color: "#667eea" }, { name: "325 UC", value: 325, color: "#764ba2" },
+    { name: "LOSE", value: 0, color: "#333" }, { name: "LOSE", value: 0, color: "#444" },
+    { name: "LOSE", value: 0, color: "#555" }, { name: "LOSE", value: 0, color: "#666" },
+    { name: "LOSE", value: 0, color: "#777" }, { name: "LOSE", value: 0, color: "#888" }
+];
+function initWheel() {
+    const canvas = document.getElementById('wheelCanvas');
+    if (!canvas) return;
+    drawWheel(canvas);
 }
-async function addApplication(nick, userId, stats, screenshot) {
-    if (!window.db) {
-        const apps = JSON.parse(localStorage.getItem('awangard_applications_global') || '[]');
-        apps.unshift({ id: Date.now(), nick, userId, stats, screenshot, date: Date.now() });
-        localStorage.setItem('awangard_applications_global', JSON.stringify(apps));
-        await renderApplicationsAdmin();
-        showToast('Заявка отправлена (локально)', 'success');
-        return;
+function drawWheel(canvas) {
+    const ctx = canvas.getContext('2d');
+    const size = canvas.width, center = size / 2, radius = size / 2 - 5;
+    const angleStep = (Math.PI * 2) / segments.length;
+    ctx.clearRect(0, 0, size, size);
+    for (let i = 0; i < segments.length; i++) {
+        const start = i * angleStep + currentAngle;
+        const end = (i + 1) * angleStep + currentAngle;
+        ctx.beginPath();
+        ctx.moveTo(center, center);
+        ctx.arc(center, center, radius, start, end);
+        ctx.fillStyle = segments[i].color;
+        ctx.fill();
+        ctx.strokeStyle = "#fff";
+        ctx.stroke();
+        ctx.save();
+        ctx.translate(center, center);
+        ctx.rotate(start + angleStep / 2);
+        ctx.textAlign = "center";
+        ctx.fillStyle = segments[i].name === "LOSE" ? "#aaa" : "#fff";
+        ctx.font = "bold 10px 'Inter'";
+        ctx.fillText(segments[i].name, radius * 0.65, 5);
+        ctx.restore();
     }
-    try {
-        await addDoc(collection(window.db, "applications"), { nick, userId, stats, screenshot, date: Date.now(), status: "pending" });
-        await renderApplicationsAdmin();
-        showToast('Заявка отправлена!', 'success');
-        fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: CONFIG.ADMIN_ID, text: `📝 НОВАЯ ЗАЯВКА!\n\nНик: ${nick}\nID: ${userId}\nСтатистика: ${stats.substring(0, 100)}...` }) }).catch(console.error);
-    } catch (error) { console.error("Ошибка:", error); showToast('Ошибка отправки заявки', 'error'); }
+    ctx.beginPath();
+    ctx.moveTo(center - 8, 8);
+    ctx.lineTo(center + 8, 8);
+    ctx.lineTo(center, 22);
+    ctx.fillStyle = "#fff";
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(center - 8, 8);
+    ctx.lineTo(center + 8, 8);
+    ctx.lineTo(center, -4);
+    ctx.fillStyle = "#f5b042";
+    ctx.fill();
 }
-async function acceptApplication(appId, nick, userId, stats, screenshot) {
-    if (!window.db) {
-        let apps = JSON.parse(localStorage.getItem('awangard_applications_global') || '[]');
-        apps = apps.filter(a => a.id.toString() !== appId);
-        localStorage.setItem('awangard_applications_global', JSON.stringify(apps));
-        const accepted = JSON.parse(localStorage.getItem('awangard_accepted_supporters_global') || '[]');
-        accepted.unshift({ id: Date.now(), nick, userId, stats, screenshot, acceptedDate: Date.now() });
-        localStorage.setItem('awangard_accepted_supporters_global', JSON.stringify(accepted));
-        await renderApplicationsAdmin(); await renderAcceptedSupportersAdmin(); await renderAcceptedSupportersFront();
-        showToast(`Сопровождающий ${nick} принят!`, 'success');
-        return;
+function spinWheel() {
+    if (spinning) return;
+    if (!currentUser) { showToast('Войдите через Telegram!', 'error'); document.getElementById('profileLink').click(); return; }
+    if (getBalance() < 100) { showToast('Нужно 100 UC!', 'error'); return; }
+    spinning = true;
+    deductBalance(100);
+    const canvas = document.getElementById('wheelCanvas');
+    const spins = 10 + Math.random() * 10;
+    const finalAngle = (Math.PI * 2 * spins) + (Math.random() * Math.PI * 2);
+    const startAngle = currentAngle;
+    const startTime = performance.now();
+    const duration = 2000;
+    function animate(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(1, elapsed / duration);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        currentAngle = startAngle + finalAngle * ease;
+        drawWheel(canvas);
+        if (progress < 1) requestAnimationFrame(animate);
+        else finish();
     }
-    try {
-        await deleteDoc(doc(window.db, "applications", appId));
-        await addDoc(collection(window.db, "accepted_supporters"), { nick, userId, stats, screenshot, acceptedDate: Date.now() });
-        await renderApplicationsAdmin(); await renderAcceptedSupportersAdmin(); await renderAcceptedSupportersFront();
-        showToast(`Сопровождающий ${nick} принят!`, 'success');
-    } catch (error) { console.error("Ошибка:", error); showToast('Ошибка принятия заявки', 'error'); }
-}
-async function rejectApplication(appId) {
-    if (!window.db) {
-        let apps = JSON.parse(localStorage.getItem('awangard_applications_global') || '[]');
-        apps = apps.filter(a => a.id.toString() !== appId);
-        localStorage.setItem('awangard_applications_global', JSON.stringify(apps));
-        await renderApplicationsAdmin();
-        showToast('Заявка отклонена', 'info');
-        return;
+    function finish() {
+        spinning = false;
+        const angleStep = (Math.PI * 2) / segments.length;
+        let norm = (currentAngle % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+        let idx = Math.floor(norm / angleStep);
+        const seg = segments[(segments.length - idx) % segments.length];
+        const resultDiv = document.getElementById('wheelResult');
+        if (seg.value > 0) {
+            addBalance(seg.value);
+            resultDiv.innerHTML = `<span style="color: #43e97b;">🎉 ВЫ ВЫИГРАЛИ ${seg.name}! 🎉</span>`;
+            showToast(`Вы выиграли ${seg.name}!`, 'success');
+        } else {
+            resultDiv.innerHTML = `<span style="color: #f5576c;">😢 К сожалению, проигрыш. Попробуйте ещё! 😢</span>`;
+            showToast(`Проигрыш!`, 'info');
+        }
     }
-    try { await deleteDoc(doc(window.db, "applications", appId)); await renderApplicationsAdmin(); showToast('Заявка отклонена', 'info'); }
-    catch (error) { console.error("Ошибка:", error); showToast('Ошибка отклонения заявки', 'error'); }
-}
-async function getAcceptedSupporters() {
-    if (!window.db) return JSON.parse(localStorage.getItem('awangard_accepted_supporters_global') || '[]');
-    try {
-        const q = query(collection(window.db, "accepted_supporters"), orderBy("acceptedDate", "desc"));
-        const querySnapshot = await getDocs(q);
-        const supporters = [];
-        querySnapshot.forEach(doc => { supporters.push({ id: doc.id, ...doc.data() }); });
-        return supporters;
-    } catch (error) { console.error("Ошибка:", error); return []; }
-}
-async function removeAccepted(supporterId) {
-    if (!window.db) {
-        let accepted = JSON.parse(localStorage.getItem('awangard_accepted_supporters_global') || '[]');
-        accepted = accepted.filter(a => a.id.toString() !== supporterId);
-        localStorage.setItem('awangard_accepted_supporters_global', JSON.stringify(accepted));
-        await renderAcceptedSupportersAdmin(); await renderAcceptedSupportersFront();
-        showToast('Сопровождающий удалён', 'info');
-        return;
-    }
-    try { await deleteDoc(doc(window.db, "accepted_supporters", supporterId)); await renderAcceptedSupportersAdmin(); await renderAcceptedSupportersFront(); showToast('Сопровождающий удалён', 'info'); }
-    catch (error) { console.error("Ошибка:", error); showToast('Ошибка удаления', 'error'); }
-}
-async function renderApplicationsAdmin() {
-    const apps = await getApplications();
-    const container = document.getElementById('applicationsList');
-    if (!container) return;
-    if (apps.length === 0) { container.innerHTML = '<div class="cyber-no-data">[ НЕТ ЗАЯВОК ]</div>'; return; }
-    container.innerHTML = apps.map(app => `
-        <div class="cyber-application-item">
-            <div class="cyber-application-info">
-                <strong>${escapeHtml(app.nick)}</strong>
-                <span>ID: ${escapeHtml(app.userId)}</span>
-                <span>📊 ${escapeHtml(app.stats?.substring(0, 100) || '')}${app.stats?.length > 100 ? '...' : ''}</span>
-                <small>${new Date(app.date).toLocaleString()}</small>
-                ${app.screenshot ? `<div class="cyber-screenshot-thumb"><img src="${app.screenshot}" alt="Screenshot" onclick="window.open(this.src)"></div>` : ''}
-            </div>
-            <div class="cyber-application-actions">
-                <button class="cyber-accept-btn" data-id="${app.id}" data-nick="${escapeHtml(app.nick)}" data-userid="${escapeHtml(app.userId)}" data-stats="${escapeHtml(app.stats || '')}" data-screenshot="${app.screenshot || ''}">ПРИНЯТЬ</button>
-                <button class="cyber-reject-btn" data-id="${app.id}">ОТКЛОНИТЬ</button>
-            </div>
-        </div>
-    `).join('');
-    container.querySelectorAll('.cyber-accept-btn').forEach(btn => { btn.addEventListener('click', () => { acceptApplication(btn.dataset.id, btn.dataset.nick, btn.dataset.userid, btn.dataset.stats, btn.dataset.screenshot); }); });
-    container.querySelectorAll('.cyber-reject-btn').forEach(btn => { btn.addEventListener('click', () => rejectApplication(btn.dataset.id)); });
-}
-async function renderAcceptedSupportersAdmin() {
-    const accepted = await getAcceptedSupporters();
-    const container = document.getElementById('adminAcceptedList');
-    if (!container) return;
-    if (accepted.length === 0) { container.innerHTML = '<div class="cyber-no-data">[ НЕТ ПРИНЯТЫХ ]</div>'; return; }
-    container.innerHTML = accepted.map(s => `
-        <div class="cyber-accepted-item">
-            <div class="cyber-accepted-info">
-                <strong>${escapeHtml(s.nick)}</strong>
-                <span>ID: ${escapeHtml(s.userId)}</span>
-                <span>📊 ${escapeHtml(s.stats?.substring(0, 100) || '')}${s.stats?.length > 100 ? '...' : ''}</span>
-                <small>Принят: ${new Date(s.acceptedDate).toLocaleString()}</small>
-                ${s.screenshot ? `<div class="cyber-screenshot-thumb"><img src="${s.screenshot}" alt="Screenshot" onclick="window.open(this.src)"></div>` : ''}
-            </div>
-            <button class="cyber-remove-btn" data-id="${s.id}">УДАЛИТЬ</button>
-        </div>
-    `).join('');
-    container.querySelectorAll('.cyber-remove-btn').forEach(btn => { btn.addEventListener('click', () => removeAccepted(btn.dataset.id)); });
-}
-async function renderAcceptedSupportersFront() {
-    const accepted = await getAcceptedSupporters();
-    const container = document.getElementById('acceptedSupportersList');
-    if (!container) return;
-    if (accepted.length === 0) { container.innerHTML = '<div class="cyber-no-data">[ НЕТ АКТИВНЫХ СОПРОВОЖДАЮЩИХ ]</div>'; return; }
-    container.innerHTML = accepted.map(s => `
-        <div class="cyber-supporter-card">
-            <div class="cyber-supporter-avatar"><i class="fas fa-user-shield"></i></div>
-            <div class="cyber-supporter-info">
-                <div class="cyber-supporter-nick">${escapeHtml(s.nick)}</div>
-                <div class="cyber-supporter-id">ID: ${escapeHtml(s.userId)}</div>
-                <div class="cyber-supporter-stats">📊 ${escapeHtml(s.stats?.substring(0, 60) || '')}${s.stats?.length > 60 ? '...' : ''}</div>
-            </div>
-        </div>
-    `).join('');
+    requestAnimationFrame(animate);
 }
 
 // ========== АДМИН-ПАНЕЛЬ ==========
-function openAdminPanel() { document.getElementById('adminPanel').style.display = 'flex'; document.getElementById('adminOverlay').style.display = 'block'; document.body.style.overflow = 'hidden'; loadAdminData(); }
-function closeAdminPanel() { document.getElementById('adminPanel').style.display = 'none'; document.getElementById('adminOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
-document.addEventListener('keydown', function(e) {
+function openAdmin() {
+    document.getElementById('adminPanel').style.display = 'flex';
+    document.getElementById('adminOverlay').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    loadAdminData();
+}
+function closeAdmin() {
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('adminOverlay').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+document.addEventListener('keydown', (e) => {
     if (e.key.length === 1 && /[A-Za-z0-9]/.test(e.key)) {
         secretCode += e.key.toUpperCase();
         if (secretCode.length > CONFIG.ADMIN_CODE.length) secretCode = secretCode.slice(-CONFIG.ADMIN_CODE.length);
-        if (secretCode === CONFIG.ADMIN_CODE) { openAdminPanel(); secretCode = ''; }
+        if (secretCode === CONFIG.ADMIN_CODE) { openAdmin(); secretCode = ''; }
     }
 });
-async function loadAdminData() { await loadUsersList(); loadAdminUserSelect(); loadAdminBalanceSelect(); await updateStats(); await renderAdminReviews(); await renderApplicationsAdmin(); await renderAcceptedSupportersAdmin(); }
-async function loadUsersList() {
+async function loadAdminData() {
+    await loadUsers();
+    await renderApplications();
+    await renderAccepted();
+    await renderAdminReviews();
+    await updateStats();
+}
+async function loadUsers() {
     if (!window.db) return;
     try {
-        const querySnapshot = await getDocs(collection(window.db, "users"));
-        const users = []; querySnapshot.forEach(doc => { users.push({ id: doc.id, ...doc.data() }); });
-        const search = document.getElementById('adminUserSearch')?.value.toLowerCase() || '';
-        const filtered = users.filter(u => u.name?.toLowerCase().includes(search) || u.id.toString().includes(search));
-        const container = document.getElementById('adminUsersList');
+        const snap = await getDocs(collection(window.db, "users"));
+        const users = [];
+        snap.forEach(doc => users.push(doc.data()));
+        const search = document.getElementById('userSearch')?.value.toLowerCase() || '';
+        const filtered = users.filter(u => u.name?.toLowerCase().includes(search) || u.id.includes(search));
+        const container = document.getElementById('usersList');
         if (!container) return;
-        if (filtered.length === 0) { container.innerHTML = '<div class="cyber-no-data">NO USERS</div>'; return; }
+        if (filtered.length === 0) { container.innerHTML = '<div class="empty-state">Нет пользователей</div>'; return; }
         container.innerHTML = filtered.map(u => `
-            <div class="cyber-user-item" onclick="window.selectUserForChat('${u.id}')">
-                <img src="${u.photo || `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=${u.name || 'Guest'}`}" alt="">
-                <div class="cyber-user-info-mini">
-                    <div class="cyber-user-name-mini">${u.name || 'Guest'}</div>
-                    <div class="cyber-user-id-mini">ID: ${typeof u.id === 'number' ? u.id : u.id.slice(-12)}</div>
-                    <div class="cyber-user-device-mini"><i class="fas fa-microchip"></i> ${u.deviceInfo?.deviceType || 'Desktop'} | ${u.deviceInfo?.os || 'Unknown'}</div>
+            <div class="user-item">
+                <div class="user-info">
+                    <div class="user-name">${escapeHtml(u.name || 'Гость')}</div>
+                    <div class="user-id">ID: ${u.id}</div>
+                    <div>${u.deviceInfo?.deviceType || 'Desktop'} | ${u.deviceInfo?.os || 'Unknown'}</div>
                 </div>
-                <div class="cyber-user-type-badge ${u.type === 'telegram' ? 'cyber-telegram-badge' : 'cyber-guest-badge'}">
-                    ${u.type === 'telegram' ? '<i class="fab fa-telegram"></i> TG' : '<i class="fas fa-user"></i> GUEST'}
-                </div>
+                <div class="user-badge ${u.type === 'telegram' ? 'telegram' : 'guest'}">${u.type === 'telegram' ? 'Telegram' : 'Гость'}</div>
             </div>
         `).join('');
-    } catch (error) { console.error("Ошибка:", error); }
+    } catch (e) { console.error(e); }
 }
-window.selectUserForChat = function(userId) {
-    document.querySelector('.cyber-admin-tab[data-tab="chats"]').click();
-    const select = document.getElementById('adminUserSelect');
-    if (select) { select.value = userId; loadAdminChat(userId); loadAdminUserInfo(userId); }
-};
-function loadAdminUserInfo(userId) {
-    const usersData = localStorage.getItem('awangard_users_temp');
-    if (usersData) {
-        const users = JSON.parse(usersData);
-        const user = users.find(u => u.id === userId);
-        const infoDiv = document.getElementById('adminSelectedUserInfo');
-        if (infoDiv) {
-            infoDiv.innerHTML = user ? `<div class="cyber-admin-user-card"><img src="${user.photo || `https://ui-avatars.com/api/?background=0a0a0a&color=00ff41&bold=true&name=User`}" alt=""><div><strong>${user.name || 'Guest'}</strong><br><small>${user.type === 'telegram' ? 'TG ID: ' + user.id : 'Guest'}</small><br><small><i class="fas fa-microchip"></i> ${user.deviceInfo?.deviceType || '?'} | ${user.deviceInfo?.os || '?'}</small></div></div>` : '';
-        }
-    }
-}
-function loadAdminUserSelect() {
-    const users = JSON.parse(localStorage.getItem('awangard_all_users') || '[]');
-    const select = document.getElementById('adminUserSelect');
-    if (select) { select.innerHTML = '<option value="">-- SELECT --</option>' + users.map(u => `<option value="${u.chatId || u.id}">${u.name || 'Guest'} (${u.type === 'telegram' ? 'TG' : 'Guest'})</option>`).join(''); }
-}
-function loadAdminBalanceSelect() {
-    const users = JSON.parse(localStorage.getItem('awangard_all_users') || '[]');
-    const select = document.getElementById('adminBalanceUserSelect');
-    if (select) { select.innerHTML = '<option value="">-- SELECT --</option>' + users.map(u => `<option value="${u.id}">${u.name} (${typeof u.id === 'number' ? u.id : u.id.slice(-8)})</option>`).join(''); }
-}
-function modifyUserBalance(userId, amount) {
-    let balances = JSON.parse(localStorage.getItem('awangard_user_balances') || '{}');
-    const current = balances[userId] || 0;
-    balances[userId] = Math.max(0, current + amount);
-    localStorage.setItem('awangard_user_balances', JSON.stringify(balances));
-    if (currentTelegramUser && currentTelegramUser.id.toString() === userId) setUserBalance(balances[userId]);
-    showToast(`${amount > 0 ? '+' : ''}${amount} UC`, 'success');
-}
-function addAdminBalance() { const userId = document.getElementById('adminBalanceUserSelect')?.value; if (!userId) { showToast('Select user', 'error'); return; } modifyUserBalance(userId, 100); }
-function removeAdminBalance() { const userId = document.getElementById('adminBalanceUserSelect')?.value; if (!userId) { showToast('Select user', 'error'); return; } modifyUserBalance(userId, -100); }
 async function updateStats() {
     if (!window.db) return;
     try {
-        const usersSnapshot = await getDocs(collection(window.db, "users"));
-        const users = []; usersSnapshot.forEach(doc => users.push(doc.data()));
+        const usersSnap = await getDocs(collection(window.db, "users"));
+        const users = []; usersSnap.forEach(d => users.push(d.data()));
         const reviews = await getReviews();
         const apps = await getApplications();
-        const accepted = await getAcceptedSupporters();
-        document.getElementById('statTotalUsers').textContent = users.length;
-        document.getElementById('statTelegramUsers').textContent = users.filter(u => u.type === 'telegram').length;
-        document.getElementById('statGuestUsers').textContent = users.filter(u => u.type !== 'telegram').length;
-        document.getElementById('statTotalReviews').textContent = reviews.length;
-        document.getElementById('statTotalApplications').textContent = apps.length;
-        document.getElementById('statTotalAccepted').textContent = accepted.length;
-    } catch (error) { console.error("Ошибка:", error); }
+        const acc = await getAccepted();
+        document.getElementById('statUsers').textContent = users.length;
+        document.getElementById('statTelegram').textContent = users.filter(u => u.type === 'telegram').length;
+        document.getElementById('statReviews').textContent = reviews.length;
+        document.getElementById('statApps').textContent = apps.length;
+        document.getElementById('statAccepted').textContent = acc.length;
+    } catch (e) { console.error(e); }
 }
 
 // ========== ЧАСТИЦЫ ==========
 function createParticles() {
     const container = document.getElementById('particlesContainer');
     if (!container) return;
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < 60; i++) {
         const p = document.createElement('div');
-        p.className = 'cyber-particle';
-        const size = Math.random() * 3 + 1;
-        p.style.width = size + 'px'; p.style.height = size + 'px';
-        p.style.left = Math.random() * 100 + '%'; p.style.top = Math.random() * 100 + '%';
-        p.style.animationDelay = Math.random() * 8 + 's'; p.style.animationDuration = 2 + Math.random() * 5 + 's';
-        p.style.background = `radial-gradient(circle, ${Math.random() > 0.5 ? '#00ff41' : '#39ff14'}, transparent)`;
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.top = Math.random() * 100 + '%';
+        p.style.animationDelay = Math.random() * 5 + 's';
+        p.style.animationDuration = 2 + Math.random() * 4 + 's';
         container.appendChild(p);
     }
 }
 
 // ========== ВСПОМОГАТЕЛЬНЫЕ ==========
 function showToast(msg, type = 'success') {
-    const toast = document.getElementById('toastNotification');
+    const toast = document.getElementById('toast');
     if (!toast) return;
     toast.textContent = msg;
-    toast.className = `toast-notification ${type} show`;
+    toast.className = `toast show ${type}`;
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
-function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 
 // ========== НАВИГАЦИЯ ==========
-function initNavigation() {
-    const homeLink = document.getElementById('homeLink'), supportersLink = document.getElementById('supportersLink'), wheelLink = document.getElementById('wheelLink'), profileLink = document.getElementById('profileLink'), reviewsLink = document.getElementById('reviewsLink'), aboutLink = document.getElementById('aboutLink'), supportLink = document.getElementById('supportLink');
-    const mainContent = document.getElementById('mainContent'), supportersContent = document.getElementById('supportersContent'), wheelContent = document.getElementById('wheelContent'), profileContent = document.getElementById('profileContent'), reviewsContent = document.getElementById('reviewsContent'), aboutContainer = document.getElementById('aboutContainer');
-    function showHome() { mainContent.style.display = 'block'; supportersContent.style.display = 'none'; wheelContent.style.display = 'none'; profileContent.style.display = 'none'; reviewsContent.style.display = 'none'; aboutContainer.style.display = 'none'; [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active')); homeLink.classList.add('active'); renderProducts(currentFilter); renderAcceptedSupportersFront(); }
-    function showSupporters() { mainContent.style.display = 'none'; supportersContent.style.display = 'block'; wheelContent.style.display = 'none'; profileContent.style.display = 'none'; reviewsContent.style.display = 'none'; aboutContainer.style.display = 'none'; [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active')); supportersLink.classList.add('active'); }
-    function showWheel() { mainContent.style.display = 'none'; supportersContent.style.display = 'none'; wheelContent.style.display = 'block'; profileContent.style.display = 'none'; reviewsContent.style.display = 'none'; aboutContainer.style.display = 'none'; [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active')); wheelLink.classList.add('active'); setTimeout(() => initWheel(), 100); }
-    function showProfile() { mainContent.style.display = 'none'; supportersContent.style.display = 'none'; wheelContent.style.display = 'none'; profileContent.style.display = 'block'; reviewsContent.style.display = 'none'; aboutContainer.style.display = 'none'; [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active')); profileLink.classList.add('active'); checkUserChat(); }
-    function showReviews() { mainContent.style.display = 'none'; supportersContent.style.display = 'none'; wheelContent.style.display = 'none'; profileContent.style.display = 'none'; reviewsContent.style.display = 'block'; aboutContainer.style.display = 'none'; [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active')); reviewsLink.classList.add('active'); renderReviews(); }
-    function showAbout() { mainContent.style.display = 'none'; supportersContent.style.display = 'none'; wheelContent.style.display = 'none'; profileContent.style.display = 'none'; reviewsContent.style.display = 'none'; aboutContainer.style.display = 'block'; [homeLink, supportersLink, wheelLink, profileLink, reviewsLink, aboutLink].forEach(l => l?.classList.remove('active')); aboutLink.classList.add('active'); }
-    homeLink.addEventListener('click', (e) => { e.preventDefault(); showHome(); });
-    supportersLink.addEventListener('click', (e) => { e.preventDefault(); showSupporters(); });
-    wheelLink.addEventListener('click', (e) => { e.preventDefault(); showWheel(); });
-    profileLink.addEventListener('click', (e) => { e.preventDefault(); showProfile(); });
-    reviewsLink.addEventListener('click', (e) => { e.preventDefault(); showReviews(); });
-    aboutLink.addEventListener('click', (e) => { e.preventDefault(); showAbout(); });
-    supportLink.addEventListener('click', (e) => { e.preventDefault(); window.open('https://t.me/l_AWANGARD_l', '_blank'); });
-    document.querySelectorAll('.category-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentFilter = btn.dataset.cat; renderProducts(currentFilter); }); });
-    document.querySelectorAll('.filter-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentReviewFilter = btn.dataset.filter; renderReviews(); }); });
+function initNav() {
+    const home = document.getElementById('homeLink');
+    const supporters = document.getElementById('supportersLink');
+    const wheel = document.getElementById('wheelLink');
+    const profile = document.getElementById('profileLink');
+    const reviews = document.getElementById('reviewsLink');
+    const about = document.getElementById('aboutLink');
+    const support = document.getElementById('supportLink');
+    const main = document.getElementById('mainContent');
+    const supportersCont = document.getElementById('supportersContent');
+    const wheelCont = document.getElementById('wheelContent');
+    const profileCont = document.getElementById('profileContent');
+    const reviewsCont = document.getElementById('reviewsContent');
+    const aboutCont = document.getElementById('aboutContent');
+    function showMain() { main.style.display = 'block'; supportersCont.style.display = 'none'; wheelCont.style.display = 'none'; profileCont.style.display = 'none'; reviewsCont.style.display = 'none'; aboutCont.style.display = 'none'; [home, supporters, wheel, profile, reviews, about].forEach(l => l?.classList.remove('active')); home.classList.add('active'); renderProducts(currentFilter); renderAcceptedFront(); }
+    function showSupporters() { main.style.display = 'none'; supportersCont.style.display = 'block'; wheelCont.style.display = 'none'; profileCont.style.display = 'none'; reviewsCont.style.display = 'none'; aboutCont.style.display = 'none'; [home, supporters, wheel, profile, reviews, about].forEach(l => l?.classList.remove('active')); supporters.classList.add('active'); }
+    function showWheel() { main.style.display = 'none'; supportersCont.style.display = 'none'; wheelCont.style.display = 'block'; profileCont.style.display = 'none'; reviewsCont.style.display = 'none'; aboutCont.style.display = 'none'; [home, supporters, wheel, profile, reviews, about].forEach(l => l?.classList.remove('active')); wheel.classList.add('active'); setTimeout(() => initWheel(), 100); }
+    function showProfile() { main.style.display = 'none'; supportersCont.style.display = 'none'; wheelCont.style.display = 'none'; profileCont.style.display = 'block'; reviewsCont.style.display = 'none'; aboutCont.style.display = 'none'; [home, supporters, wheel, profile, reviews, about].forEach(l => l?.classList.remove('active')); profile.classList.add('active'); }
+    function showReviews() { main.style.display = 'none'; supportersCont.style.display = 'none'; wheelCont.style.display = 'none'; profileCont.style.display = 'none'; reviewsCont.style.display = 'block'; aboutCont.style.display = 'none'; [home, supporters, wheel, profile, reviews, about].forEach(l => l?.classList.remove('active')); reviews.classList.add('active'); renderReviews(); }
+    function showAbout() { main.style.display = 'none'; supportersCont.style.display = 'none'; wheelCont.style.display = 'none'; profileCont.style.display = 'none'; reviewsCont.style.display = 'none'; aboutCont.style.display = 'block'; [home, supporters, wheel, profile, reviews, about].forEach(l => l?.classList.remove('active')); about.classList.add('active'); }
+    home.addEventListener('click', (e) => { e.preventDefault(); showMain(); });
+    supporters.addEventListener('click', (e) => { e.preventDefault(); showSupporters(); });
+    wheel.addEventListener('click', (e) => { e.preventDefault(); showWheel(); });
+    profile.addEventListener('click', (e) => { e.preventDefault(); showProfile(); });
+    reviews.addEventListener('click', (e) => { e.preventDefault(); showReviews(); });
+    about.addEventListener('click', (e) => { e.preventDefault(); showAbout(); });
+    support.addEventListener('click', (e) => { e.preventDefault(); window.open('https://t.me/l_AWANGARD_l', '_blank'); });
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.cat;
+            renderProducts(currentFilter);
+        });
+    });
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentReviewFilter = btn.dataset.filter;
+            renderReviews();
+        });
+    });
 }
 
 // ========== ЗАПУСК ==========
-document.addEventListener('DOMContentLoaded', async function() {
-    console.log(`AWANGARD CYBER v${CONFIG.VERSION} | ${CONFIG.UPDATE_DATE}`);
-    initTelegramLogin(); createParticles(); initNavigation();
-    const savedUser = getTelegramUser();
-    if (savedUser) { currentTelegramUser = savedUser; updateUIAfterLogin(savedUser); } else { updateUIForGuest(); }
-    await renderReviews(); await renderAcceptedSupportersFront(); renderProducts('all'); updateBalanceDisplay(); checkUserChat();
-    document.getElementById('logoutPageBtn')?.addEventListener('click', logout);
-    document.getElementById('userSendMessageBtn')?.addEventListener('click', sendUserMessage);
-    document.getElementById('userChatInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendUserMessage(); });
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('AWANGARD GRADIENT NEON v3.0');
+    initTelegram();
+    createParticles();
+    initNav();
+    const saved = getTelegramUser();
+    if (saved) { currentUser = saved; updateProfileUI(saved); }
+    else { updateProfileUI(null); }
+    await renderReviews();
+    await renderAcceptedFront();
+    renderProducts('all');
+    updateBalanceUI();
+    document.getElementById('logoutBtn')?.addEventListener('click', logout);
     document.getElementById('spinWheelBtn')?.addEventListener('click', spinWheel);
-    document.getElementById('closePaymentModal')?.addEventListener('click', closePaymentModals);
-    document.getElementById('confirmPaymentBtn')?.addEventListener('click', confirmProductPayment);
-    document.getElementById('paymentModal')?.addEventListener('click', (e) => { if (e.target === document.getElementById('paymentModal')) closePaymentModals(); });
+    document.querySelectorAll('.modal-close, #paymentModal .gradient-btn.outline').forEach(btn => {
+        btn.addEventListener('click', closeModal);
+    });
+    document.getElementById('confirmPaymentBtn')?.addEventListener('click', confirmPayment);
+    document.getElementById('paymentModal')?.addEventListener('click', (e) => { if (e.target === document.getElementById('paymentModal')) closeModal(); });
     
+    // Отправка отзыва
     document.getElementById('submitReviewBtn')?.addEventListener('click', async () => {
         const rating = getSelectedRating();
-        if (rating === 0) { showToast('Select rating!', 'error'); return; }
-        const name = document.getElementById('reviewName')?.value.trim() || 'Anonymous';
+        if (rating === 0) { showToast('Выберите оценку!', 'error'); return; }
+        const name = document.getElementById('reviewName')?.value.trim() || 'Аноним';
         const text = document.getElementById('reviewText')?.value.trim();
-        if (!text) { showToast('Write review!', 'error'); return; }
+        if (!text) { showToast('Напишите отзыв!', 'error'); return; }
         await addReview(name, rating, text);
-        document.getElementById('reviewText').value = ''; document.getElementById('reviewName').value = '';
-        showToast('Thank you for review!', 'success');
+        document.getElementById('reviewText').value = '';
+        document.getElementById('reviewName').value = '';
+        showToast('Спасибо за отзыв!', 'success');
         document.getElementById('reviewsLink').click();
     });
     
+    // Отправка заявки
     document.getElementById('submitApplicationBtn')?.addEventListener('click', () => {
         const nick = document.getElementById('supporterNick')?.value.trim();
         const userId = document.getElementById('supporterId')?.value.trim();
         const stats = document.getElementById('supporterStats')?.value.trim();
         const file = document.getElementById('supporterScreenshot')?.files[0];
-        if (!nick || !userId || !stats) { showToast('Fill all fields!', 'error'); return; }
+        if (!nick || !userId || !stats) { showToast('Заполните все поля!', 'error'); return; }
         if (file) {
             const reader = new FileReader();
-            reader.onload = async function(e) { await addApplication(nick, userId, stats, e.target.result); document.getElementById('supporterNick').value = ''; document.getElementById('supporterId').value = ''; document.getElementById('supporterStats').value = ''; document.getElementById('screenshotPreview').innerHTML = ''; showToast('Application sent!', 'success'); document.getElementById('homeLink').click(); };
+            reader.onload = async (e) => {
+                await addApplication(nick, userId, stats, e.target.result);
+                document.getElementById('supporterNick').value = '';
+                document.getElementById('supporterId').value = '';
+                document.getElementById('supporterStats').value = '';
+                document.getElementById('screenshotPreview').innerHTML = '';
+                document.getElementById('homeLink').click();
+            };
             reader.readAsDataURL(file);
         } else {
             addApplication(nick, userId, stats, '');
-            document.getElementById('supporterNick').value = ''; document.getElementById('supporterId').value = ''; document.getElementById('supporterStats').value = '';
-            showToast('Application sent!', 'success'); document.getElementById('homeLink').click();
+            document.getElementById('supporterNick').value = '';
+            document.getElementById('supporterId').value = '';
+            document.getElementById('supporterStats').value = '';
+            document.getElementById('homeLink').click();
         }
     });
     
-    document.getElementById('supporterScreenshot')?.addEventListener('change', function(e) {
+    // Предпросмотр скриншота
+    document.getElementById('supporterScreenshot')?.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(event) { document.getElementById('screenshotPreview').innerHTML = `<img src="${event.target.result}" style="max-width: 120px; border-radius: 4px; border: 1px solid #00ff41;">`; };
+            reader.onload = (event) => {
+                document.getElementById('screenshotPreview').innerHTML = `<img src="${event.target.result}" style="max-width: 100px; border-radius: 12px; border: 1px solid #667eea;">`;
+            };
             reader.readAsDataURL(file);
         }
     });
     
-    const adminTabs = document.querySelectorAll('.cyber-admin-tab');
-    adminTabs.forEach(tab => {
-        tab.addEventListener('click', async () => {
-            adminTabs.forEach(t => t.classList.remove('active')); tab.classList.add('active');
-            document.getElementById('adminUsersTab').style.display = 'none'; document.getElementById('adminBalanceTab').style.display = 'none';
-            document.getElementById('adminSupportersTab').style.display = 'none'; document.getElementById('adminChatsTab').style.display = 'none';
-            document.getElementById('adminReviewsTab').style.display = 'none'; document.getElementById('adminStatsTab').style.display = 'none';
-            const target = tab.dataset.tab;
-            if (target === 'users') { document.getElementById('adminUsersTab').style.display = 'block'; await loadUsersList(); }
-            else if (target === 'balance') { document.getElementById('adminBalanceTab').style.display = 'block'; loadAdminBalanceSelect(); }
-            else if (target === 'supporters') { document.getElementById('adminSupportersTab').style.display = 'block'; await renderApplicationsAdmin(); await renderAcceptedSupportersAdmin(); }
-            else if (target === 'chats') { document.getElementById('adminChatsTab').style.display = 'block'; loadAdminUserSelect(); }
-            else if (target === 'reviews') { document.getElementById('adminReviewsTab').style.display = 'block'; await renderAdminReviews(); }
-            else if (target === 'stats') { document.getElementById('adminStatsTab').style.display = 'block'; await updateStats(); }
-        });
+    // Счётчик символов
+    document.getElementById('reviewText')?.addEventListener('input', function() {
+        document.getElementById('charCounter').textContent = this.value.length + '/500';
     });
     
-    document.getElementById('adminUserSearch')?.addEventListener('input', () => loadUsersList());
-    document.getElementById('adminUserSelect')?.addEventListener('change', (e) => { if (e.target.value) { loadAdminChat(e.target.value); loadAdminUserInfo(e.target.value); } });
-    document.getElementById('sendReplyBtn')?.addEventListener('click', sendAdminReply);
-    document.getElementById('adminReplyInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendAdminReply(); });
-    document.getElementById('closeAdminBtn')?.addEventListener('click', closeAdminPanel);
-    document.getElementById('adminOverlay')?.addEventListener('click', closeAdminPanel);
-    document.getElementById('add100BalanceBtn')?.addEventListener('click', addAdminBalance);
-    document.getElementById('remove100BalanceBtn')?.addEventListener('click', removeAdminBalance);
+    // Админ-панель
+    const tabs = document.querySelectorAll('.admin-tab');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            document.querySelectorAll('.admin-content').forEach(c => c.style.display = 'none');
+            const target = document.getElementById(`admin${tab.dataset.tab.charAt(0).toUpperCase() + tab.dataset.tab.slice(1)}Tab`);
+            if (target) target.style.display = 'block';
+        });
+    });
+    document.getElementById('closeAdminBtn')?.addEventListener('click', closeAdmin);
+    document.getElementById('adminOverlay')?.addEventListener('click', closeAdmin);
+    document.getElementById('userSearch')?.addEventListener('input', () => loadUsers());
+    document.getElementById('addBalanceBtn')?.addEventListener('click', () => {
+        const userId = document.getElementById('balanceUserSelect')?.value;
+        if (userId) {
+            let balances = JSON.parse(localStorage.getItem('awangard_balances') || '{}');
+            balances[userId] = (balances[userId] || 0) + 100;
+            localStorage.setItem('awangard_balances', JSON.stringify(balances));
+            if (currentUser && currentUser.id === userId) setBalance(balances[userId]);
+            showToast('+100 UC', 'success');
+        }
+    });
+    document.getElementById('removeBalanceBtn')?.addEventListener('click', () => {
+        const userId = document.getElementById('balanceUserSelect')?.value;
+        if (userId) {
+            let balances = JSON.parse(localStorage.getItem('awangard_balances') || '{}');
+            balances[userId] = Math.max(0, (balances[userId] || 0) - 100);
+            localStorage.setItem('awangard_balances', JSON.stringify(balances));
+            if (currentUser && currentUser.id === userId) setBalance(balances[userId]);
+            showToast('-100 UC', 'info');
+        }
+    });
     
-    showToast(`AWANGARD CYBER v${CONFIG.VERSION} READY`, 'success');
+    showToast('Добро пожаловать в AWANGARD!', 'success');
 });
