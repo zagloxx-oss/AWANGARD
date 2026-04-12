@@ -11,13 +11,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <script src="https://ipapi.co/json/?callback=getLocationData"></script>
 </head>
 <body>
-    <!-- Версия сайта -->
     <div class="version-badge">v1.0</div>
     
-    <!-- Анимированный фон -->
     <div class="neon-bg">
         <canvas id="particleCanvas"></canvas>
         <div class="grid-overlay"></div>
@@ -25,7 +22,6 @@
         <div class="vignette"></div>
     </div>
     
-    <!-- 3D плавающие элементы -->
     <div class="floating-elements">
         <div class="float-3d" style="--duration: 20s; --delay: 0s;"></div>
         <div class="float-3d" style="--duration: 25s; --delay: -5s;"></div>
@@ -34,38 +30,21 @@
         <div class="float-3d" style="--duration: 22s; --delay: -8s;"></div>
     </div>
     
-    <!-- Навигация -->
     <nav class="neon-nav">
         <div class="nav-container">
             <div class="logo" data-text="AWANGARD">AWANGARD</div>
             <div class="nav-links">
-                <a href="#" id="homeLink" class="active">
-                    <i class="fas fa-home"></i>
-                    <span>Главная</span>
-                    <span class="nav-glow"></span>
-                </a>
-                <a href="#" id="profileLink">
-                    <i class="fas fa-user-astronaut"></i>
-                    <span>Профиль</span>
-                    <span class="nav-glow"></span>
-                </a>
-                <a href="#" id="reviewsLink">
-                    <i class="fas fa-star"></i>
-                    <span>Отзывы</span>
-                    <span class="nav-glow"></span>
-                </a>
-                <a href="#" id="supportLink">
-                    <i class="fas fa-headset"></i>
-                    <span>Поддержка</span>
-                    <span class="nav-glow"></span>
-                </a>
-                <a href="#" id="aboutLink">
-                    <i class="fas fa-info-circle"></i>
-                    <span>О нас</span>
-                    <span class="nav-glow"></span>
-                </a>
+                <a href="#" id="homeLink" class="active"><i class="fas fa-home"></i><span>Главная</span><span class="nav-glow"></span></a>
+                <a href="#" id="profileLink"><i class="fas fa-user-astronaut"></i><span>Профиль</span><span class="nav-glow"></span></a>
+                <a href="#" id="reviewsLink"><i class="fas fa-star"></i><span>Отзывы</span><span class="nav-glow"></span></a>
+                <a href="#" id="supportLink"><i class="fas fa-headset"></i><span>Поддержка</span><span class="nav-glow"></span></a>
+                <a href="#" id="aboutLink"><i class="fas fa-info-circle"></i><span>О нас</span><span class="nav-glow"></span></a>
             </div>
             <div class="user-status" id="userStatus">
+                <div class="balance-display" id="balanceDisplay">
+                    <i class="fas fa-coins"></i>
+                    <span id="userBalance">0</span> UC
+                </div>
                 <div class="user-badge" id="userBadge" style="display: none;">
                     <img id="userAvatarMini" src="" alt="">
                     <span id="userNameMini"></span>
@@ -77,7 +56,6 @@
     
     <div class="main-wrapper">
         <main class="content-area">
-            <!-- Главная страница -->
             <div id="mainContent">
                 <div class="hero-section">
                     <div class="hero-content">
@@ -97,6 +75,18 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Колесо фортуны -->
+                <div class="wheel-section">
+                    <h2><i class="fas fa-gem"></i> Колесо фортуны</h2>
+                    <p class="wheel-desc">Всего 100₽ за вращение! Выиграй до 325 UC!</p>
+                    <div class="wheel-container">
+                        <canvas id="wheelCanvas" width="400" height="400"></canvas>
+                        <button id="spinWheelBtn" class="spin-btn"><i class="fas fa-play"></i> Крутить (100₽)</button>
+                    </div>
+                    <div id="wheelResult" class="wheel-result"></div>
+                </div>
+                
                 <div class="products-header">
                     <h2><i class="fas fa-gem"></i> Наши товары</h2>
                     <div class="category-tabs">
@@ -108,7 +98,6 @@
                 <div id="cardsContainer" class="cards-grid-neon"></div>
             </div>
             
-            <!-- Страница профиля -->
             <div id="profileContent" style="display: none;">
                 <div class="profile-container">
                     <div class="profile-card-enhanced">
@@ -121,41 +110,32 @@
                             <h2 id="profileNameLarge">Гость</h2>
                             <p id="profileUsernameLarge"></p>
                             <div class="profile-stats">
-                                <div class="profile-stat">
-                                    <i class="fas fa-fingerprint"></i>
-                                    <span id="profileIdLarge">guest</span>
-                                </div>
-                                <div class="profile-stat">
-                                    <i class="fas fa-mobile-alt"></i>
-                                    <span id="deviceInfoLarge">Определение...</span>
-                                </div>
+                                <div class="profile-stat"><i class="fas fa-fingerprint"></i><span id="profileIdLarge">guest</span></div>
+                                <div class="profile-stat"><i class="fas fa-mobile-alt"></i><span id="deviceInfoLarge">Определение...</span></div>
+                            </div>
+                            <div class="profile-balance-large">
+                                <i class="fas fa-coins"></i>
+                                <span id="profileBalance">0</span> UC
                             </div>
                         </div>
                         <div class="profile-actions-enhanced">
                             <div id="telegramLoginEnhanced" class="telegram-login-enhanced"></div>
                             <button id="logoutEnhancedBtn" class="neon-btn logout-btn-enhanced" style="display: none;">
-                                <i class="fas fa-sign-out-alt"></i>
-                                <span>Выйти</span>
+                                <i class="fas fa-sign-out-alt"></i><span>Выйти</span>
                             </button>
                         </div>
                     </div>
                     <div class="profile-info-card">
                         <h3><i class="fas fa-chart-line"></i> Ваша активность</h3>
                         <div class="activity-stats">
-                            <div class="activity-item">
-                                <span class="activity-value" id="userReviewsCount">0</span>
-                                <span class="activity-label">Отзывов</span>
-                            </div>
-                            <div class="activity-item">
-                                <span class="activity-value" id="userOrdersCount">0</span>
-                                <span class="activity-label">Заказов</span>
-                            </div>
+                            <div class="activity-item"><span class="activity-value" id="userReviewsCount">0</span><span class="activity-label">Отзывов</span></div>
+                            <div class="activity-item"><span class="activity-value" id="userOrdersCount">0</span><span class="activity-label">Заказов</span></div>
+                            <div class="activity-item"><span class="activity-value" id="userBalanceStat">0</span><span class="activity-label">Баланс UC</span></div>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Страница отзывов -->
             <div id="reviewsContent" style="display: none;">
                 <div class="reviews-container">
                     <div class="reviews-header">
@@ -166,7 +146,6 @@
                             <span class="rating-count">(<span id="reviewsCountLarge">0</span> отзывов)</span>
                         </div>
                     </div>
-                    
                     <div class="reviews-filters">
                         <button class="filter-btn active" data-filter="all">Все</button>
                         <button class="filter-btn" data-filter="5">5 ★</button>
@@ -175,11 +154,7 @@
                         <button class="filter-btn" data-filter="2">2 ★</button>
                         <button class="filter-btn" data-filter="1">1 ★</button>
                     </div>
-                    
-                    <div id="reviewsListEnhanced" class="reviews-list-enhanced">
-                        <div class="loading-spinner"></div>
-                    </div>
-                    
+                    <div id="reviewsListEnhanced" class="reviews-list-enhanced"><div class="loading-spinner"></div></div>
                     <div class="add-review-enhanced">
                         <h3><i class="fas fa-pen"></i> Оставить отзыв</h3>
                         <div class="rating-input-enhanced">
@@ -196,15 +171,12 @@
                         <textarea id="reviewTextEnhanced" placeholder="Напишите ваш отзыв..." maxlength="500" class="review-text-enhanced"></textarea>
                         <div class="review-footer">
                             <span class="char-counter-enhanced">0/500</span>
-                            <button id="submitReviewEnhancedBtn" class="neon-btn submit-review-enhanced">
-                                <i class="fas fa-paper-plane"></i> Отправить
-                            </button>
+                            <button id="submitReviewEnhancedBtn" class="neon-btn submit-review-enhanced"><i class="fas fa-paper-plane"></i> Отправить</button>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Страница "О нас" -->
             <div id="aboutContainer" style="display: none;">
                 <div class="about-enhanced">
                     <div class="about-hero">
@@ -213,33 +185,54 @@
                         <p>Ваш надёжный магазин игровых товаров</p>
                     </div>
                     <div class="about-features">
-                        <div class="feature">
-                            <i class="fas fa-bolt"></i>
-                            <h3>Моментальная доставка</h3>
-                            <p>После оплаты товар приходит в течение 5-10 минут</p>
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-shield-alt"></i>
-                            <h3>100% Безопасность</h3>
-                            <p>Все транзакции защищены, ваши данные в безопасности</p>
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-headset"></i>
-                            <h3>Круглосуточная поддержка</h3>
-                            <p>Администратор всегда на связи в Telegram</p>
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-gem"></i>
-                            <h3>Лучшие цены</h3>
-                            <p>Мы предлагаем самые выгодные цены на рынке</p>
-                        </div>
+                        <div class="feature"><i class="fas fa-bolt"></i><h3>Моментальная доставка</h3><p>После оплаты товар приходит в течение 5-10 минут</p></div>
+                        <div class="feature"><i class="fas fa-shield-alt"></i><h3>100% Безопасность</h3><p>Все транзакции защищены, ваши данные в безопасности</p></div>
+                        <div class="feature"><i class="fas fa-headset"></i><h3>Круглосуточная поддержка</h3><p>Администратор всегда на связи в Telegram</p></div>
+                        <div class="feature"><i class="fas fa-gem"></i><h3>Лучшие цены</h3><p>Мы предлагаем самые выгодные цены на рынке</p></div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
     
-    <!-- Админ-панель -->
+    <!-- Модальное окно оплаты -->
+    <div id="paymentModal" class="payment-modal" style="display: none;">
+        <div class="payment-modal-content">
+            <div class="payment-modal-header">
+                <h3><i class="fas fa-credit-card"></i> Оплата</h3>
+                <button class="close-modal" id="closePaymentModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="payment-modal-body">
+                <p>Товар: <strong id="paymentProductName"></strong></p>
+                <p>Сумма: <strong id="paymentAmount"></strong></p>
+                <p class="payment-warning">После оплаты нажмите "Я оплатил" для получения товара</p>
+                <div class="payment-buttons">
+                    <a href="https://www.donationalerts.com/r/limitblitzoffical" target="_blank" class="payment-link-btn">Перейти к оплате</a>
+                    <button id="confirmPaymentBtn" class="confirm-payment-btn">✅ Я оплатил</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно проверки оплаты для колеса -->
+    <div id="wheelPaymentModal" class="payment-modal" style="display: none;">
+        <div class="payment-modal-content">
+            <div class="payment-modal-header">
+                <h3><i class="fas fa-credit-card"></i> Оплата вращения</h3>
+                <button class="close-modal" id="closeWheelPaymentModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="payment-modal-body">
+                <p>Вращение колеса фортуны</p>
+                <p>Сумма: <strong>100 ₽</strong></p>
+                <p class="payment-warning">После оплаты нажмите "Я оплатил" чтобы крутить колесо</p>
+                <div class="payment-buttons">
+                    <a href="https://www.donationalerts.com/r/limitblitzoffical" target="_blank" class="payment-link-btn">Перейти к оплате</a>
+                    <button id="confirmWheelPaymentBtn" class="confirm-payment-btn">✅ Я оплатил</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div id="adminPanel" class="admin-panel-enhanced" style="display: none;">
         <div class="admin-header-enhanced">
             <h2><i class="fas fa-shield-alt"></i> Админ-панель v1.0</h2>
@@ -253,18 +246,13 @@
         </div>
         
         <div id="adminUsersTab" class="admin-content-enhanced active">
-            <div class="admin-search">
-                <i class="fas fa-search"></i>
-                <input type="text" id="adminUserSearch" placeholder="Поиск по имени или ID...">
-            </div>
+            <div class="admin-search"><i class="fas fa-search"></i><input type="text" id="adminUserSearch" placeholder="Поиск по имени или ID..."></div>
             <div id="adminUsersList" class="admin-users-list"></div>
         </div>
         
         <div id="adminChatsTab" class="admin-content-enhanced" style="display: none;">
             <div class="admin-chat-sidebar">
-                <select id="adminUserSelect" class="admin-select-enhanced">
-                    <option value="">-- Выберите пользователя --</option>
-                </select>
+                <select id="adminUserSelect" class="admin-select-enhanced"><option value="">-- Выберите пользователя --</option></select>
                 <div id="adminSelectedUserInfo" class="admin-user-card-detail"></div>
             </div>
             <div class="admin-chat-main">
@@ -282,47 +270,16 @@
         
         <div id="adminStatsTab" class="admin-content-enhanced" style="display: none;">
             <div class="stats-dashboard">
-                <div class="stat-card-enhanced">
-                    <i class="fas fa-users"></i>
-                    <div class="stat-data">
-                        <span class="stat-label">Всего пользователей</span>
-                        <span class="stat-number" id="statTotalUsers">0</span>
-                    </div>
-                </div>
-                <div class="stat-card-enhanced">
-                    <i class="fab fa-telegram"></i>
-                    <div class="stat-data">
-                        <span class="stat-label">Авторизованных</span>
-                        <span class="stat-number" id="statTelegramUsers">0</span>
-                    </div>
-                </div>
-                <div class="stat-card-enhanced">
-                    <i class="fas fa-user"></i>
-                    <div class="stat-data">
-                        <span class="stat-label">Гостей</span>
-                        <span class="stat-number" id="statGuestUsers">0</span>
-                    </div>
-                </div>
-                <div class="stat-card-enhanced">
-                    <i class="fas fa-star"></i>
-                    <div class="stat-data">
-                        <span class="stat-label">Всего отзывов</span>
-                        <span class="stat-number" id="statTotalReviews">0</span>
-                    </div>
-                </div>
-                <div class="stat-card-enhanced">
-                    <i class="fas fa-chart-line"></i>
-                    <div class="stat-data">
-                        <span class="stat-label">Средний рейтинг</span>
-                        <span class="stat-number" id="statAvgRating">0</span>
-                    </div>
-                </div>
+                <div class="stat-card-enhanced"><i class="fas fa-users"></i><div class="stat-data"><span class="stat-label">Всего пользователей</span><span id="statTotalUsers" class="stat-number">0</span></div></div>
+                <div class="stat-card-enhanced"><i class="fab fa-telegram"></i><div class="stat-data"><span class="stat-label">Авторизованных</span><span id="statTelegramUsers" class="stat-number">0</span></div></div>
+                <div class="stat-card-enhanced"><i class="fas fa-user"></i><div class="stat-data"><span class="stat-label">Гостей</span><span id="statGuestUsers" class="stat-number">0</span></div></div>
+                <div class="stat-card-enhanced"><i class="fas fa-star"></i><div class="stat-data"><span class="stat-label">Всего отзывов</span><span id="statTotalReviews" class="stat-number">0</span></div></div>
+                <div class="stat-card-enhanced"><i class="fas fa-chart-line"></i><div class="stat-data"><span class="stat-label">Средний рейтинг</span><span id="statAvgRating" class="stat-number">0</span></div></div>
             </div>
         </div>
     </div>
     <div id="adminOverlay" class="admin-overlay-enhanced" style="display: none;"></div>
     
-    <!-- Уведомления -->
     <div id="toastNotification" class="toast-notification"></div>
     
     <footer class="neon-footer-enhanced">
