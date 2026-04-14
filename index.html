@@ -5,25 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>AWANGARD | NEON CYBER STORE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="data:application/manifest+json,{
-      %22name%22: %22AWANGARD STORE%22,
-      %22short_name%22: %22AWANGARD%22,
-      %22description%22: %22Магазин игровых товаров PUBG Mobile%22,
-      %22start_url%22: %22/%22,
-      %22display%22: %22standalone%22,
-      %22theme_color%22: %22%230a0a2a%22,
-      %22background_color%22: %22%230a0a2a%22,
-      %22icons%22: [
-        {%22src%22: %22https://cdn-icons-png.flaticon.com/512/1051/1051277.png%22,%22sizes%22: %22512x512%22,%22type%22: %22image/png%22}
-      ]
-    }">
-    <meta name="theme-color" content="#0a0a2a">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="AWANGARD">
-    
     <style>
         * {
             margin: 0;
@@ -246,7 +227,6 @@
             box-shadow: 0 0 15px rgba(0,255,204,0.5);
         }
         
-        /* Корзина в шапке */
         .cart-icon {
             position: relative;
             cursor: pointer;
@@ -307,7 +287,6 @@
             }
         }
         
-        /* ========== ГЛАВНАЯ ========== */
         .hero {
             text-align: center;
             margin-bottom: 40px;
@@ -349,7 +328,6 @@
             font-size: 14px;
         }
         
-        /* Преимущества */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -388,7 +366,6 @@
             color: #aaa;
         }
         
-        /* Счётчик продаж */
         .sales-counter {
             text-align: center;
             margin: 20px 0;
@@ -399,7 +376,6 @@
             width: auto;
         }
         
-        /* Поиск и сортировка */
         .search-sort-bar {
             display: flex;
             gap: 15px;
@@ -453,7 +429,6 @@
             color: #0a0a0a;
         }
         
-        /* Категории */
         .category-tabs {
             display: flex;
             gap: 15px;
@@ -481,7 +456,6 @@
             box-shadow: 0 0 15px rgba(0,255,204,0.5);
         }
         
-        /* Товары */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -589,7 +563,6 @@
             box-shadow: 0 0 15px rgba(0,255,204,0.5);
         }
         
-        /* Акции */
         .promo-section {
             background: linear-gradient(45deg, rgba(0,255,204,0.1), rgba(255,0,204,0.1));
             border-radius: 20px;
@@ -614,97 +587,53 @@
             width: 200px;
         }
         
-        /* Новости */
-        .news-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-        
-        .news-card {
-            background: rgba(10, 10, 20, 0.7);
+        .telegram-subscribe {
+            background: rgba(0, 136, 204, 0.2);
+            border: 1px solid #0088cc;
             border-radius: 15px;
             padding: 20px;
-            border: 1px solid rgba(0,255,204,0.2);
-        }
-        
-        .news-card h3 {
-            color: #00ffcc;
-            margin-bottom: 10px;
-        }
-        
-        .news-date {
-            font-size: 11px;
-            color: #888;
-            margin-bottom: 10px;
-        }
-        
-        /* Видео обзоры */
-        .videos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
             margin: 20px 0;
-        }
-        
-        .video-card {
-            background: rgba(10, 10, 20, 0.7);
-            border-radius: 15px;
-            padding: 20px;
             text-align: center;
-            border: 1px solid rgba(0,255,204,0.2);
-            cursor: pointer;
-            transition: 0.3s;
         }
         
-        .video-card:hover {
-            border-color: #00ffcc;
-            transform: translateY(-3px);
+        .telegram-subscribe button {
+            background: linear-gradient(45deg, #0088cc, #006699);
+            margin-top: 10px;
         }
         
-        .video-card i {
-            font-size: 50px;
-            color: #ff00cc;
-            margin-bottom: 15px;
+        .payment-info, .profile-card, .reviews-card, .about-card, .howtobuy-card {
+            background: rgba(10, 10, 20, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(0,255,204,0.3);
+            text-align: center;
         }
         
-        /* FAQ */
-        .faq-item {
-            background: rgba(10, 10, 20, 0.7);
-            border-radius: 15px;
-            margin-bottom: 15px;
-            overflow: hidden;
+        .howtobuy-steps {
+            text-align: left;
+            margin-top: 20px;
         }
         
-        .faq-question {
-            padding: 15px 20px;
-            background: rgba(0,255,204,0.1);
-            cursor: pointer;
+        .howtobuy-steps li {
+            margin: 15px 0;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 15px;
+        }
+        
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background: #00ffcc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0a0a0a;
             font-weight: bold;
         }
         
-        .faq-question:hover {
-            background: rgba(0,255,204,0.2);
-        }
-        
-        .faq-answer {
-            padding: 0 20px;
-            max-height: 0;
-            overflow: hidden;
-            transition: 0.3s;
-            color: #aaa;
-        }
-        
-        .faq-item.active .faq-answer {
-            padding: 15px 20px;
-            max-height: 200px;
-        }
-        
-        /* Модалка корзины */
         .modal {
             display: none;
             position: fixed;
@@ -785,53 +714,6 @@
             color: #fff;
         }
         
-        .telegram-subscribe {
-            background: rgba(0, 136, 204, 0.2);
-            border: 1px solid #0088cc;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-        }
-        
-        .telegram-subscribe button {
-            background: linear-gradient(45deg, #0088cc, #006699);
-            margin-top: 10px;
-        }
-        
-        .payment-info, .profile-card, .reviews-card, .about-card, .howtobuy-card {
-            background: rgba(10, 10, 20, 0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            border: 1px solid rgba(0,255,204,0.3);
-            text-align: center;
-        }
-        
-        .howtobuy-steps {
-            text-align: left;
-            margin-top: 20px;
-        }
-        
-        .howtobuy-steps li {
-            margin: 15px 0;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .step-number {
-            width: 30px;
-            height: 30px;
-            background: #00ffcc;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #0a0a0a;
-            font-weight: bold;
-        }
-        
         .toast {
             position: fixed;
             bottom: 20px;
@@ -856,6 +738,130 @@
             border-top: 1px solid rgba(0,255,204,0.2);
             margin-top: 40px;
             font-size: 12px;
+            color: #666;
+        }
+        
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #00ffcc, #ff00cc);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+            z-index: 99;
+            box-shadow: 0 0 15px rgba(0,255,204,0.5);
+        }
+        
+        .scroll-top-btn.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .scroll-top-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+        }
+        
+        .loader-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(0,255,204,0.2);
+            border-top-color: #00ffcc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .purchase-notification {
+            position: fixed;
+            bottom: 100px;
+            left: 20px;
+            background: linear-gradient(135deg, #0a0a2a, #0f0f2a);
+            border: 1px solid #00ffcc;
+            border-radius: 30px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 98;
+            animation: slideInLeft 0.5s ease;
+            box-shadow: 0 0 20px rgba(0,255,204,0.2);
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .purchase-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #00ffcc, #ff00cc);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .purchase-avatar i {
+            font-size: 20px;
+            color: #0a0a0a;
+        }
+        
+        .purchase-info {
+            flex: 1;
+        }
+        
+        .purchase-user {
+            font-weight: bold;
+            color: #00ffcc;
+        }
+        
+        .purchase-product {
+            font-size: 12px;
+            color: #aaa;
+        }
+        
+        .purchase-time {
+            font-size: 10px;
             color: #666;
         }
         
@@ -917,7 +923,6 @@
                 <button class="nav-btn" data-page="howtobuy"><i class="fas fa-question-circle"></i> Как купить</button>
                 <button class="nav-btn" data-page="profile"><i class="fas fa-user"></i> Профиль</button>
                 <button class="nav-btn" data-page="reviews"><i class="fas fa-star"></i> Отзывы</button>
-                <button class="nav-btn" data-page="news"><i class="fas fa-newspaper"></i> Новости</button>
                 <button class="nav-btn" data-page="about"><i class="fas fa-info-circle"></i> О нас</button>
             </div>
             <div class="cart-icon" id="cartIcon">
@@ -938,7 +943,6 @@
                 </div>
             </div>
             
-            <!-- Преимущества -->
             <div class="features-grid">
                 <div class="feature-card">
                     <i class="fas fa-bolt"></i>
@@ -962,19 +966,17 @@
                 </div>
             </div>
             
-            <!-- Счётчик продаж -->
             <div style="text-align: center;">
                 <div class="sales-counter">
                     <i class="fas fa-chart-line"></i> Продано товаров: <span id="salesCount">0</span>+
                 </div>
             </div>
             
-            <div class="section-title">
+            <div class="section-title" style="display: flex; align-items: center; gap: 10px; margin: 30px 0 20px; padding-bottom: 10px; border-bottom: 1px solid rgba(0,255,204,0.3);">
                 <i class="fas fa-shopping-cart"></i>
                 <h2>Товары</h2>
             </div>
             
-            <!-- Поиск и сортировка -->
             <div class="search-sort-bar">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
@@ -986,7 +988,6 @@
                 </div>
             </div>
             
-            <!-- Категории -->
             <div class="category-tabs">
                 <button class="cat-btn active" data-cat="uc">UC</button>
                 <button class="cat-btn" data-cat="currency">Метровалюта</button>
@@ -995,7 +996,6 @@
             
             <div id="productsGrid" class="products-grid"></div>
             
-            <!-- Промокоды -->
             <div class="promo-section">
                 <i class="fas fa-tag"></i>
                 <h3>Промокод на скидку!</h3>
@@ -1006,7 +1006,6 @@
                 </div>
             </div>
             
-            <!-- Подписка на Telegram -->
             <div class="telegram-subscribe">
                 <i class="fab fa-telegram" style="font-size: 40px;"></i>
                 <h3>Подпишись на новости!</h3>
@@ -1023,7 +1022,7 @@
                 </div>
                 <h2>Оплата через DonationAlerts</h2>
                 
-                <div class="payment-rules" style="background: rgba(0,0,0,0.5); border-radius: 15px; padding: 20px; margin: 20px 0; text-align: left;">
+                <div style="background: rgba(0,0,0,0.5); border-radius: 15px; padding: 20px; margin: 20px 0; text-align: left;">
                     <h3><i class="fas fa-info-circle"></i> ВАЖНАЯ ИНФОРМАЦИЯ</h3>
                     <ul style="list-style: none;">
                         <li style="margin: 10px 0;"><i class="fas fa-check-circle" style="color: #00ffcc;"></i> При оплате ОБЯЗАТЕЛЬНО укажите ваш ИГРОВОЙ ID</li>
@@ -1033,13 +1032,13 @@
                     </ul>
                 </div>
                 
-                <div class="telegram-contact" style="background: rgba(0, 136, 204, 0.2); border: 1px solid #0088cc; border-radius: 15px; padding: 20px; margin: 20px 0;">
+                <div style="background: rgba(0, 136, 204, 0.2); border: 1px solid #0088cc; border-radius: 15px; padding: 20px; margin: 20px 0;">
                     <i class="fab fa-telegram" style="font-size: 40px;"></i>
                     <p>По всем вопросам:</p>
                     <a href="https://t.me/l_AWANGARD_l" target="_blank" style="color: #00ffcc; text-decoration: none; font-size: 18px;">@l_AWANGARD_l</a>
                 </div>
                 
-                <a href="https://www.donationalerts.com/r/limitblitzoffical" target="_blank" class="payment-btn" style="display: inline-block; background: linear-gradient(45deg, #ff00cc, #00ffcc); padding: 15px 40px; border-radius: 40px; color: #0a0a0a; text-decoration: none; font-weight: bold;">
+                <a href="https://www.donationalerts.com/r/limitblitzoffical" target="_blank" style="display: inline-block; background: linear-gradient(45deg, #ff00cc, #00ffcc); padding: 15px 40px; border-radius: 40px; color: #0a0a0a; text-decoration: none; font-weight: bold;">
                     <i class="fas fa-external-link-alt"></i> Перейти к оплате
                 </a>
             </div>
@@ -1059,7 +1058,7 @@
                         <li><span class="step-number">5</span> Товар придет в течение 5-15 минут</li>
                     </ul>
                 </div>
-                <div class="telegram-contact" style="margin-top: 30px; background: rgba(0, 136, 204, 0.2); border-radius: 15px; padding: 20px;">
+                <div style="margin-top: 30px; background: rgba(0, 136, 204, 0.2); border-radius: 15px; padding: 20px;">
                     <i class="fab fa-telegram"></i>
                     <p>По всем вопросам: <strong>@l_AWANGARD_l</strong></p>
                 </div>
@@ -1069,11 +1068,11 @@
         <!-- Страница профиля -->
         <div id="profilePage" class="page">
             <div class="profile-card">
-                <div class="profile-avatar" style="width: 100px; height: 100px; background: linear-gradient(45deg, #00ffcc, #ff00cc); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <div style="width: 100px; height: 100px; background: linear-gradient(45deg, #00ffcc, #ff00cc); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
                     <i class="fas fa-user" style="font-size: 50px; color: #0a0a0a;"></i>
                 </div>
                 <h3>Ваш профиль</h3>
-                <div class="profile-id" style="background: rgba(0,255,204,0.1); padding: 8px 16px; border-radius: 20px; display: inline-block; margin-top: 10px;">
+                <div style="background: rgba(0,255,204,0.1); padding: 8px 16px; border-radius: 20px; display: inline-block; margin-top: 10px;">
                     <i class="fas fa-fingerprint"></i> ID: <span id="userId">Загрузка...</span>
                 </div>
                 <div style="margin-top: 20px;">
@@ -1086,40 +1085,15 @@
             </div>
         </div>
         
-        <!-- Страница отзывов (оставлено как было) -->
+        <!-- Страница отзывов -->
         <div id="reviewsPage" class="page">
             <div class="reviews-card">
                 <i class="fas fa-star" style="font-size: 50px; color: #00ffcc; margin-bottom: 20px;"></i>
                 <h2>Отзывы</h2>
                 <p>Присоединяйтесь к нашему Telegram каналу, чтобы оставить отзыв или посмотреть отзывы других клиентов!</p>
-                <button id="openReviewsBtn" class="payment-btn" style="margin-top: 20px; background: linear-gradient(45deg, #0088cc, #006699); border: none; padding: 12px 24px; border-radius: 30px; color: white; cursor: pointer;">
+                <button id="openReviewsBtn" style="margin-top: 20px; background: linear-gradient(45deg, #0088cc, #006699); border: none; padding: 12px 24px; border-radius: 30px; color: white; cursor: pointer;">
                     <i class="fab fa-telegram"></i> Перейти в канал отзывов
                 </button>
-            </div>
-        </div>
-        
-        <!-- Страница новостей -->
-        <div id="newsPage" class="page">
-            <div class="about-card">
-                <i class="fas fa-newspaper" style="font-size: 50px; color: #00ffcc; margin-bottom: 20px;"></i>
-                <h2>Новости и акции</h2>
-                <div class="news-grid">
-                    <div class="news-card">
-                        <h3>🔥 СУПЕР АКЦИЯ!</h3>
-                        <div class="news-date">12 апреля 2026</div>
-                        <p>Комплект брони UR 6 всего за 25 ₽! Успей купить!</p>
-                    </div>
-                    <div class="news-card">
-                        <h3>📢 Новое обмундирование!</h3>
-                        <div class="news-date">10 апреля 2026</div>
-                        <p>В ассортименте появились товары Metro Royal!</p>
-                    </div>
-                    <div class="news-card">
-                        <h3>🎁 Промокод WELCOME10</h3>
-                        <div class="news-date">1 апреля 2026</div>
-                        <p>Скидка 10% на первый заказ!</p>
-                    </div>
-                </div>
             </div>
         </div>
         
@@ -1138,6 +1112,14 @@
         <p>AWANGARD | NEON CYBER STORE © 2026</p>
     </footer>
     
+    <div class="scroll-top-btn" id="scrollTopBtn">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    
+    <div class="loader-overlay" id="loaderOverlay">
+        <div class="spinner"></div>
+    </div>
+    
     <div id="toast" class="toast"></div>
 
     <script>
@@ -1151,15 +1133,15 @@
         let orders = JSON.parse(localStorage.getItem('awangard_orders') || '[]');
         let salesCount = parseInt(localStorage.getItem('awangard_sales') || '342');
         
-        // Товары
+        // Товары с НОВЫМИ ЦЕНАМИ
         const products = {
             uc: [
-                { name: "60 UC", price: 100, oldPrice: 150, icon: "UC", sale: true },
-                { name: "300+25 UC", price: 450, oldPrice: 600, icon: "UC", sale: false },
-                { name: "600+60 UC", price: 900, oldPrice: 1200, icon: "UC", sale: false },
-                { name: "1500+300 UC", price: 2200, oldPrice: 3000, icon: "UC", sale: false },
-                { name: "3000+850 UC", price: 4500, oldPrice: 6000, icon: "UC", sale: false },
-                { name: "6000+2100 UC", price: 9000, oldPrice: 12000, icon: "UC", sale: false }
+                { name: "60 UC", price: 90, oldPrice: 150, icon: "UC", sale: true },
+                { name: "300+25 UC", price: 420, oldPrice: 600, icon: "UC", sale: true },
+                { name: "600+60 UC", price: 840, oldPrice: 1200, icon: "UC", sale: true },
+                { name: "1500+300 UC", price: 1300, oldPrice: 3000, icon: "UC", sale: true },
+                { name: "3000+850 UC", price: 1800, oldPrice: 6000, icon: "UC", sale: true },
+                { name: "6000+2100 UC", price: 2070, oldPrice: 12000, icon: "UC", sale: true }
             ],
             currency: [
                 { name: "1 000 000 метровалюты", price: 100, icon: "M", sale: false },
@@ -1189,12 +1171,10 @@
             return id;
         }
         
-        // Обновление счётчика продаж
         function updateSalesCount() {
             document.getElementById('salesCount').textContent = salesCount;
         }
         
-        // Добавление продажи
         function addSale() {
             salesCount++;
             localStorage.setItem('awangard_sales', salesCount);
@@ -1287,7 +1267,6 @@
             };
         }
         
-        // История заказов
         function renderOrderHistory() {
             const container = document.getElementById('orderHistory');
             if (!container) return;
@@ -1305,7 +1284,6 @@
             `).join('');
         }
         
-        // Товары с поиском и сортировкой
         function renderProducts() {
             const container = document.getElementById('productsGrid');
             if (!container) return;
@@ -1315,14 +1293,12 @@
             else if (currentCategory === 'currency') categoryProducts = [...products.currency];
             else categoryProducts = [...products.metro];
             
-            // Поиск
             if (searchQuery) {
                 categoryProducts = categoryProducts.filter(p => 
                     p.name.toLowerCase().includes(searchQuery.toLowerCase())
                 );
             }
             
-            // Сортировка
             if (currentSort === 'price-asc') {
                 categoryProducts.sort((a, b) => a.price - b.price);
             } else if (currentSort === 'price-desc') {
@@ -1357,7 +1333,6 @@
             });
         }
         
-        // Промокод
         function applyPromo() {
             const promo = document.getElementById('promoCode').value;
             if (promo === 'WELCOME10') {
@@ -1368,13 +1343,11 @@
             }
         }
         
-        // Подписка на Telegram
         function subscribeTelegram() {
             window.open('https://t.me/l_AWANGARD_l', '_blank');
             showToast('Вы подписались на новости!', 'success');
         }
         
-        // ========== НАВИГАЦИЯ ==========
         function initNavigation() {
             const btns = document.querySelectorAll('.nav-btn');
             const pages = document.querySelectorAll('.page');
@@ -1382,10 +1355,8 @@
             btns.forEach(btn => {
                 btn.addEventListener('click', () => {
                     const pageId = btn.dataset.page + 'Page';
-                    
                     btns.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    
                     pages.forEach(page => page.classList.remove('active'));
                     const activePage = document.getElementById(pageId);
                     if (activePage) activePage.classList.add('active');
@@ -1401,7 +1372,6 @@
                 });
             });
             
-            // Поиск
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
@@ -1410,7 +1380,6 @@
                 });
             }
             
-            // Сортировка
             document.querySelectorAll('.sort-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
@@ -1420,22 +1389,14 @@
                 });
             });
             
-            // Корзина
             document.getElementById('cartIcon').addEventListener('click', showCart);
-            
-            // Промокод
             document.getElementById('applyPromoBtn').addEventListener('click', applyPromo);
-            
-            // Подписка
             document.getElementById('subscribeTelegramBtn').addEventListener('click', subscribeTelegram);
-            
-            // Отзывы
             document.getElementById('openReviewsBtn')?.addEventListener('click', () => {
                 window.open('https://t.me/Awangard_shop_feedback', '_blank');
             });
         }
         
-        // ========== ЧАСТИЦЫ ==========
         function createParticles() {
             const container = document.getElementById('particlesContainer');
             if (!container) return;
@@ -1453,16 +1414,6 @@
             }
         }
         
-        // FAQ
-        function initFaq() {
-            document.querySelectorAll('.faq-question').forEach(q => {
-                q.addEventListener('click', () => {
-                    q.parentElement.classList.toggle('active');
-                });
-            });
-        }
-        
-        // ========== УВЕДОМЛЕНИЯ ==========
         function showToast(msg, type = 'success') {
             const toast = document.getElementById('toast');
             toast.textContent = msg;
@@ -1470,23 +1421,65 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
         
-        // ========== ЗАПУСК ==========
+        // Кнопка "Вверх"
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollTopBtn.classList.add('show');
+            } else {
+                scrollTopBtn.classList.remove('show');
+            }
+        });
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Уведомления о покупках
+        const buyers = ["Игрок_778", "Hunter_X", "Sniper_Pro", "Gamer_92", "Legend_7", "Killer_YT", "Storm_Rider", "Phantom_01", "Viper_ZZ", "Ghost_23", "Shadow_XX", "Falcon_3", "Titan_88", "Wizard_12", "Warrior_5"];
+        const products_list = ["60 UC", "300+25 UC", "600+60 UC", "1500+300 UC", "3000+850 UC", "1 000 000 метровалюты", "Комплект брони UR 6", "MK 14 выс.качества"];
+        
+        function showRandomPurchase() {
+            const randomBuyer = buyers[Math.floor(Math.random() * buyers.length)];
+            const randomProduct = products_list[Math.floor(Math.random() * products_list.length)];
+            const randomTime = Math.floor(Math.random() * 60) + 1;
+            const notification = document.createElement('div');
+            notification.className = 'purchase-notification';
+            notification.innerHTML = `
+                <div class="purchase-avatar"><i class="fas fa-user-secret"></i></div>
+                <div class="purchase-info">
+                    <div class="purchase-user">${randomBuyer}</div>
+                    <div class="purchase-product">купил(а) ${randomProduct}</div>
+                    <div class="purchase-time">${randomTime} ${getTimeWord(randomTime)} назад</div>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(-100px)';
+                setTimeout(() => notification.remove(), 500);
+            }, 5000);
+        }
+        
+        function getTimeWord(minutes) {
+            const lastDigit = minutes % 10;
+            const lastTwo = minutes % 100;
+            if (lastTwo >= 11 && lastTwo <= 14) return 'минут';
+            if (lastDigit === 1) return 'минуту';
+            if (lastDigit >= 2 && lastDigit <= 4) return 'минуты';
+            return 'минут';
+        }
+        
+        setInterval(showRandomPurchase, 15000);
+        setTimeout(showRandomPurchase, 5000);
+        
         document.addEventListener('DOMContentLoaded', () => {
             createParticles();
             initNavigation();
-            initFaq();
             renderProducts();
             updateCartUI();
             updateSalesCount();
             renderOrderHistory();
-            
             document.getElementById('userId').textContent = getUserId();
-            
-            // Service Worker для PWA
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW error:', err));
-            }
-            
             showToast('Добро пожаловать в AWANGARD NEON!', 'success');
         });
     </script>
