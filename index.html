@@ -287,6 +287,84 @@
             }
         }
         
+        /* ========== СЕЗОННЫЕ СОБЫТИЯ ========== */
+        .seasonal-event {
+            background: linear-gradient(135deg, rgba(0,255,204,0.15), rgba(255,0,204,0.1));
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0,255,204,0.3);
+            animation: eventGlow 2s infinite;
+        }
+        
+        @keyframes eventGlow {
+            0%, 100% { box-shadow: 0 0 10px rgba(0,255,204,0.2); }
+            50% { box-shadow: 0 0 25px rgba(0,255,204,0.5); }
+        }
+        
+        .event-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0,255,204,0.3);
+        }
+        
+        .event-icon {
+            font-size: 50px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .event-info h3 {
+            font-size: 24px;
+            color: #00ffcc;
+            margin-bottom: 5px;
+        }
+        
+        .event-info p {
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        .event-timer {
+            text-align: center;
+            background: rgba(0,0,0,0.5);
+            padding: 10px 20px;
+            border-radius: 15px;
+        }
+        
+        .timer-label {
+            font-size: 12px;
+            color: #888;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .timer-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00ffcc;
+            background: rgba(0,0,0,0.5);
+            padding: 5px 8px;
+            border-radius: 8px;
+            margin: 0 2px;
+        }
+        
+        .seasonal-products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
         .hero {
             text-align: center;
             margin-bottom: 40px;
@@ -601,6 +679,29 @@
             margin-top: 10px;
         }
         
+        .birthday-input {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+        }
+        
+        .birthday-input label {
+            display: block;
+            margin-bottom: 10px;
+            color: #00ffcc;
+        }
+        
+        .birthday-input input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(0,255,204,0.3);
+            border-radius: 10px;
+            color: white;
+            margin-bottom: 10px;
+        }
+        
         .payment-info, .profile-card, .reviews-card, .about-card, .howtobuy-card {
             background: rgba(10, 10, 20, 0.8);
             backdrop-filter: blur(10px);
@@ -887,10 +988,20 @@
             .sort-buttons {
                 justify-content: center;
             }
+            .event-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+            .seasonal-products {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
         }
         
         @media (max-width: 480px) {
             .products-grid {
+                grid-template-columns: 1fr;
+            }
+            .seasonal-products {
                 grid-template-columns: 1fr;
             }
         }
@@ -940,6 +1051,27 @@
                 <p>PUBG Mobile | UC | Метровалюта | Metro Royal</p>
                 <div class="hero-badge">
                     <i class="fas fa-bolt"></i> Добро пожаловать в киберпространство!
+                </div>
+            </div>
+            
+            <!-- СЕЗОННОЕ СОБЫТИЕ -->
+            <div class="seasonal-event" id="seasonalEvent">
+                <div class="event-banner">
+                    <div class="event-icon">🏖️</div>
+                    <div class="event-info">
+                        <h3>ЛЕТНЯЯ РАСПРОДАЖА!</h3>
+                        <p>Скидка 50% на летнюю коллекцию</p>
+                    </div>
+                    <div class="event-timer" id="eventTimer">
+                        <span class="timer-label">До конца акции:</span>
+                        <span class="timer-value" id="timerDays">00</span>д 
+                        <span class="timer-value" id="timerHours">00</span>ч 
+                        <span class="timer-value" id="timerMinutes">00</span>м 
+                        <span class="timer-value" id="timerSeconds">00</span>с
+                    </div>
+                </div>
+                <div class="seasonal-products" id="seasonalProducts">
+                    <!-- Товары события подгрузятся сюда -->
                 </div>
             </div>
             
@@ -1075,6 +1207,14 @@
                 <div style="background: rgba(0,255,204,0.1); padding: 8px 16px; border-radius: 20px; display: inline-block; margin-top: 10px;">
                     <i class="fas fa-fingerprint"></i> ID: <span id="userId">Загрузка...</span>
                 </div>
+                
+                <!-- День рождения -->
+                <div class="birthday-input">
+                    <label>🎂 Ваш день рождения (для подарков):</label>
+                    <input type="date" id="birthdayInput">
+                    <button id="saveBirthdayBtn" class="gradient-btn small" style="background: linear-gradient(45deg, #00ffcc, #ff00cc); border: none; padding: 8px 16px; border-radius: 30px; color: #0a0a0a; cursor: pointer;">Сохранить</button>
+                </div>
+                
                 <div style="margin-top: 20px;">
                     <h4>История заказов</h4>
                     <div id="orderHistory" style="margin-top: 10px; max-height: 200px; overflow-y: auto;"></div>
@@ -1133,7 +1273,7 @@
         let orders = JSON.parse(localStorage.getItem('awangard_orders') || '[]');
         let salesCount = parseInt(localStorage.getItem('awangard_sales') || '342');
         
-        // Товары с НОВЫМИ ЦЕНАМИ
+        // Товары
         const products = {
             uc: [
                 { name: "60 UC", price: 90, oldPrice: 150, icon: "UC", sale: true },
@@ -1160,6 +1300,113 @@
                 { name: "MK 14 выс.качества", price: 15, oldPrice: 2500, icon: "🔫", sale: true }
             ]
         };
+        
+        // Сезонные товары
+        const seasonalProducts = [
+            { name: "🌊 Летний комплект брони", price: 50, oldPrice: 100, icon: "🏖️", sale: true },
+            { name: "☀️ Солнечный скин MK14", price: 30, oldPrice: 60, icon: "☀️", sale: true },
+            { name: "🍉 Арбузный набор UC", price: 200, oldPrice: 400, icon: "🍉", sale: true },
+            { name: "🏄 Пляжный пропуск", price: 75, oldPrice: 150, icon: "🏄", sale: true },
+        ];
+        
+        // Дата окончания сезонного события (15 июля 2026)
+        const eventEndDate = new Date(2026, 6, 15, 23, 59, 59);
+        
+        function updateEventTimer() {
+            const now = new Date();
+            const diff = eventEndDate - now;
+            
+            if (diff <= 0) {
+                document.getElementById('seasonalEvent').style.display = 'none';
+                return;
+            }
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('timerDays').textContent = days.toString().padStart(2, '0');
+            document.getElementById('timerHours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('timerMinutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('timerSeconds').textContent = seconds.toString().padStart(2, '0');
+        }
+        
+        function renderSeasonalProducts() {
+            const container = document.getElementById('seasonalProducts');
+            if (!container) return;
+            
+            container.innerHTML = seasonalProducts.map(p => `
+                <div class="product-card sale" data-name="${p.name}" data-price="${p.price}">
+                    <div class="sale-badge">🌊 СЕЗОННОЕ</div>
+                    <div class="product-icon">${p.icon}</div>
+                    <div class="product-name">${p.name}</div>
+                    <div class="product-old-price">${p.oldPrice} ₽</div>
+                    <div class="product-price">${p.price} ₽</div>
+                    <button class="buy-btn">Купить</button>
+                </div>
+            `).join('');
+            
+            container.querySelectorAll('.product-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('buy-btn')) {
+                        e.stopPropagation();
+                        const name = card.dataset.name;
+                        const price = parseInt(card.dataset.price);
+                        addToCart(name, price);
+                        showToast(`🎉 Летний товар "${name}" добавлен в корзину!`, 'success');
+                    }
+                });
+            });
+        }
+        
+        // ========== УМНЫЕ УВЕДОМЛЕНИЯ ==========
+        
+        function checkAbandonedCart() {
+            const cart = JSON.parse(localStorage.getItem('awangard_cart') || '[]');
+            const lastCartTime = localStorage.getItem('awangard_last_cart_time');
+            const notifiedAbandoned = localStorage.getItem('awangard_notified_abandoned');
+            
+            if (cart.length > 0 && lastCartTime && !notifiedAbandoned) {
+                const timeSince = Date.now() - parseInt(lastCartTime);
+                if (timeSince > 3600000) {
+                    showToast("🛒 Вы забыли товары в корзине! Не упустите скидку!", 'info');
+                    localStorage.setItem('awangard_notified_abandoned', 'true');
+                }
+            }
+        }
+        
+        function checkPriceDrop() {
+            const oldPrices = JSON.parse(localStorage.getItem('awangard_old_prices') || '{}');
+            
+            products.uc.forEach(product => {
+                const oldPrice = oldPrices[product.name];
+                if (oldPrice && product.price < oldPrice) {
+                    showToast(`📉 Цена на ${product.name} снизилась до ${product.price} ₽!`, 'success');
+                }
+                oldPrices[product.name] = product.price;
+            });
+            localStorage.setItem('awangard_old_prices', JSON.stringify(oldPrices));
+        }
+        
+        function checkBirthday() {
+            const birthday = localStorage.getItem('awangard_birthday');
+            const birthdayNotified = localStorage.getItem('awangard_birthday_notified');
+            
+            if (birthday && !birthdayNotified) {
+                const today = new Date();
+                const birthDate = new Date(birthday);
+                if (today.getMonth() === birthDate.getMonth() && today.getDate() === birthDate.getDate()) {
+                    showToast("🎂 С ДНЁМ РОЖДЕНИЯ! Поздравляем!", 'success');
+                    localStorage.setItem('awangard_birthday_notified', 'true');
+                }
+            }
+        }
+        
+        function updateCartTime() {
+            localStorage.setItem('awangard_last_cart_time', Date.now());
+            localStorage.removeItem('awangard_notified_abandoned');
+        }
         
         // Генерация ID
         function getUserId() {
@@ -1196,6 +1443,7 @@
                 cart.push({ name: product, price: price, quantity: 1 });
             }
             updateCartUI();
+            updateCartTime();
             showToast(`Товар "${product}" добавлен в корзину!`, 'success');
         }
         
@@ -1395,6 +1643,20 @@
             document.getElementById('openReviewsBtn')?.addEventListener('click', () => {
                 window.open('https://t.me/Awangard_shop_feedback', '_blank');
             });
+            
+            // День рождения
+            document.getElementById('saveBirthdayBtn')?.addEventListener('click', () => {
+                const birthday = document.getElementById('birthdayInput').value;
+                if (birthday) {
+                    localStorage.setItem('awangard_birthday', birthday);
+                    showToast('Дата рождения сохранена!', 'success');
+                }
+            });
+            
+            const savedBirthday = localStorage.getItem('awangard_birthday');
+            if (savedBirthday) {
+                document.getElementById('birthdayInput').value = savedBirthday;
+            }
         }
         
         function createParticles() {
@@ -1472,13 +1734,21 @@
         setInterval(showRandomPurchase, 15000);
         setTimeout(showRandomPurchase, 5000);
         
+        // Запуск проверок умных уведомлений
+        setInterval(checkAbandonedCart, 60000);
+        setInterval(checkPriceDrop, 300000);
+        setInterval(checkBirthday, 3600000);
+        
         document.addEventListener('DOMContentLoaded', () => {
             createParticles();
             initNavigation();
             renderProducts();
+            renderSeasonalProducts();
             updateCartUI();
             updateSalesCount();
             renderOrderHistory();
+            updateEventTimer();
+            setInterval(updateEventTimer, 1000);
             document.getElementById('userId').textContent = getUserId();
             showToast('Добро пожаловать в AWANGARD NEON!', 'success');
         });
