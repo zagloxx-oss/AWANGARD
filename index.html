@@ -6,7 +6,7 @@
     <title>AWANGARD TEAM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* === ВСЕ СТИЛИ ОСТАЮТСЯ БЕЗ ИЗМЕНЕНИЙ === */
+        /* ===== ВСЕ СТИЛИ (без изменений) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', 'Orbitron', monospace; background: #0a0a0a; color: #fff; min-height: 100vh; overflow-x: hidden; }
         .cyber-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: radial-gradient(ellipse at center, #0a0a2a 0%, #050510 100%); }
@@ -94,9 +94,75 @@
         .toast.show { transform: translateX(0); }
         @media (max-width: 768px) { .nav-container { flex-direction: column; } .hero h1 { font-size: 32px; } .products-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; } .product-icon { width: 50px; height: 50px; font-size: 20px; } .search-sort-bar { flex-direction: column; } .sort-buttons { justify-content: center; } }
         @media (max-width: 480px) { .products-grid { grid-template-columns: 1fr; } }
+
+        /* ===== СТИЛИ ДЛЯ ЗАСТАВКИ ===== */
+        #splashScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+            opacity: 1;
+            visibility: visible;
+        }
+        #splashScreen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        #splashVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .skip-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 10000;
+            background: rgba(0, 255, 204, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid #00ffcc;
+            color: #00ffcc;
+            padding: 10px 24px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: 0.3s;
+            display: none; /* скрыта по умолчанию, показывается через JS */
+        }
+        .skip-btn:hover {
+            background: linear-gradient(45deg, #00ffcc, #ff00cc);
+            color: #0a0a0a;
+            box-shadow: 0 0 20px rgba(0,255,204,0.5);
+        }
+        .skip-btn.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
+
+    <!-- ===== ЗАСТАВКА С ВИДЕО ===== -->
+    <div id="splashScreen">
+        <video id="splashVideo" muted autoplay playsinline>
+            <!-- Укажите путь к вашему видео здесь -->
+            <source src="logo.mp4" type="video/mp4">
+            <!-- Если видео не загрузится, можно добавить запасной контент -->
+        </video>
+        <button class="skip-btn" id="skipBtn">Пропустить →</button>
+    </div>
+
+    <!-- ===== ОСТАЛЬНОЙ КОНТЕНТ (сайт) ===== -->
+
+    <!-- Фоновые элементы -->
     <div class="cyber-bg">
         <div class="neon-grid"></div>
         <div class="scan-line"></div>
@@ -282,8 +348,50 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        // ========== AWANGARD TEAM (Упрощённая версия без корзины, профиля, промокодов и сезонки) ==========
+        // ===== ЗАСТАВКА: УПРАВЛЕНИЕ =====
+        const splashScreen = document.getElementById('splashScreen');
+        const splashVideo = document.getElementById('splashVideo');
+        const skipBtn = document.getElementById('skipBtn');
 
+        // Показываем кнопку "Пропустить" через 0.5 секунды
+        setTimeout(() => {
+            skipBtn.classList.add('show');
+        }, 500);
+
+        // Функция скрытия заставки
+        function hideSplash() {
+            splashScreen.classList.add('hidden');
+            // Останавливаем видео, чтобы не грузило дальше
+            if (splashVideo) {
+                splashVideo.pause();
+                splashVideo.currentTime = 0;
+            }
+            // Убираем кнопку
+            skipBtn.classList.remove('show');
+        }
+
+        // Событие окончания видео (если видео короче 5 секунд, оно закончится раньше)
+        splashVideo.addEventListener('ended', hideSplash);
+
+        // Кнопка "Пропустить"
+        skipBtn.addEventListener('click', hideSplash);
+
+        // Запасной таймер на 5 секунд (на случай, если видео не загрузится или зависнет)
+        setTimeout(() => {
+            // Если заставка всё ещё видна (не скрыта) — скрываем
+            if (!splashScreen.classList.contains('hidden')) {
+                hideSplash();
+            }
+        }, 5000); // 5000 мс = 5 секунд
+
+        // Также если пользователь кликнет по заставке — скрываем (доп. удобство)
+        splashScreen.addEventListener('click', hideSplash);
+
+        // ===== ОСТАЛЬНОЙ СКРИПТ САЙТА =====
+        // ... (весь ваш существующий JS без изменений)
+        // Я добавлю его ниже сокращённо, но вы можете вставить свой полный код
+
+        // ===== ДАННЫЕ И ФУНКЦИИ (те же, что были) =====
         let currentCategory = 'uc';
         let searchQuery = '';
         let currentSort = null;
@@ -461,7 +569,10 @@
             initNavigation();
             renderProducts();
             updateSalesCount();
-            showToast('Добро пожаловать в AWANGARD TEAM!', 'success');
+            // Тост показываем только после заставки, но так как заставка скроется через 5 сек, можно показать сразу
+            setTimeout(() => {
+                showToast('Добро пожаловать в AWANGARD TEAM!', 'success');
+            }, 1000);
         });
     </script>
 </body>
