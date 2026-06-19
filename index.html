@@ -160,13 +160,14 @@
         }
         .toast.show { transform: translateX(0); }
 
-        /* ===== ЗАСТАВКА ===== */
+        /* ===== ЗАСТАВКА (без видео, просто тёмный экран с логотипом) ===== */
         #splashScreen {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             background: #0a0a0a;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 9999;
@@ -174,13 +175,49 @@
             opacity: 1;
             visibility: visible;
         }
-        #splashScreen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        #splashVideo { width: 100%; height: 100%; object-fit: contain; background: #0a0a0a; }
-        .skip-btn {
+        #splashScreen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .splash-logo {
+            font-size: 72px;
+            font-weight: bold;
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(45deg, #ff6600, #ff8800, #ff6600);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: logoPulse 1.5s infinite;
+            text-shadow: 0 0 40px rgba(255,102,0,0.3);
+        }
+        @keyframes logoPulse {
+            0%,100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        .splash-sub {
+            color: #888;
+            margin-top: 12px;
+            font-size: 16px;
+            letter-spacing: 4px;
+        }
+        .splash-loader {
+            margin-top: 30px;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #333;
+            border-top: 3px solid #ff6600;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .skip-btn-splash {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            z-index: 10000;
             background: rgba(255,102,0,0.2);
             backdrop-filter: blur(10px);
             border: 1px solid #ff6600;
@@ -191,11 +228,17 @@
             font-weight: bold;
             font-size: 14px;
             transition: 0.3s;
-            display: none;
+            z-index: 10000;
         }
-        .skip-btn:hover { background: #ff6600; color: #1a1a1a; box-shadow: 0 0 20px rgba(255,102,0,0.6); }
-        .skip-btn.show { display: block; }
-        @media (max-width: 600px) { .skip-btn { padding: 14px 28px; font-size: 16px; bottom: 20px; right: 20px; } }
+        .skip-btn-splash:hover {
+            background: #ff6600;
+            color: #1a1a1a;
+            box-shadow: 0 0 20px rgba(255,102,0,0.6);
+        }
+        @media (max-width: 600px) {
+            .splash-logo { font-size: 48px; }
+            .skip-btn-splash { padding: 14px 28px; font-size: 16px; bottom: 20px; right: 20px; }
+        }
 
         /* ===== ЛИЦЕНЗИЯ ===== */
         #licenseBanner {
@@ -284,7 +327,6 @@
         .license-modal-body h3 { color: #ff8800; margin: 20px 0 10px; }
         .license-modal-body p { margin: 10px 0; }
         .license-modal-body ul { padding-left: 20px; }
-        .license-modal-body li { margin: 5px 0; }
 
         #blockedOverlay {
             position: fixed; top: 0; left: 0;
@@ -311,7 +353,6 @@
         }
         .blocked-box button:hover { background: #ff8800; }
 
-        /* ===== ПРОФИЛЬ ===== */
         .profile-card {
             background: rgba(40,40,40,0.8);
             backdrop-filter: blur(10px);
@@ -333,8 +374,7 @@
             background: #ff6600;
             border-radius: 50%;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            align-items: center; justify-content: center;
             margin: 0 auto 20px;
             font-size: 50px;
             color: #1a1a1a;
@@ -408,10 +448,12 @@
 </head>
 <body>
 
-    <!-- ===== ЗАСТАВКА ===== -->
+    <!-- ===== ЗАСТАВКА (без видео) ===== -->
     <div id="splashScreen">
-        <video id="splashVideo" muted autoplay playsinline></video>
-        <button class="skip-btn" id="skipBtn">Пропустить →</button>
+        <div class="splash-logo">AWANGARD</div>
+        <div class="splash-sub">TEAM</div>
+        <div class="splash-loader"></div>
+        <button class="skip-btn-splash" id="skipSplashBtn">Пропустить →</button>
     </div>
 
     <!-- ===== ЛИЦЕНЗИОННЫЙ БАННЕР ===== -->
@@ -637,28 +679,23 @@
 
     <script>
         // ============================================================
-        // 1. ЗАСТАВКА
+        // 1. ЗАСТАВКА (без видео — таймер + кнопка)
         // ============================================================
         (function() {
             const splashScreen = document.getElementById('splashScreen');
-            const splashVideo = document.getElementById('splashVideo');
-            const skipBtn = document.getElementById('skipBtn');
-            const isMobile = window.innerWidth < 768;
-            const videoFile = isMobile ? 'logo2.mp4' : 'logo.mp4';
-            const source = document.createElement('source');
-            source.src = videoFile;
-            source.type = 'video/mp4';
-            splashVideo.appendChild(source);
-            splashVideo.load();
-            setTimeout(() => skipBtn.classList.add('show'), 500);
+            const skipBtn = document.getElementById('skipSplashBtn');
+
             function hideSplash() {
                 splashScreen.classList.add('hidden');
-                if (splashVideo) { splashVideo.pause(); splashVideo.currentTime = 0; }
-                skipBtn.classList.remove('show');
             }
-            splashVideo.addEventListener('ended', hideSplash);
+
+            // Автоматическое скрытие через 3 секунды
+            setTimeout(hideSplash, 3000);
+
+            // Кнопка "Пропустить"
             skipBtn.addEventListener('click', hideSplash);
-            splashVideo.addEventListener('error', () => skipBtn.classList.add('show'));
+
+            // Клик по заставке тоже скрывает
             splashScreen.addEventListener('click', hideSplash);
         })();
 
@@ -687,6 +724,7 @@
                 banner.classList.add('show');
             }
 
+            // Ждём, пока скроется заставка, затем показываем баннер
             if (splashScreen.classList.contains('hidden')) {
                 showBanner();
             } else {
@@ -697,12 +735,13 @@
                     }
                 });
                 observer.observe(splashScreen, { attributes: true, attributeFilter: ['class'] });
+                // Запасной таймер
                 setTimeout(() => {
                     if (!splashScreen.classList.contains('hidden')) {
                         splashScreen.classList.add('hidden');
                         showBanner();
                     }
-                }, 6000);
+                }, 3500);
             }
 
             viewBtn.addEventListener('click', () => modal.classList.add('active'));
