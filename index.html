@@ -17,7 +17,7 @@
             position: relative;
         }
 
-        /* ===== ФОН С МОЛНИЯМИ ===== */
+        /* ===== ФОН ===== */
         .storm-bg {
             position: fixed;
             top: 0;
@@ -28,7 +28,8 @@
             background: radial-gradient(ellipse at center, #2a2a2a 0%, #0f0f0f 100%);
         }
 
-        .lightning-container {
+        /* ===== ХОЛСТ ДЛЯ МОЛНИЙ ===== */
+        #lightningCanvas {
             position: fixed;
             top: 0;
             left: 0;
@@ -36,81 +37,7 @@
             height: 100%;
             z-index: -1;
             pointer-events: none;
-            overflow: hidden;
-        }
-
-        /* Реалистичные молнии (SVG) */
-        .lightning {
-            position: absolute;
-            opacity: 0;
-            animation: lightningFlash 4s infinite ease-in-out;
-            filter: drop-shadow(0 0 10px #ff6600) drop-shadow(0 0 20px #ff4400);
-        }
-
-        .lightning:nth-child(1) {
-            top: 5%;
-            left: 5%;
-            width: 150px;
-            animation-delay: 0s;
-        }
-        .lightning:nth-child(2) {
-            top: 20%;
-            right: 8%;
-            width: 200px;
-            animation-delay: 1.4s;
-        }
-        .lightning:nth-child(3) {
-            bottom: 15%;
-            left: 10%;
-            width: 180px;
-            animation-delay: 2.8s;
-        }
-        .lightning:nth-child(4) {
-            top: 55%;
-            left: 55%;
-            width: 120px;
-            animation-delay: 0.9s;
-        }
-        .lightning:nth-child(5) {
-            bottom: 5%;
-            right: 5%;
-            width: 220px;
-            animation-delay: 3.6s;
-        }
-        .lightning:nth-child(6) {
-            top: 30%;
-            left: 35%;
-            width: 160px;
-            animation-delay: 2.1s;
-        }
-
-        @keyframes lightningFlash {
-            0% { opacity: 0; transform: scale(0.8) rotate(0deg); }
-            8% { opacity: 1; transform: scale(1.1) rotate(2deg); }
-            16% { opacity: 0.7; transform: scale(0.95) rotate(-1deg); }
-            24% { opacity: 1; transform: scale(1.05) rotate(1deg); }
-            32% { opacity: 0; transform: scale(0.9) rotate(0deg); }
-            100% { opacity: 0; transform: scale(0.8) rotate(0deg); }
-        }
-
-        /* Искры (мелкие точки) */
-        .spark {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #ff8800;
-            border-radius: 50%;
-            box-shadow: 0 0 12px #ff6600;
-            animation: sparkMove 6s infinite linear;
-        }
-        .spark:nth-child(7) { top: 10%; left: 20%; animation-delay: 0.3s; }
-        .spark:nth-child(8) { top: 40%; left: 80%; animation-delay: 1.8s; }
-        .spark:nth-child(9) { top: 75%; left: 25%; animation-delay: 3.5s; }
-        .spark:nth-child(10) { top: 90%; left: 70%; animation-delay: 4.9s; }
-
-        @keyframes sparkMove {
-            0% { transform: translate(0,0) scale(1); opacity: 1; }
-            100% { transform: translate(-40px, -100px) scale(0); opacity: 0; }
+            display: block;
         }
 
         /* ===== НАВИГАЦИЯ ===== */
@@ -124,7 +51,6 @@
             padding: 10px 0;
             box-shadow: 0 0 20px rgba(255, 102, 0, 0.3);
         }
-
         .nav-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -135,7 +61,6 @@
             flex-wrap: wrap;
             gap: 15px;
         }
-
         .logo {
             font-size: 28px;
             font-weight: bold;
@@ -146,7 +71,6 @@
             align-items: center;
             gap: 10px;
         }
-
         .logo-icon {
             width: 40px;
             height: 40px;
@@ -159,14 +83,12 @@
             color: #1a1a1a;
             box-shadow: 0 0 20px #ff6600;
         }
-
         .nav-links {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
             justify-content: center;
         }
-
         .nav-btn {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid #555;
@@ -182,7 +104,6 @@
             text-transform: uppercase;
             font-size: 13px;
         }
-
         .nav-btn:hover, .nav-btn.active {
             background: #ff6600;
             color: #1a1a1a;
@@ -197,13 +118,11 @@
             margin: 0 auto;
             padding: 30px 20px;
         }
-
         .page {
             display: none;
             animation: fadeInUp 0.6s ease;
         }
         .page.active { display: block; }
-
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -214,7 +133,6 @@
             text-align: center;
             margin-bottom: 40px;
         }
-
         .hero h1 {
             font-size: 52px;
             font-family: 'Orbitron', monospace;
@@ -223,7 +141,6 @@
             letter-spacing: 4px;
             animation: glitch 3s infinite;
         }
-
         @keyframes glitch {
             0%, 100% { transform: skew(0deg); }
             95% { transform: skew(0deg); }
@@ -231,13 +148,7 @@
             97% { transform: skew(-2deg); }
             98% { transform: skew(1deg); }
         }
-
-        .hero p {
-            color: #aaa;
-            margin-top: 10px;
-            letter-spacing: 2px;
-        }
-
+        .hero p { color: #aaa; margin-top: 10px; letter-spacing: 2px; }
         .hero-badge {
             display: inline-block;
             background: rgba(255, 102, 0, 0.2);
@@ -257,7 +168,6 @@
             gap: 20px;
             margin: 30px 0;
         }
-
         .feature-card {
             background: rgba(50, 50, 50, 0.7);
             backdrop-filter: blur(5px);
@@ -272,20 +182,9 @@
             box-shadow: 0 0 25px rgba(255, 102, 0, 0.3);
             transform: translateY(-5px);
         }
-        .feature-card i {
-            font-size: 40px;
-            color: #ff6600;
-            margin-bottom: 15px;
-        }
-        .feature-card h3 {
-            font-size: 16px;
-            color: #fff;
-            margin-bottom: 10px;
-        }
-        .feature-card p {
-            font-size: 12px;
-            color: #aaa;
-        }
+        .feature-card i { font-size: 40px; color: #ff6600; margin-bottom: 15px; }
+        .feature-card h3 { font-size: 16px; color: #fff; margin-bottom: 10px; }
+        .feature-card p { font-size: 12px; color: #aaa; }
 
         /* ===== СЧЁТЧИК ===== */
         .sales-counter {
@@ -318,10 +217,7 @@
             border-radius: 40px;
             padding: 8px 20px;
         }
-        .search-box i {
-            color: #ff6600;
-            margin-right: 10px;
-        }
+        .search-box i { color: #ff6600; margin-right: 10px; }
         .search-box input {
             flex: 1;
             background: none;
@@ -330,10 +226,7 @@
             outline: none;
             font-size: 14px;
         }
-        .sort-buttons {
-            display: flex;
-            gap: 10px;
-        }
+        .sort-buttons { display: flex; gap: 10px; }
         .sort-btn {
             background: rgba(255,255,255,0.05);
             border: 1px solid #555;
@@ -427,23 +320,9 @@
             color: #1a1a1a;
             box-shadow: 0 0 20px rgba(255, 102, 0, 0.4);
         }
-        .product-name {
-            font-size: 16px;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #fff;
-        }
-        .product-old-price {
-            text-decoration: line-through;
-            font-size: 12px;
-            color: #888;
-        }
-        .product-price {
-            font-size: 22px;
-            font-weight: bold;
-            margin: 10px 0;
-            color: #ff8800;
-        }
+        .product-name { font-size: 16px; margin-bottom: 8px; font-weight: 600; color: #fff; }
+        .product-old-price { text-decoration: line-through; font-size: 12px; color: #888; }
+        .product-price { font-size: 22px; font-weight: bold; margin: 10px 0; color: #ff8800; }
         .buy-btn {
             background: #ff6600;
             border: none;
@@ -476,17 +355,8 @@
             border-color: #ff6600;
             box-shadow: 0 0 30px rgba(255, 102, 0, 0.2);
         }
-
-        .howtobuy-steps {
-            text-align: left;
-            margin-top: 20px;
-        }
-        .howtobuy-steps li {
-            margin: 15px 0;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+        .howtobuy-steps { text-align: left; margin-top: 20px; }
+        .howtobuy-steps li { margin: 15px 0; display: flex; align-items: center; gap: 15px; }
         .step-number {
             width: 30px;
             height: 30px;
@@ -554,13 +424,8 @@
             box-shadow: 0 0 20px rgba(255, 102, 0, 0.5);
             color: #1a1a1a;
         }
-        .scroll-top-btn.show {
-            opacity: 1;
-            visibility: visible;
-        }
-        .scroll-top-btn:hover {
-            transform: scale(1.1);
-        }
+        .scroll-top-btn.show { opacity: 1; visibility: visible; }
+        .scroll-top-btn:hover { transform: scale(1.1); }
 
         /* ===== TOAST ===== */
         .toast {
@@ -577,9 +442,7 @@
             font-weight: bold;
             box-shadow: 0 0 20px rgba(255, 102, 0, 0.4);
         }
-        .toast.show {
-            transform: translateX(0);
-        }
+        .toast.show { transform: translateX(0); }
 
         /* ===== ЗАСТАВКА (ВИДЕО) ===== */
         #splashScreen {
@@ -630,16 +493,9 @@
             color: #1a1a1a;
             box-shadow: 0 0 20px rgba(255, 102, 0, 0.6);
         }
-        .skip-btn.show {
-            display: block;
-        }
+        .skip-btn.show { display: block; }
         @media (max-width: 600px) {
-            .skip-btn {
-                padding: 14px 28px;
-                font-size: 16px;
-                bottom: 20px;
-                right: 20px;
-            }
+            .skip-btn { padding: 14px 28px; font-size: 16px; bottom: 20px; right: 20px; }
         }
 
         /* ===== АДАПТИВ ===== */
@@ -661,99 +517,16 @@
     <!-- ===== ЗАСТАВКА С ВИДЕО ===== -->
     <div id="splashScreen">
         <video id="splashVideo" muted autoplay playsinline>
-            <!-- источники будут добавлены через JS -->
+            <!-- источники устанавливаются через JS -->
         </video>
         <button class="skip-btn" id="skipBtn">Пропустить →</button>
     </div>
 
-    <!-- ===== ФОН С МОЛНИЯМИ ===== -->
+    <!-- ===== ФОН ===== -->
     <div class="storm-bg"></div>
-    <div class="lightning-container">
-        <!-- Молнии (реалистичные зигзаги) -->
-        <svg class="lightning" viewBox="0 0 150 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <polyline points="10,100 30,60 15,55 45,20 25,30 55,0 35,20 60,10 40,35 70,30 50,50 85,45 65,65 100,60 80,80 110,75 95,100" stroke="#ff6600" stroke-width="3" fill="none" stroke-linejoin="miter" filter="url(#glow)"/>
-            <defs>
-                <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="3" result="blur" />
-                    <feMerge>
-                        <feMergeNode in="blur" />
-                        <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                </filter>
-            </defs>
-        </svg>
 
-        <svg class="lightning" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <polyline points="20,120 45,80 30,75 65,35 45,50 80,15 60,35 95,10 75,30 105,20 85,45 115,40 95,60 130,50 110,75 140,70 120,95 150,90 135,120" stroke="#ff8800" stroke-width="3" fill="none" stroke-linejoin="miter" filter="url(#glow2)"/>
-            <defs>
-                <filter id="glow2" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="4" result="blur" />
-                    <feMerge>
-                        <feMergeNode in="blur" />
-                        <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                </filter>
-            </defs>
-        </svg>
-
-        <svg class="lightning" viewBox="0 0 180 110" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <polyline points="15,110 40,70 25,65 60,25 40,40 75,5 55,20 85,10 65,35 95,30 75,55 105,50 85,75 115,70 95,95 125,90 110,110" stroke="#ffaa00" stroke-width="3" fill="none" stroke-linejoin="miter" filter="url(#glow3)"/>
-            <defs>
-                <filter id="glow3" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="3" result="blur" />
-                    <feMerge>
-                        <feMergeNode in="blur" />
-                        <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                </filter>
-            </defs>
-        </svg>
-
-        <svg class="lightning" viewBox="0 0 130 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <polyline points="10,80 30,45 15,40 45,10 25,20 55,0 35,15 60,5 45,25 70,20 55,40 80,35 65,55 90,50 75,70 95,65 85,80" stroke="#ff7700" stroke-width="3" fill="none" stroke-linejoin="miter" filter="url(#glow4)"/>
-            <defs>
-                <filter id="glow4" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="3" result="blur" />
-                    <feMerge>
-                        <feMergeNode in="blur" />
-                        <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                </filter>
-            </defs>
-        </svg>
-
-        <svg class="lightning" viewBox="0 0 220 130" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <polyline points="25,130 55,85 40,80 80,35 55,55 95,15 70,35 105,10 85,30 115,20 95,45 125,40 105,65 135,60 115,85 145,80 125,105 155,100 140,130" stroke="#ff9900" stroke-width="3" fill="none" stroke-linejoin="miter" filter="url(#glow5)"/>
-            <defs>
-                <filter id="glow5" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="5" result="blur" />
-                    <feMerge>
-                        <feMergeNode in="blur" />
-                        <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                </filter>
-            </defs>
-        </svg>
-
-        <svg class="lightning" viewBox="0 0 140 90" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <polyline points="10,90 30,55 15,50 45,15 25,30 55,0 35,20 60,10 45,30 70,25 55,45 80,40 65,60 90,55 75,75 95,70 85,90" stroke="#ff8800" stroke-width="3" fill="none" stroke-linejoin="miter" filter="url(#glow6)"/>
-            <defs>
-                <filter id="glow6" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="3" result="blur" />
-                    <feMerge>
-                        <feMergeNode in="blur" />
-                        <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                </filter>
-            </defs>
-        </svg>
-
-        <!-- Искры -->
-        <div class="spark"></div>
-        <div class="spark"></div>
-        <div class="spark"></div>
-        <div class="spark"></div>
-    </div>
+    <!-- ===== ХОЛСТ ДЛЯ МОЛНИЙ ===== -->
+    <canvas id="lightningCanvas"></canvas>
 
     <!-- ===== НАВИГАЦИЯ ===== -->
     <nav class="neon-nav">
@@ -927,24 +700,23 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        // ===== ЗАСТАВКА С ВЫБОРОМ ВИДЕО =====
+        // ============================================================
+        // 1. ЗАСТАВКА С ВИДЕО (ПК / МОБИЛА)
+        // ============================================================
         (function() {
             const splashScreen = document.getElementById('splashScreen');
             const splashVideo = document.getElementById('splashVideo');
             const skipBtn = document.getElementById('skipBtn');
 
-            // Определяем устройство
             const isMobile = window.innerWidth < 768;
             const videoFile = isMobile ? 'logo2.mp4' : 'logo.mp4';
 
-            // Добавляем источник
             const source = document.createElement('source');
             source.src = videoFile;
             source.type = 'video/mp4';
             splashVideo.appendChild(source);
             splashVideo.load();
 
-            // Показываем кнопку через 0.5 сек
             setTimeout(() => skipBtn.classList.add('show'), 500);
 
             function hideSplash() {
@@ -959,11 +731,201 @@
             splashVideo.addEventListener('ended', hideSplash);
             skipBtn.addEventListener('click', hideSplash);
             splashVideo.addEventListener('error', () => skipBtn.classList.add('show'));
-            // Клик по заставке тоже скрывает
             splashScreen.addEventListener('click', hideSplash);
         })();
 
-        // ===== ОСНОВНАЯ ЛОГИКА =====
+        // ============================================================
+        // 2. РЕАЛИСТИЧНЫЕ МОЛНИИ НА CANVAS
+        // ============================================================
+        (function() {
+            const canvas = document.getElementById('lightningCanvas');
+            const ctx = canvas.getContext('2d');
+
+            let W, H;
+
+            function resizeCanvas() {
+                W = canvas.width = window.innerWidth;
+                H = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            // ---------- ГЕНЕРАТОР МОЛНИИ (ветвящейся) ----------
+            function generateLightningPoints(startX, startY, endX, endY, displacement, detail) {
+                // Рекурсивное построение ломаной с ветвлением
+                let points = [{x: startX, y: startY}, {x: endX, y: endY}];
+                let maxDepth = 8;
+                let branches = [];
+
+                function recurse(p1, p2, depth, disp) {
+                    if (depth > maxDepth || disp < 1) return;
+                    let midX = (p1.x + p2.x) / 2 + (Math.random() - 0.5) * disp * 1.5;
+                    let midY = (p1.y + p2.y) / 2 + (Math.random() - 0.5) * disp * 1.5;
+                    let mid = {x: midX, y: midY};
+
+                    // Вставка точки в массив между p1 и p2
+                    let idx = points.indexOf(p1) + 1;
+                    points.splice(idx, 0, mid);
+
+                    // Ветвление: с вероятностью 30% создать боковую ветвь
+                    if (Math.random() < 0.3 && depth < 6) {
+                        let branchAngle = (Math.random() - 0.5) * 1.2;
+                        let branchLen = Math.hypot(p2.x - p1.x, p2.y - p1.y) * (0.4 + Math.random() * 0.3);
+                        let angle = Math.atan2(p2.y - p1.y, p2.x - p1.x) + branchAngle;
+                        let bx = mid.x + Math.cos(angle) * branchLen;
+                        let by = mid.y + Math.sin(angle) * branchLen;
+                        // Ограничиваем, чтобы не вылезать за экран
+                        bx = Math.max(0, Math.min(W, bx));
+                        by = Math.max(0, Math.min(H, by));
+                        // Создаём ветвь как отдельную цепочку точек
+                        let branchPoints = generateBranch(mid.x, mid.y, bx, by, depth + 1, disp * 0.6);
+                        branches.push(branchPoints);
+                    }
+
+                    // Рекурсия для левой и правой половин
+                    recurse(p1, mid, depth + 1, disp * 0.7);
+                    recurse(mid, p2, depth + 1, disp * 0.7);
+                }
+
+                function generateBranch(startX, startY, endX, endY, depth, disp) {
+                    let pts = [{x: startX, y: startY}, {x: endX, y: endY}];
+                    function rec(p1, p2, d) {
+                        if (d > 6 || disp < 1) return;
+                        let midX = (p1.x + p2.x) / 2 + (Math.random() - 0.5) * disp * 1.2;
+                        let midY = (p1.y + p2.y) / 2 + (Math.random() - 0.5) * disp * 1.2;
+                        let mid = {x: midX, y: midY};
+                        let idx = pts.indexOf(p1) + 1;
+                        pts.splice(idx, 0, mid);
+                        rec(p1, mid, d + 1);
+                        rec(mid, p2, d + 1);
+                    }
+                    rec(pts[0], pts[1], depth);
+                    return pts;
+                }
+
+                // Запускаем рекурсию
+                recurse(points[0], points[1], 0, displacement);
+
+                // Объединяем основную цепочку и ветви
+                let allPoints = points.slice();
+                for (let b of branches) {
+                    allPoints = allPoints.concat(b);
+                }
+                return allPoints;
+            }
+
+            // ---------- ОТРИСОВКА МОЛНИИ ----------
+            function drawLightning(ctx, points, color, lineWidth, blur) {
+                if (points.length < 2) return;
+                ctx.save();
+                ctx.shadowColor = color;
+                ctx.shadowBlur = blur || 15;
+                ctx.beginPath();
+                ctx.moveTo(points[0].x, points[0].y);
+                for (let i = 1; i < points.length; i++) {
+                    ctx.lineTo(points[i].x, points[i].y);
+                }
+                ctx.strokeStyle = color;
+                ctx.lineWidth = lineWidth || 3;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // ---------- СОЗДАНИЕ НЕСКОЛЬКИХ МОЛНИЙ ----------
+            let lightningData = [];
+
+            function createLightnings() {
+                lightningData = [];
+                const count = 6; // Количество молний
+                for (let i = 0; i < count; i++) {
+                    // Случайные координаты начала и конца
+                    let x1 = Math.random() * W * 0.8 + W * 0.1;
+                    let y1 = Math.random() * H * 0.3;
+                    let x2 = x1 + (Math.random() - 0.5) * W * 0.6;
+                    let y2 = H * 0.6 + Math.random() * H * 0.3;
+                    // Генерируем точки
+                    let disp = Math.min(W, H) * (0.15 + Math.random() * 0.25);
+                    let points = generateLightningPoints(x1, y1, x2, y2, disp, 0);
+                    // Выбираем цвет (оттенки оранжевого)
+                    let hue = 20 + Math.random() * 25; // 20-45
+                    let sat = 90 + Math.random() * 10;
+                    let lig = 50 + Math.random() * 20;
+                    let color = `hsl(${hue}, ${sat}%, ${lig}%)`;
+                    let lineWidth = 2 + Math.random() * 4;
+                    let blur = 10 + Math.random() * 25;
+                    // Параметры анимации (мигание)
+                    let phase = Math.random() * Math.PI * 2;
+                    let speed = 0.5 + Math.random() * 1.5;
+                    let opacityBase = 0.6 + Math.random() * 0.4;
+                    lightningData.push({
+                        points: points,
+                        color: color,
+                        lineWidth: lineWidth,
+                        blur: blur,
+                        phase: phase,
+                        speed: speed,
+                        opacityBase: opacityBase,
+                        // Дополнительная случайная задержка
+                        delay: Math.random() * 5
+                    });
+                }
+            }
+
+            // ---------- АНИМАЦИЯ ----------
+            let time = 0;
+
+            function animateLightnings() {
+                ctx.clearRect(0, 0, W, H);
+                let now = performance.now() / 1000;
+                for (let bolt of lightningData) {
+                    // Вычисляем множитель прозрачности (мигание)
+                    let val = Math.sin(now * bolt.speed + bolt.phase + bolt.delay);
+                    let opacity = bolt.opacityBase * (0.5 + 0.5 * val);
+                    opacity = Math.max(0.1, opacity);
+                    // Рисуем с этой прозрачностью
+                    ctx.globalAlpha = opacity;
+                    drawLightning(ctx, bolt.points, bolt.color, bolt.lineWidth, bolt.blur);
+                }
+                ctx.globalAlpha = 1;
+
+                // Добавим случайные искры (мелкие точки) поверх
+                ctx.shadowBlur = 0;
+                let sparkCount = 20;
+                for (let i = 0; i < sparkCount; i++) {
+                    let x = Math.random() * W;
+                    let y = Math.random() * H;
+                    let size = 1 + Math.random() * 3;
+                    let brightness = 0.3 + Math.random() * 0.7;
+                    ctx.fillStyle = `rgba(255, 150, 50, ${brightness * 0.5})`;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                requestAnimationFrame(animateLightnings);
+            }
+
+            // ---------- ЗАПУСК ----------
+            createLightnings();
+            animateLightnings();
+
+            // При изменении размера окна пересоздаём молнии (чтобы они вписывались)
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    resizeCanvas();
+                    createLightnings();
+                }, 500);
+            });
+
+        })();
+
+        // ============================================================
+        // 3. ОСНОВНАЯ ЛОГИКА САЙТА (товары, навигация и т.д.)
+        // ============================================================
         let currentCategory = 'uc';
         let searchQuery = '';
         let currentSort = null;
@@ -1003,7 +965,6 @@
         function renderProducts() {
             const container = document.getElementById('productsGrid');
             if (!container) return;
-
             let categoryProducts = [];
             if (currentCategory === 'uc') categoryProducts = [...products.uc];
             else if (currentCategory === 'currency') categoryProducts = [...products.currency];
@@ -1014,7 +975,6 @@
                     p.name.toLowerCase().includes(searchQuery.toLowerCase())
                 );
             }
-
             if (currentSort === 'price-asc') {
                 categoryProducts.sort((a, b) => a.price - b.price);
             } else if (currentSort === 'price-desc') {
