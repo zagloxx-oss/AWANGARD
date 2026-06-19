@@ -203,7 +203,7 @@
         }
         .toast.show { transform: translateX(0); }
 
-        /* ЗАСТАВКА */
+        /* ===== ЗАСТАВКА ===== */
         #splashScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #0a0a0a; display: flex; align-items: center; justify-content: center;
@@ -398,7 +398,7 @@
         })();
 
         // ============================================================
-        // 2. ОПТИМИЗИРОВАННЫЕ МОЛНИИ (максимальная производительность)
+        // 2. НАСТОЯЩАЯ ГРОЗА — ДИНАМИЧЕСКИЕ МОЛНИИ С ВСПЫШКОЙ И ЗАТУХАНИЕМ
         // ============================================================
         (function() {
             const canvas = document.getElementById('lightningCanvas');
@@ -412,13 +412,13 @@
             window.addEventListener('resize', resizeCanvas);
             resizeCanvas();
 
-            // ---------- ФРАКТАЛЬНАЯ ГЕНЕРАЦИЯ (упрощённая) ----------
+            // ---------- ГЕНЕРАЦИЯ ФРАКТАЛЬНОЙ МОЛНИИ ----------
             function generateLightning(startX, startY, endX, endY, maxDiff, roughness) {
                 let points = [{x: startX, y: startY}, {x: endX, y: endY}];
                 let diff = maxDiff;
                 let depth = 0;
-                const MAX_DEPTH = 7;
-                while (diff > 1.5 && depth < MAX_DEPTH) {
+                const MAX_DEPTH = 8;
+                while (diff > 1 && depth < MAX_DEPTH) {
                     let newPoints = [];
                     for (let i = 0; i < points.length - 1; i++) {
                         let p1 = points[i];
@@ -437,20 +437,21 @@
                 return points;
             }
 
-            // ---------- ВЕТВЛЕНИЕ (максимум 2 ветви) ----------
+            // ---------- ГЕНЕРАЦИЯ ВЕТВЕЙ ----------
             function generateBranches(parentPoints, maxDiff, roughness) {
                 let branches = [];
-                let startIdx = Math.floor(parentPoints.length * 0.2);
-                let endIdx = Math.floor(parentPoints.length * 0.7);
+                let startIdx = Math.floor(parentPoints.length * 0.15);
+                let endIdx = Math.floor(parentPoints.length * 0.75);
                 let count = 0;
-                for (let i = startIdx; i < endIdx && count < 2; i += 4) {
+                const MAX_BRANCHES = 3;
+                for (let i = startIdx; i < endIdx && count < MAX_BRANCHES; i += 3) {
                     if (Math.random() < 0.3) {
                         let p = parentPoints[i];
                         let angle = Math.atan2(
-                            parentPoints[Math.min(i+4, parentPoints.length-1)].y - p.y,
-                            parentPoints[Math.min(i+4, parentPoints.length-1)].x - p.x
+                            parentPoints[Math.min(i+3, parentPoints.length-1)].y - p.y,
+                            parentPoints[Math.min(i+3, parentPoints.length-1)].x - p.x
                         ) + (Math.random() - 0.5) * 1.6;
-                        let len = 30 + Math.random() * 100;
+                        let len = 30 + Math.random() * 120;
                         let endX = p.x + Math.cos(angle) * len;
                         let endY = p.y + Math.sin(angle) * len;
                         endX = Math.max(0, Math.min(W, endX));
@@ -463,82 +464,96 @@
                 return branches;
             }
 
-            // ---------- ОТРИСОВКА (минимальный shadowBlur) ----------
-            function drawBolt(ctx, points, color, blur) {
-                if (points.length < 2) return;
+            // ---------- ОТРИСОВКА ОДНОЙ МОЛНИИ (с учетом opacity) ----------
+            function drawBolt(ctx, points, color, blur, opacity, lineWidth) {
+                if (points.length < 2 || opacity <= 0) return;
 
-                // Внешний ореол (толстый)
+                // Внешний ореол (толстый, размытый)
                 ctx.save();
                 ctx.shadowColor = color;
                 ctx.shadowBlur = blur;
-                ctx.globalAlpha = 0.5;
+                ctx.globalAlpha = opacity * 0.6;
                 ctx.beginPath();
                 ctx.moveTo(points[0].x, points[0].y);
                 for (let i = 1; i < points.length; i++) {
                     ctx.lineTo(points[i].x, points[i].y);
                 }
                 ctx.strokeStyle = color;
-                ctx.lineWidth = 5;
+                ctx.lineWidth = lineWidth * 1.5;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
                 ctx.stroke();
                 ctx.restore();
 
-                // Ядро (белое, без shadowBlur)
+                // Основной канал (яркий)
                 ctx.save();
                 ctx.shadowBlur = 0;
-                ctx.globalAlpha = 0.9;
+                ctx.globalAlpha = opacity * 0.9;
+                ctx.beginPath();
+                ctx.moveTo(points[0].x, points[0].y);
+                for (let i = 1; i < points.length; i++) {
+                    ctx.lineTo(points[i].x, points[i].y);
+                }
+                ctx.strokeStyle = '#ff8800';
+                ctx.lineWidth = lineWidth;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.stroke();
+                ctx.restore();
+
+                // Ядро (белое)
+                ctx.save();
+                ctx.shadowBlur = 0;
+                ctx.globalAlpha = opacity * 0.8;
                 ctx.beginPath();
                 ctx.moveTo(points[0].x, points[0].y);
                 for (let i = 1; i < points.length; i++) {
                     ctx.lineTo(points[i].x, points[i].y);
                 }
                 ctx.strokeStyle = '#fff';
-                ctx.lineWidth = 1.2;
+                ctx.lineWidth = lineWidth * 0.3;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
                 ctx.stroke();
                 ctx.restore();
             }
 
-            // ---------- СОЗДАНИЕ МОЛНИЙ (3–5 штук) ----------
-            let lightningBolts = [];
-
-            function createBolts() {
-                lightningBolts = [];
-                const count = 3 + Math.floor(Math.random() * 3); // 3-5
-                for (let i = 0; i < count; i++) {
-                    let x1 = Math.random() * W * 0.7 + W * 0.15;
-                    let y1 = Math.random() * H * 0.2;
-                    let x2 = x1 + (Math.random() - 0.5) * W * 0.6;
-                    let y2 = H * 0.5 + Math.random() * H * 0.3;
-                    let maxDiff = Math.min(W, H) * (0.15 + Math.random() * 0.15);
-                    let roughness = 0.65 + Math.random() * 0.15;
-                    let points = generateLightning(x1, y1, x2, y2, maxDiff, roughness);
-                    let branches = generateBranches(points, maxDiff * 0.6, roughness * 0.9);
-                    let allSegments = [points, ...branches];
-                    let hue = 25 + Math.random() * 20;
-                    let color = `hsl(${hue}, 100%, 55%)`;
-                    let blur = 15 + Math.random() * 20;
-                    let phase = Math.random() * 2 * Math.PI;
-                    let speed = 0.5 + Math.random() * 0.5;
-                    let opacityBase = 0.5 + Math.random() * 0.3;
-                    let delay = Math.random() * 3;
-                    lightningBolts.push({
-                        segments: allSegments,
-                        color: color,
-                        blur: blur,
-                        phase: phase,
-                        speed: speed,
-                        opacityBase: opacityBase,
-                        delay: delay
-                    });
-                }
+            // ---------- СОЗДАНИЕ НОВОЙ МОЛНИИ ----------
+            function createLightningBolt() {
+                let x1 = Math.random() * W * 0.7 + W * 0.15;
+                let y1 = Math.random() * H * 0.2;
+                let x2 = x1 + (Math.random() - 0.5) * W * 0.6;
+                let y2 = H * 0.5 + Math.random() * H * 0.3;
+                let maxDiff = Math.min(W, H) * (0.15 + Math.random() * 0.15);
+                let roughness = 0.65 + Math.random() * 0.15;
+                let points = generateLightning(x1, y1, x2, y2, maxDiff, roughness);
+                let branches = generateBranches(points, maxDiff * 0.6, roughness * 0.9);
+                let allSegments = [points, ...branches];
+                let hue = 25 + Math.random() * 20;
+                let color = `hsl(${hue}, 100%, 55%)`;
+                let blur = 15 + Math.random() * 25;
+                let lineWidth = 2 + Math.random() * 3;
+                let maxLife = 0.8 + Math.random() * 0.6; // длительность жизни (секунды)
+                return {
+                    segments: allSegments,
+                    color: color,
+                    blur: blur,
+                    lineWidth: lineWidth,
+                    opacity: 1.0,        // начинаем с полной яркости
+                    life: maxLife,
+                    maxLife: maxLife,
+                    age: 0
+                };
             }
 
-            // ---------- ИСКРЫ (пул из 20) ----------
+            // ---------- ПУЛ АКТИВНЫХ МОЛНИЙ ----------
+            let bolts = [];
+            let spawnTimer = 0;
+            const SPAWN_INTERVAL = 0.8 + Math.random() * 1.2; // секунды между рождением
+
+            // ---------- ИСКРЫ (пул) ----------
             let sparks = [];
-            const SPARK_COUNT = 20;
+            const SPARK_COUNT = 25;
 
             function initSparks() {
                 sparks = [];
@@ -573,43 +588,70 @@
                 }
             }
 
-            // ---------- АНИМАЦИЯ С ОГРАНИЧЕНИЕМ FPS ----------
+            // ---------- АНИМАЦИОННЫЙ ЦИКЛ (с ограничением FPS) ----------
             let lastTime = 0;
             const TARGET_FPS = 30;
             const FRAME_INTERVAL = 1000 / TARGET_FPS;
 
-            function animateBolts(timestamp) {
+            function animate(timestamp) {
                 const delta = timestamp - lastTime;
                 if (delta < FRAME_INTERVAL) {
-                    requestAnimationFrame(animateBolts);
+                    requestAnimationFrame(animate);
                     return;
                 }
                 lastTime = timestamp - (delta % FRAME_INTERVAL);
+                const dt = delta / 1000; // секунды
 
+                // 1. Обновляем существующие молнии (затухание)
+                for (let i = bolts.length - 1; i >= 0; i--) {
+                    let bolt = bolts[i];
+                    bolt.age += dt;
+                    let progress = bolt.age / bolt.maxLife;
+                    if (progress >= 1) {
+                        bolts.splice(i, 1);
+                        continue;
+                    }
+                    // Плавное затухание: сначала держим яркость, потом резко падает
+                    let opacity = 1.0;
+                    if (progress > 0.3) {
+                        opacity = 1.0 - (progress - 0.3) / 0.7;
+                    }
+                    bolt.opacity = Math.max(0, opacity);
+                }
+
+                // 2. Спаун новых молний
+                spawnTimer += dt;
+                if (spawnTimer >= SPAWN_INTERVAL && bolts.length < 6) {
+                    bolts.push(createLightningBolt());
+                    spawnTimer = 0;
+                }
+
+                // 3. Отрисовка
                 ctx.clearRect(0, 0, W, H);
-                let now = performance.now() / 1000;
 
-                for (let bolt of lightningBolts) {
-                    let val = Math.sin(now * bolt.speed + bolt.phase + bolt.delay);
-                    let opacity = bolt.opacityBase * (0.5 + 0.5 * val);
-                    opacity = Math.max(0.1, opacity);
+                // Рисуем все активные молнии
+                for (let bolt of bolts) {
                     for (let seg of bolt.segments) {
-                        ctx.save();
-                        ctx.globalAlpha = opacity;
-                        drawBolt(ctx, seg, bolt.color, bolt.blur);
-                        ctx.restore();
+                        drawBolt(ctx, seg, bolt.color, bolt.blur, bolt.opacity, bolt.lineWidth);
                     }
                 }
 
+                // Искры
                 updateSparks();
                 drawSparks(ctx);
-                requestAnimationFrame(animateBolts);
+
+                requestAnimationFrame(animate);
             }
 
             // ---------- ЗАПУСК ----------
-            createBolts();
+            // Сразу создаём несколько молний для эффекта
+            for (let i = 0; i < 3; i++) {
+                let bolt = createLightningBolt();
+                bolt.age = Math.random() * bolt.maxLife * 0.5; // случайная фаза
+                bolts.push(bolt);
+            }
             initSparks();
-            requestAnimationFrame(animateBolts);
+            requestAnimationFrame(animate);
 
             // ---------- ПЕРЕСОЗДАНИЕ ПРИ РЕСАЙЗЕ ----------
             let resizeTimeout;
@@ -617,15 +659,22 @@
                 clearTimeout(resizeTimeout);
                 resizeTimeout = setTimeout(() => {
                     resizeCanvas();
-                    createBolts();
+                    // Пересоздаём искры
                     initSparks();
+                    // Молнии остаются, но их координаты могут уйти за экран – лучше пересоздать
+                    bolts = [];
+                    for (let i = 0; i < 3; i++) {
+                        let bolt = createLightningBolt();
+                        bolt.age = Math.random() * bolt.maxLife * 0.5;
+                        bolts.push(bolt);
+                    }
                 }, 500);
             });
         })();
 
 
         // ============================================================
-        // 3. ОСНОВНАЯ ЛОГИКА САЙТА
+        // 3. ОСНОВНАЯ ЛОГИКА САЙТА (товары, навигация)
         // ============================================================
         let currentCategory = 'uc';
         let searchQuery = '';
