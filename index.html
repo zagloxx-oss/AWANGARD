@@ -6,7 +6,7 @@
     <title>AWANGARD TEAM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* ===== ВСЕ СТИЛИ (без изменений) ===== */
+        /* ===== ОСНОВНЫЕ СТИЛИ (без изменений) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', 'Orbitron', monospace; background: #0a0a0a; color: #fff; min-height: 100vh; overflow-x: hidden; }
         .cyber-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: radial-gradient(ellipse at center, #0a0a2a 0%, #050510 100%); }
@@ -119,7 +119,8 @@
         #splashVideo {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* ВИДЕО ВИДНО ЦЕЛИКОМ НА ЛЮБОМ ЭКРАНЕ */
+            background: #0a0a0a;
         }
         .skip-btn {
             position: fixed;
@@ -136,7 +137,7 @@
             font-weight: bold;
             font-size: 14px;
             transition: 0.3s;
-            display: none; /* скрыта по умолчанию, показывается через JS */
+            display: none;
         }
         .skip-btn:hover {
             background: linear-gradient(45deg, #00ffcc, #ff00cc);
@@ -146,23 +147,28 @@
         .skip-btn.show {
             display: block;
         }
+        @media (max-width: 600px) {
+            .skip-btn {
+                padding: 14px 28px;
+                font-size: 16px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <!-- ===== ЗАСТАВКА С ВИДЕО ===== -->
+    <!-- ===== ЗАСТАВКА ===== -->
     <div id="splashScreen">
         <video id="splashVideo" muted autoplay playsinline>
-            <!-- Укажите путь к вашему видео здесь -->
             <source src="logo.mp4" type="video/mp4">
-            <!-- Если видео не загрузится, можно добавить запасной контент -->
+            <!-- Если видео не загрузится, показываем заглушку -->
         </video>
         <button class="skip-btn" id="skipBtn">Пропустить →</button>
     </div>
 
-    <!-- ===== ОСТАЛЬНОЙ КОНТЕНТ (сайт) ===== -->
-
-    <!-- Фоновые элементы -->
+    <!-- ===== ОСТАЛЬНОЙ КОНТЕНТ ===== -->
     <div class="cyber-bg">
         <div class="neon-grid"></div>
         <div class="scan-line"></div>
@@ -193,14 +199,12 @@
     </nav>
 
     <div class="container">
-        <!-- Главная страница -->
+        <!-- Главная -->
         <div id="mainPage" class="page active">
             <div class="hero">
                 <h1>AWANGARD TEAM</h1>
                 <p>PUBG Mobile | UC | Метровалюта | Metro Royal</p>
-                <div class="hero-badge">
-                    <i class="fas fa-bolt"></i> Добро пожаловать в киберпространство!
-                </div>
+                <div class="hero-badge"><i class="fas fa-bolt"></i> Добро пожаловать в киберпространство!</div>
             </div>
 
             <div style="text-align: center;">
@@ -233,7 +237,6 @@
 
             <div id="productsGrid" class="products-grid"></div>
 
-            <!-- Блок подписки -->
             <div class="telegram-subscribe">
                 <i class="fab fa-telegram" style="font-size: 40px;"></i>
                 <h3>Подпишись на новости!</h3>
@@ -241,7 +244,6 @@
                 <button id="subscribeTelegramBtn">Подписаться в Telegram</button>
             </div>
 
-            <!-- Блоки преимуществ (перенесены сюда) -->
             <div class="features-grid">
                 <div class="feature-card">
                     <i class="fas fa-bolt"></i>
@@ -266,12 +268,10 @@
             </div>
         </div>
 
-        <!-- Страница оплаты -->
+        <!-- Оплата -->
         <div id="paymentPage" class="page">
             <div class="payment-info">
-                <div class="payment-icon">
-                    <i class="fas fa-credit-card"></i>
-                </div>
+                <i class="fas fa-credit-card" style="font-size: 50px; color: #00ffcc;"></i>
                 <h2>Оплата через DonationAlerts</h2>
                 <div style="background: rgba(0,0,0,0.5); border-radius: 15px; padding: 20px; margin: 20px 0; text-align: left;">
                     <h3><i class="fas fa-info-circle"></i> ВАЖНАЯ ИНФОРМАЦИЯ</h3>
@@ -284,8 +284,7 @@
                 </div>
                 <div style="background: rgba(0,136,204,0.2); border: 1px solid #0088cc; border-radius: 15px; padding: 20px; margin: 20px 0;">
                     <i class="fab fa-telegram" style="font-size: 40px;"></i>
-                    <p>По всем вопросам:</p>
-                    <a href="https://t.me/l_AWANGARD_l" target="_blank" style="color: #00ffcc; text-decoration: none; font-size: 18px;">@l_AWANGARD_l</a>
+                    <p>По всем вопросам: <a href="https://t.me/l_AWANGARD_l" target="_blank" style="color: #00ffcc; text-decoration: none; font-size: 18px;">@l_AWANGARD_l</a></p>
                 </div>
                 <a href="https://www.donationalerts.com/r/limitblitzoffical" target="_blank" style="display: inline-block; background: linear-gradient(45deg, #ff00cc, #00ffcc); padding: 15px 40px; border-radius: 40px; color: #0a0a0a; text-decoration: none; font-weight: bold;">
                     <i class="fas fa-external-link-alt"></i> Перейти к оплате
@@ -293,10 +292,10 @@
             </div>
         </div>
 
-        <!-- Страница "Как купить" -->
+        <!-- Как купить -->
         <div id="howtobuyPage" class="page">
             <div class="howtobuy-card">
-                <i class="fas fa-question-circle" style="font-size: 50px; color: #00ffcc; margin-bottom: 20px;"></i>
+                <i class="fas fa-question-circle" style="font-size: 50px; color: #00ffcc;"></i>
                 <h2>Как купить товар?</h2>
                 <div class="howtobuy-steps">
                     <ul style="list-style: none;">
@@ -314,10 +313,10 @@
             </div>
         </div>
 
-        <!-- Страница отзывов -->
+        <!-- Отзывы -->
         <div id="reviewsPage" class="page">
             <div class="reviews-card">
-                <i class="fas fa-star" style="font-size: 50px; color: #00ffcc; margin-bottom: 20px;"></i>
+                <i class="fas fa-star" style="font-size: 50px; color: #00ffcc;"></i>
                 <h2>Отзывы</h2>
                 <p>Присоединяйтесь к нашему Telegram каналу, чтобы оставить отзыв или посмотреть отзывы других клиентов!</p>
                 <button id="openReviewsBtn" style="margin-top: 20px; background: linear-gradient(45deg, #0088cc, #006699); border: none; padding: 12px 24px; border-radius: 30px; color: white; cursor: pointer;">
@@ -326,10 +325,10 @@
             </div>
         </div>
 
-        <!-- Страница о нас -->
+        <!-- О нас -->
         <div id="aboutPage" class="page">
             <div class="about-card">
-                <i class="fas fa-store" style="font-size: 50px; color: #00ffcc; margin-bottom: 20px;"></i>
+                <i class="fas fa-store" style="font-size: 50px; color: #00ffcc;"></i>
                 <h2>О нас</h2>
                 <p style="margin: 20px 0;">AWANGARD TEAM — надёжный магазин игровых товаров для PUBG Mobile. Лучшие цены, моментальная доставка, 24/7 поддержка.</p>
                 <p>По всем вопросам: <strong style="color: #00ffcc;">@l_AWANGARD_l</strong></p>
@@ -348,50 +347,38 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        // ===== ЗАСТАВКА: УПРАВЛЕНИЕ =====
+        // ===== ЗАСТАВКА =====
         const splashScreen = document.getElementById('splashScreen');
         const splashVideo = document.getElementById('splashVideo');
         const skipBtn = document.getElementById('skipBtn');
 
         // Показываем кнопку "Пропустить" через 0.5 секунды
-        setTimeout(() => {
-            skipBtn.classList.add('show');
-        }, 500);
+        setTimeout(() => skipBtn.classList.add('show'), 500);
 
         // Функция скрытия заставки
         function hideSplash() {
             splashScreen.classList.add('hidden');
-            // Останавливаем видео, чтобы не грузило дальше
             if (splashVideo) {
                 splashVideo.pause();
                 splashVideo.currentTime = 0;
             }
-            // Убираем кнопку
             skipBtn.classList.remove('show');
         }
 
-        // Событие окончания видео (если видео короче 5 секунд, оно закончится раньше)
+        // Когда видео закончится — скрываем заставку
         splashVideo.addEventListener('ended', hideSplash);
 
-        // Кнопка "Пропустить"
+        // Кнопка "Пропустить" — скрывает заставку
         skipBtn.addEventListener('click', hideSplash);
 
-        // Запасной таймер на 5 секунд (на случай, если видео не загрузится или зависнет)
-        setTimeout(() => {
-            // Если заставка всё ещё видна (не скрыта) — скрываем
-            if (!splashScreen.classList.contains('hidden')) {
-                hideSplash();
-            }
-        }, 5000); // 5000 мс = 5 секунд
+        // Дополнительно: если видео не загружается или браузер блокирует автозапуск,
+        // пользователь может нажать "Пропустить". Также можно добавить обработчик ошибки.
+        splashVideo.addEventListener('error', () => {
+            // Если видео не загрузилось, показываем кнопку и даём возможность пропустить
+            skipBtn.classList.add('show');
+        });
 
-        // Также если пользователь кликнет по заставке — скрываем (доп. удобство)
-        splashScreen.addEventListener('click', hideSplash);
-
-        // ===== ОСТАЛЬНОЙ СКРИПТ САЙТА =====
-        // ... (весь ваш существующий JS без изменений)
-        // Я добавлю его ниже сокращённо, но вы можете вставить свой полный код
-
-        // ===== ДАННЫЕ И ФУНКЦИИ (те же, что были) =====
+        // ===== ОСТАЛЬНОЙ СКРИПТ (без изменений) =====
         let currentCategory = 'uc';
         let searchQuery = '';
         let currentSort = null;
@@ -569,7 +556,8 @@
             initNavigation();
             renderProducts();
             updateSalesCount();
-            // Тост показываем только после заставки, но так как заставка скроется через 5 сек, можно показать сразу
+            // Тост показываем только после того, как заставка скроется, но т.к. мы не знаем когда,
+            // можно показать его сразу, но он будет перекрыт заставкой – не страшно.
             setTimeout(() => {
                 showToast('Добро пожаловать в AWANGARD TEAM!', 'success');
             }, 1000);
