@@ -6,7 +6,7 @@
     <title>AWANGARD TEAM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* ===== ОСНОВНЫЕ СТИЛИ ===== */
+        /* ===== ОСНОВНЫЕ СТИЛИ (без изменений) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', 'Orbitron', monospace;
@@ -222,7 +222,127 @@
         }
         .skip-btn:hover { background: #ff6600; color: #1a1a1a; box-shadow: 0 0 20px rgba(255,102,0,0.6); }
         .skip-btn.show { display: block; }
-        @media (max-width: 600px) { .skip-btn { padding: 14px 28px; font-size: 16px; bottom: 20px; right: 20px; } }
+
+        /* ===== ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ ===== */
+        #licenseOverlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #licenseOverlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .license-box {
+            background: linear-gradient(135deg, #1a1a2a, #0f0f1a);
+            border: 1px solid #ff6600;
+            border-radius: 24px;
+            padding: 30px 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(255,102,0,0.3);
+            animation: fadeInUp 0.5s ease;
+        }
+        .license-box h2 {
+            font-family: 'Orbitron', monospace;
+            color: #ff8800;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        .license-box p {
+            color: #ccc;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+        .license-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .license-btn {
+            padding: 10px 30px;
+            border-radius: 40px;
+            border: none;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            min-width: 120px;
+        }
+        .license-btn.accept {
+            background: #ff6600;
+            color: #1a1a1a;
+        }
+        .license-btn.accept:hover {
+            background: #ff8800;
+            box-shadow: 0 0 25px rgba(255,102,0,0.6);
+            transform: scale(1.05);
+        }
+        .license-btn.decline {
+            background: rgba(255,255,255,0.1);
+            color: #aaa;
+            border: 1px solid #555;
+        }
+        .license-btn.decline:hover {
+            background: rgba(255,0,0,0.2);
+            border-color: #ff3333;
+            color: #ff6666;
+        }
+
+        /* ===== БЛОКИРОВКА ПРИ ОТКАЗЕ ===== */
+        #blockedOverlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10002;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #blockedOverlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .blocked-box {
+            text-align: center;
+            color: #ff3333;
+            font-size: 24px;
+            font-family: 'Orbitron', monospace;
+            padding: 30px;
+            border: 1px solid #ff3333;
+            border-radius: 20px;
+            background: rgba(20,0,0,0.5);
+            box-shadow: 0 0 40px rgba(255,0,0,0.2);
+        }
+        .blocked-box i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            .skip-btn { padding: 14px 28px; font-size: 16px; bottom: 20px; right: 20px; }
+            .license-box { padding: 20px; }
+            .license-buttons { flex-direction: column; align-items: center; }
+            .license-btn { width: 100%; }
+        }
         @media (max-width: 768px) {
             .nav-container { flex-direction: column; }
             .hero h1 { font-size: 32px; }
@@ -240,6 +360,27 @@
     <div id="splashScreen">
         <video id="splashVideo" muted autoplay playsinline></video>
         <button class="skip-btn" id="skipBtn">Пропустить →</button>
+    </div>
+
+    <!-- ===== ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ ===== -->
+    <div id="licenseOverlay">
+        <div class="license-box">
+            <h2>⚡ Лицензионное соглашение</h2>
+            <p>Продолжая использовать данный сайт, вы принимаете условия использования. Никаких правил пока нет, просто тест.</p>
+            <div class="license-buttons">
+                <button class="license-btn accept" id="acceptLicense">Принять</button>
+                <button class="license-btn decline" id="declineLicense">Отказаться</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== БЛОКИРОВКА ПРИ ОТКАЗЕ ===== -->
+    <div id="blockedOverlay">
+        <div class="blocked-box">
+            <i class="fas fa-ban"></i>
+            Доступ запрещён<br>
+            <span style="font-size: 16px; color: #aaa; font-family: 'Segoe UI', sans-serif;">Вы не приняли лицензионное соглашение</span>
+        </div>
     </div>
 
     <div class="storm-bg"></div>
@@ -260,7 +401,7 @@
     </nav>
 
     <!-- ===== ОСНОВНОЙ КОНТЕНТ ===== -->
-    <div class="container">
+    <div class="container" id="mainContent">
         <div id="mainPage" class="page active">
             <div class="hero">
                 <h1>AWANGARD TEAM</h1>
@@ -372,6 +513,91 @@
 
     <script>
         // ============================================================
+        // 0. ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ
+        // ============================================================
+        (function() {
+            const licenseOverlay = document.getElementById('licenseOverlay');
+            const blockedOverlay = document.getElementById('blockedOverlay');
+            const mainContent = document.getElementById('mainContent');
+            const nav = document.querySelector('.neon-nav');
+            const footer = document.querySelector('.footer');
+
+            // Проверяем, принимал ли пользователь уже соглашение
+            const licenseAccepted = localStorage.getItem('awangard_license_accepted');
+
+            if (licenseAccepted === 'true') {
+                // Соглашение уже принято — сайт работает
+                return;
+            }
+
+            // Показываем окно соглашения (после того, как заставка скроется, но мы покажем его сразу, потому что заставка может быть ещё активна)
+            // Мы покажем его, когда заставка скроется, либо сразу, если заставка уже скрыта.
+            // Проверим, скрыта ли заставка.
+            const splashScreen = document.getElementById('splashScreen');
+            if (splashScreen.classList.contains('hidden')) {
+                licenseOverlay.classList.add('active');
+            } else {
+                // Ждём скрытия заставки через MutationObserver или просто по таймеру
+                const observer = new MutationObserver(() => {
+                    if (splashScreen.classList.contains('hidden')) {
+                        licenseOverlay.classList.add('active');
+                        observer.disconnect();
+                    }
+                });
+                observer.observe(splashScreen, { attributes: true, attributeFilter: ['class'] });
+                // Запасной таймер на случай, если заставка не скроется (например, ошибка видео)
+                setTimeout(() => {
+                    if (!splashScreen.classList.contains('hidden')) {
+                        // Принудительно скрываем заставку и показываем лицензию
+                        splashScreen.classList.add('hidden');
+                        licenseOverlay.classList.add('active');
+                    }
+                }, 6000);
+            }
+
+            // Обработчики кнопок
+            document.getElementById('acceptLicense').addEventListener('click', function() {
+                localStorage.setItem('awangard_license_accepted', 'true');
+                licenseOverlay.classList.remove('active');
+                // Разблокируем сайт (он уже виден, но мог быть заблокирован)
+                blockedOverlay.classList.remove('active');
+                // Показываем контент (он и так виден, но на всякий случай)
+                mainContent.style.display = 'block';
+                nav.style.display = 'flex';
+                footer.style.display = 'block';
+            });
+
+            document.getElementById('declineLicense').addEventListener('click', function() {
+                // Отказ — блокируем сайт
+                licenseOverlay.classList.remove('active');
+                blockedOverlay.classList.add('active');
+                // Скрываем основной контент (чтобы ничего не мелькало)
+                mainContent.style.display = 'none';
+                nav.style.display = 'none';
+                footer.style.display = 'none';
+                // Сохранять отказ не будем, чтобы при обновлении страницы снова показать соглашение
+                // Но можно сохранить флаг, чтобы сразу показывать блокировку
+                localStorage.setItem('awangard_license_declined', 'true');
+            });
+
+            // Если при загрузке есть флаг отказа, сразу показываем блокировку
+            if (localStorage.getItem('awangard_license_declined') === 'true') {
+                // Если пользователь уже отказался ранее, то при повторном заходе показываем блокировку
+                licenseOverlay.classList.remove('active');
+                blockedOverlay.classList.add('active');
+                mainContent.style.display = 'none';
+                nav.style.display = 'none';
+                footer.style.display = 'none';
+                // Но всё равно показываем лицензию, чтобы можно было принять? Нет, по логике отказ = блокировка, пока не примет.
+                // Чтобы дать второй шанс, можем показать кнопку "Принять" внутри блокировки? Но просили просто тест, поэтому оставим как есть.
+                // Чтобы пользователь мог принять, нужно убрать блокировку и показать лицензию снова, поэтому при отказе мы не сохраняем отказ навсегда, а только на сессию.
+                // Удалим флаг отказа, чтобы при обновлении страницы снова показать соглашение.
+                localStorage.removeItem('awangard_license_declined');
+            }
+        })();
+
+
+        // ============================================================
         // 1. ЗАСТАВКА
         // ============================================================
         (function() {
@@ -397,8 +623,9 @@
             splashScreen.addEventListener('click', hideSplash);
         })();
 
+
         // ============================================================
-        // 2. НАСТОЯЩАЯ ГРОЗА — ДИНАМИЧЕСКИЕ МОЛНИИ С ВСПЫШКОЙ И ЗАТУХАНИЕМ
+        // 2. МОЛНИИ — 60 FPS, УВЕЛИЧЕННОЕ ВРЕМЯ ЖИЗНИ, УМЕНЬШЕННЫЙ ИНТЕРВАЛ
         // ============================================================
         (function() {
             const canvas = document.getElementById('lightningCanvas');
@@ -464,11 +691,10 @@
                 return branches;
             }
 
-            // ---------- ОТРИСОВКА ОДНОЙ МОЛНИИ (с учетом opacity) ----------
+            // ---------- ОТРИСОВКА ОДНОЙ МОЛНИИ ----------
             function drawBolt(ctx, points, color, blur, opacity, lineWidth) {
                 if (points.length < 2 || opacity <= 0) return;
 
-                // Внешний ореол (толстый, размытый)
                 ctx.save();
                 ctx.shadowColor = color;
                 ctx.shadowBlur = blur;
@@ -485,7 +711,6 @@
                 ctx.stroke();
                 ctx.restore();
 
-                // Основной канал (яркий)
                 ctx.save();
                 ctx.shadowBlur = 0;
                 ctx.globalAlpha = opacity * 0.9;
@@ -501,7 +726,6 @@
                 ctx.stroke();
                 ctx.restore();
 
-                // Ядро (белое)
                 ctx.save();
                 ctx.shadowBlur = 0;
                 ctx.globalAlpha = opacity * 0.8;
@@ -533,25 +757,27 @@
                 let color = `hsl(${hue}, 100%, 55%)`;
                 let blur = 15 + Math.random() * 25;
                 let lineWidth = 2 + Math.random() * 3;
-                let maxLife = 0.8 + Math.random() * 0.6; // длительность жизни (секунды)
+                // УВЕЛИЧИВАЕМ время жизни: 1.0 – 1.6 секунды
+                let maxLife = 1.0 + Math.random() * 0.6;
                 return {
                     segments: allSegments,
                     color: color,
                     blur: blur,
                     lineWidth: lineWidth,
-                    opacity: 1.0,        // начинаем с полной яркости
+                    opacity: 1.0,
                     life: maxLife,
                     maxLife: maxLife,
                     age: 0
                 };
             }
 
-            // ---------- ПУЛ АКТИВНЫХ МОЛНИЙ ----------
+            // ---------- ПУЛ ----------
             let bolts = [];
             let spawnTimer = 0;
-            const SPAWN_INTERVAL = 0.8 + Math.random() * 1.2; // секунды между рождением
+            // УМЕНЬШАЕМ интервал спавна: 0.4 – 0.8 секунды
+            let spawnInterval = 0.4 + Math.random() * 0.4;
 
-            // ---------- ИСКРЫ (пул) ----------
+            // ---------- ИСКРЫ ----------
             let sparks = [];
             const SPARK_COUNT = 25;
 
@@ -588,21 +814,14 @@
                 }
             }
 
-            // ---------- АНИМАЦИОННЫЙ ЦИКЛ (с ограничением FPS) ----------
+            // ---------- АНИМАЦИЯ (60 FPS) ----------
             let lastTime = 0;
-            const TARGET_FPS = 30;
-            const FRAME_INTERVAL = 1000 / TARGET_FPS;
 
             function animate(timestamp) {
-                const delta = timestamp - lastTime;
-                if (delta < FRAME_INTERVAL) {
-                    requestAnimationFrame(animate);
-                    return;
-                }
-                lastTime = timestamp - (delta % FRAME_INTERVAL);
-                const dt = delta / 1000; // секунды
+                const dt = lastTime ? (timestamp - lastTime) / 1000 : 0.016;
+                lastTime = timestamp;
 
-                // 1. Обновляем существующие молнии (затухание)
+                // Обновление молний
                 for (let i = bolts.length - 1; i >= 0; i--) {
                     let bolt = bolts[i];
                     bolt.age += dt;
@@ -611,32 +830,28 @@
                         bolts.splice(i, 1);
                         continue;
                     }
-                    // Плавное затухание: сначала держим яркость, потом резко падает
                     let opacity = 1.0;
-                    if (progress > 0.3) {
-                        opacity = 1.0 - (progress - 0.3) / 0.7;
+                    if (progress > 0.25) {
+                        opacity = 1.0 - (progress - 0.25) / 0.75;
                     }
                     bolt.opacity = Math.max(0, opacity);
                 }
 
-                // 2. Спаун новых молний
+                // Спавн
                 spawnTimer += dt;
-                if (spawnTimer >= SPAWN_INTERVAL && bolts.length < 6) {
+                if (spawnTimer >= spawnInterval && bolts.length < 7) {
                     bolts.push(createLightningBolt());
                     spawnTimer = 0;
+                    spawnInterval = 0.4 + Math.random() * 0.4;
                 }
 
-                // 3. Отрисовка
+                // Отрисовка
                 ctx.clearRect(0, 0, W, H);
-
-                // Рисуем все активные молнии
                 for (let bolt of bolts) {
                     for (let seg of bolt.segments) {
                         drawBolt(ctx, seg, bolt.color, bolt.blur, bolt.opacity, bolt.lineWidth);
                     }
                 }
-
-                // Искры
                 updateSparks();
                 drawSparks(ctx);
 
@@ -644,26 +859,22 @@
             }
 
             // ---------- ЗАПУСК ----------
-            // Сразу создаём несколько молний для эффекта
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < 4; i++) {
                 let bolt = createLightningBolt();
-                bolt.age = Math.random() * bolt.maxLife * 0.5; // случайная фаза
+                bolt.age = Math.random() * bolt.maxLife * 0.5;
                 bolts.push(bolt);
             }
             initSparks();
             requestAnimationFrame(animate);
 
-            // ---------- ПЕРЕСОЗДАНИЕ ПРИ РЕСАЙЗЕ ----------
             let resizeTimeout;
             window.addEventListener('resize', () => {
                 clearTimeout(resizeTimeout);
                 resizeTimeout = setTimeout(() => {
                     resizeCanvas();
-                    // Пересоздаём искры
                     initSparks();
-                    // Молнии остаются, но их координаты могут уйти за экран – лучше пересоздать
                     bolts = [];
-                    for (let i = 0; i < 3; i++) {
+                    for (let i = 0; i < 4; i++) {
                         let bolt = createLightningBolt();
                         bolt.age = Math.random() * bolt.maxLife * 0.5;
                         bolts.push(bolt);
