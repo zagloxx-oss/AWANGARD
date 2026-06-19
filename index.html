@@ -162,8 +162,7 @@
     <!-- ===== ЗАСТАВКА ===== -->
     <div id="splashScreen">
         <video id="splashVideo" muted autoplay playsinline>
-            <source src="logo.mp4" type="video/mp4">
-            <!-- Если видео не загрузится, показываем заглушку -->
+            <!-- Источник будет установлен через JavaScript в зависимости от устройства -->
         </video>
         <button class="skip-btn" id="skipBtn">Пропустить →</button>
     </div>
@@ -347,10 +346,23 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        // ===== ЗАСТАВКА =====
+        // ===== ЗАСТАВКА С ВЫБОРОМ ВИДЕО ПО УСТРОЙСТВУ =====
         const splashScreen = document.getElementById('splashScreen');
         const splashVideo = document.getElementById('splashVideo');
         const skipBtn = document.getElementById('skipBtn');
+
+        // Определяем устройство по ширине экрана (мобильные < 768px)
+        const isMobile = window.innerWidth < 768;
+        // Выбираем видеофайл
+        const videoFile = isMobile ? 'logo2.mp4' : 'logo.mp4';
+
+        // Устанавливаем источник
+        const source = document.createElement('source');
+        source.src = videoFile;
+        source.type = 'video/mp4';
+        splashVideo.appendChild(source);
+        // Перезагружаем видео, чтобы применился новый источник
+        splashVideo.load();
 
         // Показываем кнопку "Пропустить" через 0.5 секунды
         setTimeout(() => skipBtn.classList.add('show'), 500);
@@ -368,13 +380,11 @@
         // Когда видео закончится — скрываем заставку
         splashVideo.addEventListener('ended', hideSplash);
 
-        // Кнопка "Пропустить" — скрывает заставку
+        // Кнопка "Пропустить"
         skipBtn.addEventListener('click', hideSplash);
 
-        // Дополнительно: если видео не загружается или браузер блокирует автозапуск,
-        // пользователь может нажать "Пропустить". Также можно добавить обработчик ошибки.
+        // Если видео не загрузилось или ошибка — показываем кнопку и даём пропустить
         splashVideo.addEventListener('error', () => {
-            // Если видео не загрузилось, показываем кнопку и даём возможность пропустить
             skipBtn.classList.add('show');
         });
 
@@ -556,8 +566,6 @@
             initNavigation();
             renderProducts();
             updateSalesCount();
-            // Тост показываем только после того, как заставка скроется, но т.к. мы не знаем когда,
-            // можно показать его сразу, но он будет перекрыт заставкой – не страшно.
             setTimeout(() => {
                 showToast('Добро пожаловать в AWANGARD TEAM!', 'success');
             }, 1000);
