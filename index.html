@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>AWANGARD | NEON CYBER STORE</title>
+    <title>AWANGARD TEAM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         /* === ВСЕ СТИЛИ ОСТАЮТСЯ БЕЗ ИЗМЕНЕНИЙ === */
@@ -114,7 +114,7 @@
         <div class="nav-container">
             <div class="logo">
                 <div class="logo-icon">A</div>
-                <span>AWANGARD</span>
+                <span>AWANGARD TEAM</span>
             </div>
             <div class="nav-links">
                 <button class="nav-btn active" data-page="main"><i class="fas fa-home"></i> Главная</button>
@@ -130,33 +130,10 @@
         <!-- Главная страница -->
         <div id="mainPage" class="page active">
             <div class="hero">
-                <h1>AWANGARD STORE</h1>
+                <h1>AWANGARD TEAM</h1>
                 <p>PUBG Mobile | UC | Метровалюта | Metro Royal</p>
                 <div class="hero-badge">
                     <i class="fas fa-bolt"></i> Добро пожаловать в киберпространство!
-                </div>
-            </div>
-
-            <div class="features-grid">
-                <div class="feature-card">
-                    <i class="fas fa-bolt"></i>
-                    <h3>Моментальная доставка</h3>
-                    <p>5-15 минут после оплаты</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-shield-alt"></i>
-                    <h3>Безопасная оплата</h3>
-                    <p>DonationAlerts</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-headset"></i>
-                    <h3>Поддержка 24/7</h3>
-                    <p>Ответим на любой вопрос</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-gem"></i>
-                    <h3>Лучшие цены</h3>
-                    <p>Низкие цены, высокое качество</p>
                 </div>
             </div>
 
@@ -190,11 +167,36 @@
 
             <div id="productsGrid" class="products-grid"></div>
 
+            <!-- Блок подписки -->
             <div class="telegram-subscribe">
                 <i class="fab fa-telegram" style="font-size: 40px;"></i>
                 <h3>Подпишись на новости!</h3>
                 <p>Узнавай первым о новых акциях и товарах</p>
                 <button id="subscribeTelegramBtn">Подписаться в Telegram</button>
+            </div>
+
+            <!-- Блоки преимуществ (перенесены сюда) -->
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Моментальная доставка</h3>
+                    <p>5-15 минут после оплаты</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Безопасная оплата</h3>
+                    <p>DonationAlerts</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-headset"></i>
+                    <h3>Поддержка 24/7</h3>
+                    <p>Ответим на любой вопрос</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-gem"></i>
+                    <h3>Лучшие цены</h3>
+                    <p>Низкие цены, высокое качество</p>
+                </div>
             </div>
         </div>
 
@@ -263,14 +265,14 @@
             <div class="about-card">
                 <i class="fas fa-store" style="font-size: 50px; color: #00ffcc; margin-bottom: 20px;"></i>
                 <h2>О нас</h2>
-                <p style="margin: 20px 0;">AWANGARD — надёжный магазин игровых товаров для PUBG Mobile. Лучшие цены, моментальная доставка, 24/7 поддержка.</p>
+                <p style="margin: 20px 0;">AWANGARD TEAM — надёжный магазин игровых товаров для PUBG Mobile. Лучшие цены, моментальная доставка, 24/7 поддержка.</p>
                 <p>По всем вопросам: <strong style="color: #00ffcc;">@l_AWANGARD_l</strong></p>
             </div>
         </div>
     </div>
 
     <footer class="footer">
-        <p>AWANGARD | NEON CYBER STORE © 2026</p>
+        <p>AWANGARD TEAM © 2026</p>
     </footer>
 
     <div class="scroll-top-btn" id="scrollTopBtn">
@@ -280,13 +282,13 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        // ========== AWANGARD (Упрощённая версия без корзины, профиля, промокодов и сезонки) ==========
+        // ========== AWANGARD TEAM (Упрощённая версия без корзины, профиля, промокодов и сезонки) ==========
 
         let currentCategory = 'uc';
         let searchQuery = '';
+        let currentSort = null;
         let salesCount = parseInt(localStorage.getItem('awangard_sales') || '342');
 
-        // Товары
         const products = {
             uc: [
                 { name: "60 UC", price: 90, oldPrice: 150, icon: "UC", sale: true },
@@ -355,7 +357,6 @@
                 </div>
             `).join('');
 
-            // Обработчики кнопок "Купить" – просто показываем тост и переходим на страницу оплаты
             document.querySelectorAll('.product-card .buy-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -363,13 +364,11 @@
                     const name = card.dataset.name;
                     const price = card.dataset.price;
                     showToast(`Товар "${name}" (${price} ₽) добавлен в заказ. Перейдите к оплате.`, 'success');
-                    // Переключение на страницу оплаты
                     document.querySelector('[data-page="payment"]').click();
                 });
             });
         }
 
-        // Упрощённый показ уведомлений
         function showToast(msg, type = 'success') {
             const toast = document.getElementById('toast');
             toast.textContent = msg;
@@ -377,7 +376,6 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // Навигация
         function initNavigation() {
             const btns = document.querySelectorAll('.nav-btn');
             const pages = document.querySelectorAll('.page');
@@ -393,7 +391,6 @@
                 });
             });
 
-            // Категории
             document.querySelectorAll('.cat-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
@@ -403,7 +400,6 @@
                 });
             });
 
-            // Поиск
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
@@ -412,7 +408,6 @@
                 });
             }
 
-            // Сортировка
             document.querySelectorAll('.sort-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
@@ -422,19 +417,16 @@
                 });
             });
 
-            // Подписка Telegram
             document.getElementById('subscribeTelegramBtn')?.addEventListener('click', () => {
                 window.open('https://t.me/l_AWANGARD_l', '_blank');
                 showToast('Вы подписались на новости!', 'success');
             });
 
-            // Отзывы Telegram
             document.getElementById('openReviewsBtn')?.addEventListener('click', () => {
                 window.open('https://t.me/Awangard_shop_feedback', '_blank');
             });
         }
 
-        // Частицы
         function createParticles() {
             const container = document.getElementById('particlesContainer');
             if (!container) return;
@@ -452,7 +444,6 @@
             }
         }
 
-        // Кнопка "Вверх"
         const scrollTopBtn = document.getElementById('scrollTopBtn');
         window.addEventListener('scroll', () => {
             if (window.scrollY > 300) {
@@ -465,13 +456,12 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        // Инициализация
         document.addEventListener('DOMContentLoaded', () => {
             createParticles();
             initNavigation();
             renderProducts();
             updateSalesCount();
-            showToast('Добро пожаловать в AWANGARD!', 'success');
+            showToast('Добро пожаловать в AWANGARD TEAM!', 'success');
         });
     </script>
 </body>
