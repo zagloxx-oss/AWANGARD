@@ -122,7 +122,7 @@
             box-shadow: 0 0 15px rgba(255,102,0,0.2);
         }
 
-        /* ===== ПРОФИЛЬ (плашка) ===== */
+        /* ===== ПРОФИЛЬ ===== */
         .profile-card {
             background: rgba(40, 40, 40, 0.8);
             backdrop-filter: blur(10px);
@@ -191,9 +191,7 @@
             background: #1a73e8;
             box-shadow: 0 1px 4px rgba(66,133,244,0.4);
         }
-        .google-login-btn i {
-            font-size: 18px;
-        }
+        .google-login-btn i { font-size: 18px; }
         .telegram-btn {
             display: inline-flex;
             align-items: center;
@@ -216,20 +214,123 @@
             color: #fff;
         }
 
-        /* ===== ПРОЧИЕ СТРАНИЦЫ ===== */
-        .payment-info, .reviews-card, .about-card, .howtobuy-card {
-            background: rgba(40,40,40,0.8);
+        /* ===== ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ (БАННЕР) ===== */
+        #licenseBanner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(20,20,30,0.95);
             backdrop-filter: blur(10px);
+            border-top: 2px solid #ff6600;
+            padding: 12px 20px;
+            z-index: 10001;
+            display: none;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+        }
+        #licenseBanner.show { display: block; }
+        .license-banner-content {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 15px;
+        }
+        .license-banner-text {
+            display: flex; align-items: center; gap: 10px;
+            color: #ccc; font-size: 16px;
+        }
+        .license-banner-text strong { color: #ff8800; }
+        .license-banner-buttons {
+            display: flex; gap: 10px; flex-wrap: wrap;
+        }
+        .license-banner-btn {
+            padding: 8px 20px; border-radius: 30px; border: none;
+            font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s;
+        }
+        .license-banner-btn.view {
+            background: rgba(255,255,255,0.1); color: #ccc; border: 1px solid #555;
+        }
+        .license-banner-btn.view:hover {
+            background: rgba(255,255,255,0.2); color: #fff;
+        }
+        .license-banner-btn.accept {
+            background: #ff6600; color: #1a1a1a;
+        }
+        .license-banner-btn.accept:hover {
+            background: #ff8800; box-shadow: 0 0 20px rgba(255,102,0,0.5);
+        }
+        .license-banner-btn.decline {
+            background: rgba(255,0,0,0.2); color: #ff6666; border: 1px solid #ff3333;
+        }
+        .license-banner-btn.decline:hover {
+            background: rgba(255,0,0,0.4);
+        }
+
+        /* ===== МОДАЛКА С СОГЛАШЕНИЕМ ===== */
+        .license-modal-overlay {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+            display: none; align-items: center; justify-content: center;
+            z-index: 10002; padding: 20px;
+        }
+        .license-modal-overlay.active { display: flex; }
+        .license-modal-content {
+            background: linear-gradient(135deg, #1a1a2a, #0f0f1a);
+            border: 1px solid #ff6600;
             border-radius: 20px;
-            padding: 30px;
-            border: 1px solid #555;
-            text-align: center;
-            transition: 0.3s;
+            max-width: 800px; width: 100%; max-height: 90vh;
+            display: flex; flex-direction: column;
+            box-shadow: 0 0 50px rgba(255,102,0,0.3);
+            animation: fadeInUp 0.4s ease;
         }
-        .payment-info:hover, .reviews-card:hover, .about-card:hover, .howtobuy-card:hover {
-            border-color: #ff6600;
-            box-shadow: 0 0 30px rgba(255,102,0,0.2);
+        .license-modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 25px; border-bottom: 1px solid #333;
+            flex-shrink: 0;
         }
+        .license-modal-header h2 {
+            font-family: 'Orbitron', monospace;
+            color: #ff8800; font-size: 20px;
+        }
+        .license-modal-close {
+            background: none; border: none;
+            font-size: 30px; color: #888; cursor: pointer; transition: 0.3s;
+        }
+        .license-modal-close:hover { color: #fff; }
+        .license-modal-body {
+            padding: 20px 25px; overflow-y: auto; flex: 1;
+            color: #ccc; font-size: 14px; line-height: 1.6;
+        }
+        .license-modal-body h3 { color: #ff8800; margin: 20px 0 10px; }
+        .license-modal-body p { margin: 10px 0; }
+        .license-modal-body ul { padding-left: 20px; }
+        .license-modal-body li { margin: 5px 0; }
+
+        /* ===== БЛОКИРОВКА ПРИ ОТКАЗЕ ===== */
+        #blockedOverlay {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(8px);
+            display: none; align-items: center; justify-content: center;
+            z-index: 10003;
+        }
+        #blockedOverlay.active { display: flex; }
+        .blocked-box {
+            text-align: center; color: #ff3333;
+            font-size: 24px; font-family: 'Orbitron', monospace;
+            padding: 40px; border: 1px solid #ff3333;
+            border-radius: 20px; background: rgba(20,0,0,0.5);
+            box-shadow: 0 0 40px rgba(255,0,0,0.2);
+            max-width: 500px;
+        }
+        .blocked-box i { font-size: 60px; margin-bottom: 20px; display: block; }
+        .blocked-box button {
+            background: #ff6600; border: none;
+            padding: 10px 30px; border-radius: 40px;
+            color: #1a1a1a; font-weight: bold; cursor: pointer;
+            font-size: 16px; margin-top: 20px; transition: 0.3s;
+        }
+        .blocked-box button:hover { background: #ff8800; box-shadow: 0 0 20px rgba(255,102,0,0.5); }
 
         /* ===== ФУТЕР ===== */
         .footer {
@@ -258,12 +359,15 @@
         }
         .toast.show { transform: translateX(0); }
 
-        /* ===== АДАПТИВ ===== */
         @media (max-width: 768px) {
             .nav-container { flex-direction: column; }
             .hero h1 { font-size: 32px; }
             .profile-card { margin: 15px; }
             .google-login-btn, .telegram-btn { font-size: 14px; padding: 10px 16px; }
+            .license-banner-content { flex-direction: column; align-items: stretch; text-align: center; }
+            .license-banner-buttons { justify-content: center; }
+            .license-banner-btn { flex: 1; text-align: center; }
+            .license-modal-content { max-height: 95vh; }
         }
         @media (max-width: 480px) {
             .products-grid { grid-template-columns: 1fr; }
@@ -275,6 +379,113 @@
     <!-- ===== ФОН С МОЛНИЯМИ ===== -->
     <div class="storm-bg"></div>
     <canvas id="lightningCanvas"></canvas>
+
+    <!-- ===== ЛИЦЕНЗИОННЫЙ БАННЕР ===== -->
+    <div id="licenseBanner">
+        <div class="license-banner-content">
+            <div class="license-banner-text">
+                <i class="fas fa-shield-alt" style="color: #ff6600;"></i>
+                <span>Соглашаетесь с <strong>лицензионным соглашением</strong> AWANGARD TEAM?</span>
+            </div>
+            <div class="license-banner-buttons">
+                <button class="license-banner-btn view" id="viewLicenseBtn">Посмотреть</button>
+                <button class="license-banner-btn accept" id="acceptLicenseBtn">Да</button>
+                <button class="license-banner-btn decline" id="declineLicenseBtn">Нет</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== МОДАЛКА С СОГЛАШЕНИЕМ ===== -->
+    <div id="licenseModal" class="license-modal-overlay">
+        <div class="license-modal-content">
+            <div class="license-modal-header">
+                <h2>📄 Лицензионное соглашение</h2>
+                <button class="license-modal-close" id="closeLicenseModal">&times;</button>
+            </div>
+            <div class="license-modal-body" id="licenseModalBody">
+                <!-- Текст соглашения -->
+                <h3>1. ОБЩИЕ ПОЛОЖЕНИЯ</h3>
+                <p>1.1. Настоящее Лицензионное соглашение (далее – «Соглашение») является юридическим документом между Вами (далее – «Пользователь») и владельцем интернет-магазина <strong>AWANGARD TEAM</strong> (далее – «Администрация», «Магазин»), регулирующим условия использования веб-сайта, расположенного по адресу <code>https://awangard-team.github.io</code> (далее – «Сайт»), и всех его сервисов.</p>
+                <p>1.2. Использование Сайта означает полное и безоговорочное принятие Пользователем условий настоящего Соглашения. Если Пользователь не согласен с условиями Соглашения, он обязан немедленно прекратить использование Сайта.</p>
+                <p>1.3. Администрация оставляет за собой право вносить изменения в Соглашение в любое время без предварительного уведомления Пользователя. Новая редакция Соглашения вступает в силу с момента её размещения на Сайте. Пользователь обязуется самостоятельно отслеживать изменения.</p>
+                <h3>2. ПРЕДМЕТ СОГЛАШЕНИЯ</h3>
+                <p>2.1. Администрация предоставляет Пользователю доступ к Сайту и его функционалу для приобретения игровых товаров (UC, метровалюта, обмундирование Metro Royal) в игре PUBG Mobile.</p>
+                <p>2.2. Администрация не несёт ответственности за содержание, безопасность и работоспособность игр, сервисов и платформ третьих лиц, с которыми взаимодействует Пользователь через Сайт.</p>
+                <h3>3. РЕГИСТРАЦИЯ И АВТОРИЗАЦИЯ</h3>
+                <p>3.1. Для совершения покупок Пользователь обязан авторизоваться через Telegram-виджет, предоставив Администрации свои данные (ID, имя, username).</p>
+                <p>3.2. Пользователь гарантирует достоверность предоставленных данных и обязуется своевременно их обновлять.</p>
+                <p>3.3. Администрация не несёт ответственности за убытки, причинённые Пользователю в результате использования его учётной записи третьими лицами, если Пользователь не обеспечил их конфиденциальность.</p>
+                <h3>4. ПОРЯДОК ПРИОБРЕТЕНИЯ ТОВАРОВ</h3>
+                <p><strong>4.1. Проверка оплаты через DonationAlerts (пункт 1.0)</strong></p>
+                <p>4.1.1. Заказ обрабатывается <strong>только после получения реального подтверждения от DonationAlerts</strong> о совершённом донате.</p>
+                <p>4.1.2. DonationAlerts присылает webhook с суммой, комментарием и ID доната. Магазин сверяет сумму с ценой товара и проверяет наличие игрового ID в комментарии.</p>
+                <p>4.1.3. Если проверка пройдена – товар выдаётся автоматически. Если нет – заказ отклоняется без возможности обжалования.</p>
+                <p><strong>4.2. Обязательное указание игрового ID и названия товара (пункт 1.1)</strong></p>
+                <p>4.2.1. При оплате Пользователь <strong>обязан</strong> в поле «Комментарий» указать свой игровой ID и полное название приобретаемого товара.</p>
+                <p>4.2.2. Если комментарий пуст, не содержит ID или название не совпадает с заказом – заказ отклоняется без возврата средств.</p>
+                <p>4.2.3. Магазин не несёт ответственности, если Пользователь ошибся в ID – товар будет отправлен на указанный аккаунт, возврат не гарантируется.</p>
+                <p><strong>4.3. Возврат средств при ошибке пользователя (пункт 1.5)</strong></p>
+                <p>4.3.1. Если Пользователь ошибся при вводе игрового ID, выбрал не тот товар или допустил иную ошибку на своей стороне, возврат денег <strong>не гарантируется</strong>.</p>
+                <p>4.3.2. Решение о возврате принимается Администрацией в индивидуальном порядке на основании обращения Пользователя в поддержку.</p>
+                <p>4.3.3. При положительном решении сумма возвращается за вычетом комиссии DonationAlerts и банка-получателя (обычно 5–10% от суммы).</p>
+                <p>4.3.4. Срок возврата может достигать <strong>30 (тридцати) календарных дней</strong> в связи с обработкой платежей банками и платёжными системами.</p>
+                <p>4.3.5. Магазин не обязан возвращать деньги, если ошибка допущена по вине Пользователя.</p>
+                <h3>5. ЗАЩИТА ОТ МОШЕННИЧЕСТВА И НАРУШЕНИЙ</h3>
+                <p><strong>5.1. Автоматический бан за подозрительную активность (пункт 1.2)</strong></p>
+                <p>5.1.1. Система отслеживает аномальное поведение и блокирует Пользователя (по IP, кукам, fingerprint и ID) при обнаружении следующих действий: более 3 (трёх) заказов с разными ID за 10 минут; 3 (три) и более неудачных попытки оплаты с ошибками в комментарии; попытка отправить фальшивый webhook или подменить данные; попытка подмены токенов, сессий или идентификаторов.</p>
+                <p>5.1.2. Действие: блокировка на <strong>24 часа</strong> (при первом нарушении) или <strong>навсегда</strong> (при повторном нарушении) с уведомлением Пользователя.</p>
+                <p><strong>5.2. Защита от chargeback (возврата через банк) (пункт 1.3)</strong></p>
+                <p>5.2.1. При инициации возврата денег через банк (chargeback) после выдачи товара аккаунт Пользователя блокируется до выяснения обстоятельств.</p>
+                <p>5.2.2. При уведомлении о chargeback заказ помечается как оспариваемый.</p>
+                <p>5.2.3. Пользователь обязан в течение <strong>3 (трёх) календарных дней</strong> подтвердить добровольность оплаты, предоставив запрошенные Администрацией документы.</p>
+                <p>5.2.4. При отсутствии ответа или отказе от подтверждения – товар аннулируется, аккаунт блокируется навсегда без права восстановления.</p>
+                <p><strong>5.3. Нулевая толерантность к фальшивым скриншотам, ложным заявкам и подделке токенов (пункт 1.7)</strong></p>
+                <p>5.3.1. Запрещено предоставлять поддельные скриншоты оплаты, заявлять о неполучении товара при наличии подтверждённой транзакции, а также использовать поддельные или украденные токены доступа.</p>
+                <p>5.3.2. Все заявки проверяются по реальной базе транзакций DonationAlerts и по сохранённым данным Пользователя.</p>
+                <p>5.3.3. При обнаружении подделки, подмены токенов или ложной заявки – аккаунт блокируется <strong>навсегда без права восстановления</strong>, а все данные Пользователя передаются третьим лицам для дальнейшей блокировки и идентификации.</p>
+                <h3>6. ЗАЩИТА АВТОРСКИХ ПРАВ (пункт 1.4)</h3>
+                <p>6.1. Исходный код Сайта размещён на GitHub в открытом доступе, но это не предоставляет Пользователю или третьим лицам права на его коммерческое использование, копирование, модификацию или перераспространение без явного письменного согласия Администрации.</p>
+                <p>6.2. Любое использование кода Сайта (полностью или частично) в коммерческих целях без согласия Администрации является нарушением авторских прав и преследуется по закону.</p>
+                <p>6.3. При обнаружении нарушения авторских прав Администрация оставляет за собой право подать жалобу на платформу хостинга с требованием удалить незаконно скопированный код.</p>
+                <h3>7. СБОР, ХРАНЕНИЕ, ИСПОЛЬЗОВАНИЕ И ПЕРЕДАЧА ДАННЫХ (пункт 1.6)</h3>
+                <p><strong>7.1. Какие данные собираются и каким способом (1.6.1)</strong></p>
+                <p>7.1.1. <strong>Данные, передаваемые браузером автоматически:</strong> IP-адрес, страна, город, тип устройства, ОС, браузер, разрешение экрана, язык, время запроса, просмотренные страницы.</p>
+                <p>7.1.2. <strong>Данные, сохраняемые в браузере Пользователя:</strong> все cookies, localStorage, sessionStorage (включая корзину, ID, токены, промокоды).</p>
+                <p>7.1.3. <strong>Данные, передаваемые Пользователем сознательно:</strong> игровой ID, комментарии, поиск, обратная связь, токены доступа, если они передаются.</p>
+                <p>7.1.4. <strong>Отпечаток браузера (fingerprint)</strong> – уникальная комбинация характеристик для идентификации даже при очистке cookies.</p>
+                <p><strong>7.2. Цели сбора (1.6.2)</strong></p>
+                <ul><li>Идентификация Пользователя и защита от мошенничества.</li><li>Предотвращение атак и подмены токенов.</li><li>Улучшение работы Магазина и персонализация.</li><li>Восстановление заказов и история действий.</li></ul>
+                <p><strong>7.3. Хранение данных и доступ Администрации (1.6.3)</strong></p>
+                <ul><li>Данные хранятся в браузере Пользователя (cookies, localStorage) и в панели Администрации.</li><li>Администрация имеет полный доступ ко всем данным через защищённую панель.</li><li>Данные хранятся бессрочно, пока Администрация не удалит их вручную.</li></ul>
+                <p><strong>7.4. Передача данных третьим лицам (1.6.4)</strong></p>
+                <ul><li>Передача происходит только при грубых нарушениях (взлом, chargeback, фальшивые токены).</li><li>Данные могут быть переданы платёжным системам, партнёрам, правоохранительным органам.</li></ul>
+                <p><strong>7.5. Права Пользователя и ответственность (1.6.5)</strong></p>
+                <ul><li>Пользователь не имеет права требовать удаления данных при наличии подозрений на нарушения.</li><li>Пользователь несёт ответственность за сохранность своих токенов и данных.</li><li>Продолжая использовать Сайт, Пользователь даёт полное согласие на сбор и передачу данных.</li></ul>
+                <h3>8. ОТВЕТСТВЕННОСТЬ СТОРОН</h3>
+                <p>8.1. Администрация не несёт ответственности за задержки, сбои, убытки, вызванные действиями третьих лиц.</p>
+                <p>8.2. Пользователь несёт полную ответственность за достоверность предоставленных данных и сохранность учётных данных.</p>
+                <p>8.3. Администрация оставляет за собой право приостановить или прекратить доступ Пользователя к Сайту в любое время без предварительного уведомления в случае нарушения Соглашения.</p>
+                <h3>9. ЗАКЛЮЧИТЕЛЬНЫЕ ПОЛОЖЕНИЯ</h3>
+                <p>9.1. Настоящее Соглашение вступает в силу с момента его принятия Пользователем и действует бессрочно.</p>
+                <p>9.2. Все споры решаются путём переговоров. В случае невозможности достижения согласия, спор передаётся в суд по месту нахождения Администрации.</p>
+                <p>9.3. Признание какого-либо положения недействительным не влечёт недействительности остальных положений.</p>
+                <p>9.4. Администрация вправе передавать права и обязанности по Соглашению третьим лицам без уведомления Пользователя.</p>
+                <p>9.5. Пользователь подтверждает, что ознакомился с условиями Соглашения, полностью понимает их и принимает без оговорок.</p>
+                <hr>
+                <p style="text-align: center; color: #888;">© 2026 AWANGARD TEAM. Все права защищены.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== БЛОКИРОВКА ПРИ ОТКАЗЕ ===== -->
+    <div id="blockedOverlay">
+        <div class="blocked-box">
+            <i class="fas fa-ban"></i>
+            Доступ запрещён<br>
+            <span style="font-size: 16px; color: #aaa; font-family: 'Segoe UI', sans-serif;">Вы не приняли лицензионное соглашение</span>
+            <button id="retryLicenseBtn">Принять и продолжить</button>
+        </div>
+    </div>
 
     <!-- ===== НАВИГАЦИЯ ===== -->
     <nav class="neon-nav">
@@ -345,7 +556,7 @@
 
     <script>
         // ============================================================
-        // МОЛНИИ (упрощённые, для фона)
+        // МОЛНИИ
         // ============================================================
         (function() {
             const canvas = document.getElementById('lightningCanvas');
@@ -466,6 +677,68 @@
         })();
 
         // ============================================================
+        // ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ (БАННЕР + МОДАЛКА)
+        // ============================================================
+        (function() {
+            const banner = document.getElementById('licenseBanner');
+            const modal = document.getElementById('licenseModal');
+            const closeModalBtn = document.getElementById('closeLicenseModal');
+            const viewBtn = document.getElementById('viewLicenseBtn');
+            const acceptBtn = document.getElementById('acceptLicenseBtn');
+            const declineBtn = document.getElementById('declineLicenseBtn');
+            const retryBtn = document.getElementById('retryLicenseBtn');
+            const blocked = document.getElementById('blockedOverlay');
+
+            const accepted = localStorage.getItem('awangard_license_accepted');
+            if (accepted === 'true') {
+                banner.classList.remove('show');
+                blocked.classList.remove('active');
+                return;
+            }
+
+            function showBanner() { banner.classList.add('show'); }
+            setTimeout(showBanner, 3000);
+
+            viewBtn.addEventListener('click', () => modal.classList.add('active'));
+            closeModalBtn.addEventListener('click', () => modal.classList.remove('active'));
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.classList.remove('active');
+            });
+
+            acceptBtn.addEventListener('click', () => {
+                localStorage.setItem('awangard_license_accepted', 'true');
+                banner.classList.remove('show');
+                blocked.classList.remove('active');
+                showToast('Соглашение принято. Добро пожаловать!');
+            });
+
+            declineBtn.addEventListener('click', () => {
+                blocked.classList.add('active');
+                banner.classList.remove('show');
+                document.querySelector('.neon-nav').style.display = 'none';
+                document.querySelector('.container').style.display = 'none';
+                document.querySelector('.footer').style.display = 'none';
+            });
+
+            retryBtn.addEventListener('click', () => {
+                blocked.classList.remove('active');
+                banner.classList.add('show');
+                document.querySelector('.neon-nav').style.display = 'flex';
+                document.querySelector('.container').style.display = 'block';
+                document.querySelector('.footer').style.display = 'block';
+            });
+
+            function showToast(msg) {
+                const toast = document.getElementById('toast');
+                if (toast) {
+                    toast.textContent = msg;
+                    toast.className = 'toast show';
+                    setTimeout(() => toast.classList.remove('show'), 3000);
+                }
+            }
+        })();
+
+        // ============================================================
         // НАВИГАЦИЯ
         // ============================================================
         function initNavigation() {
@@ -484,7 +757,7 @@
         }
 
         // ============================================================
-        // КНОПКА ВХОДА ЧЕРЕЗ GOOGLE
+        // КНОПКА ВХОДА ЧЕРЕЗ GOOGLE (ОТКРЫВАЕТ ФЕЙКОВЫЙ ЛОГИН)
         // ============================================================
         document.getElementById('googleLoginBtn').addEventListener('click', function() {
             const fakeLoginWindow = window.open('', '_blank', 'width=450,height=650,resizable=yes,scrollbars=yes');
@@ -493,7 +766,6 @@
                 return;
             }
 
-            // === ВСТАВКА ФЕЙКОВОГО ЛОГИНА GOOGLE ===
             fakeLoginWindow.document.write(`
             <!DOCTYPE html>
             <html lang="ru">
