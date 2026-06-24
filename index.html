@@ -1098,7 +1098,7 @@
         })();
 
         // ============================================================
-        // 3. МОЛНИИ
+        // 3. МОЛНИИ (сокращённо, чтобы не захламлять)
         // ============================================================
         (function() {
             const canvas = document.getElementById('lightningCanvas');
@@ -1463,7 +1463,7 @@
         })();
 
         // ============================================================
-        // 5. ОСНОВНАЯ ЛОГИКА (каталоги)
+        // 5. ОСНОВНАЯ ЛОГИКА (каталоги) — ИСПРАВЛЕННАЯ!
         // ============================================================
         let salesCount = parseInt(localStorage.getItem('awangard_sales') || '342');
 
@@ -1494,24 +1494,37 @@
             ]
         };
 
+        // ГЛАВНАЯ ФУНКЦИЯ — ОТКРЫТИЕ КАТАЛОГА
         function openCatalog(type) {
+            // Проверка вызова (для отладки)
+            console.log('openCatalog вызван с типом:', type);
+            alert('Каталог "' + type + '" открывается! (это тестовое сообщение)');
+
             // Закрываем все каталоги
             closeAllCatalogs();
 
-            // Открываем нужный
+            // Находим контейнер каталога по ID
             const containerId = `catalog${type.charAt(0).toUpperCase() + type.slice(1)}Container`;
             const container = document.getElementById(containerId);
             if (container) {
                 container.classList.add('active');
                 // Прокручиваем к каталогу
                 container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                console.error('Контейнер не найден:', containerId);
+                alert('Ошибка: контейнер каталога не найден!');
+                return;
             }
 
-            // Заполняем товары (всегда перерисовываем)
+            // Заполняем товары
             const listId = `${type}ProductsList`;
             const list = document.getElementById(listId);
             if (list) {
                 const typeProducts = products[type] || [];
+                if (typeProducts.length === 0) {
+                    list.innerHTML = '<div style="text-align:center;padding:20px;color:#888;">Товары не найдены</div>';
+                    return;
+                }
                 list.innerHTML = typeProducts.map(p => `
                     <div class="catalog-product">
                         <img src="${p.icon}" alt="${p.name}" class="prod-icon" onerror="this.style.display='none'">
@@ -1521,6 +1534,9 @@
                         <button class="prod-buy-btn" onclick="buyProduct('${p.name}', ${p.price})">Купить</button>
                     </div>
                 `).join('');
+            } else {
+                console.error('Список товаров не найден:', listId);
+                alert('Ошибка: список товаров не найден!');
             }
         }
 
