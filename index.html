@@ -1436,7 +1436,7 @@
         })();
 
         // ============================================================
-        // 5. ОСНОВНАЯ ЛОГИКА — РАСКРЫТИЕ ПЛАШЕК + КНОПКА КУПИТЬ (ДЕЛЕГИРОВАНИЕ)
+        // 5. ОСНОВНАЯ ЛОГИКА — РАСКРЫТИЕ ПЛАШЕК + КНОПКА КУПИТЬ (ПРЯМОЕ ПЕРЕКЛЮЧЕНИЕ)
         // ============================================================
         let salesCount = parseInt(localStorage.getItem('awangard_sales') || '342');
 
@@ -1496,22 +1496,30 @@
             }
         }
 
-        // Делегирование — обрабатываем клики по кнопкам внутри .catalog-plashki
+        // Функция переключения страниц вручную
+        function switchPage(pageName) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(p => p.classList.remove('active'));
+            const target = document.getElementById(pageName + 'Page');
+            if (target) target.classList.add('active');
+
+            const navBtns = document.querySelectorAll('.nav-btn');
+            navBtns.forEach(b => b.classList.remove('active'));
+            const activeNav = document.querySelector(`.nav-btn[data-page="${pageName}"]`);
+            if (activeNav) activeNav.classList.add('active');
+        }
+
+        // Делегирование для кнопок "Купить"
         document.querySelector('.catalog-plashki').addEventListener('click', function(e) {
             const btn = e.target.closest('.plashka-buy-btn');
             if (!btn) return;
-            // Останавливаем всплытие, чтобы не закрылась плашка
             e.stopPropagation();
             const name = btn.dataset.name;
             const price = parseInt(btn.dataset.price);
-            console.log('✅ buyProduct (делегирование):', name, price);
+            console.log('✅ buyProduct:', name, price);
             showToast(`Товар "${name}" (${price} ₽) добавлен в заказ. Перейдите к оплате.`);
-            const payBtn = document.querySelector('[data-page="payment"]');
-            if (payBtn) {
-                payBtn.click();
-            } else {
-                console.error('❌ Кнопка оплаты не найдена');
-            }
+            // Переключаем на страницу оплаты
+            switchPage('payment');
         });
 
         function showToast(msg) {
@@ -1527,15 +1535,10 @@
 
         function initNavigation() {
             const btns = document.querySelectorAll('.nav-btn:not(#openLoginBtn)');
-            const pages = document.querySelectorAll('.page');
             btns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const pageId = btn.dataset.page + 'Page';
-                    btns.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    pages.forEach(page => page.classList.remove('active'));
-                    const activePage = document.getElementById(pageId);
-                    if (activePage) activePage.classList.add('active');
+                btn.addEventListener('click', function() {
+                    const pageName = this.dataset.page;
+                    switchPage(pageName);
                 });
             });
 
