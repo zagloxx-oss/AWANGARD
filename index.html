@@ -782,7 +782,7 @@
             <!-- ===== ПЛАШКИ-КАТАЛОГИ ===== -->
             <div class="catalog-plashki">
                 <!-- UC -->
-                <div class="plashka-catalog" id="catalogUC" onclick="openCatalog('uc')">
+                <div class="plashka-catalog" onclick="openCatalog('uc')">
                     <div class="badge">🔥 ХИТ</div>
                     <img src="logo3.jpg" alt="UC" onerror="this.style.display='none'">
                     <h3>UC</h3>
@@ -790,7 +790,7 @@
                 </div>
 
                 <!-- Metro Royal + Метровалюта -->
-                <div class="plashka-catalog plashka-catalog-metro" id="catalogMetro" onclick="openCatalog('metro')">
+                <div class="plashka-catalog plashka-catalog-metro" onclick="openCatalog('metro')">
                     <div class="badge">⭐ ВСЁ ВКЛЮЧЕНО</div>
                     <img src="logo4.jpg" alt="Metro Royal" onerror="this.style.display='none'">
                     <h3>Metro Royal</h3>
@@ -1495,14 +1495,18 @@
         };
 
         function openCatalog(type) {
+            // Закрываем все каталоги
             closeAllCatalogs();
 
-            const container = document.getElementById(`catalog${type.charAt(0).toUpperCase() + type.slice(1)}Container`);
+            // Открываем нужный
+            const containerId = `catalog${type.charAt(0).toUpperCase() + type.slice(1)}Container`;
+            const container = document.getElementById(containerId);
             if (container) {
                 container.classList.add('active');
                 container.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
 
+            // Заполняем товары (всегда перерисовываем)
             const listId = `${type}ProductsList`;
             const list = document.getElementById(listId);
             if (list) {
@@ -1520,7 +1524,8 @@
         }
 
         function closeCatalog(type) {
-            const container = document.getElementById(`catalog${type.charAt(0).toUpperCase() + type.slice(1)}Container`);
+            const containerId = `catalog${type.charAt(0).toUpperCase() + type.slice(1)}Container`;
+            const container = document.getElementById(containerId);
             if (container) {
                 container.classList.remove('active');
             }
