@@ -1436,7 +1436,7 @@
         })();
 
         // ============================================================
-        // 5. ОСНОВНАЯ ЛОГИКА — РАСКРЫТИЕ ПЛАШЕК + КНОПКА КУПИТЬ (FIX)
+        // 5. ОСНОВНАЯ ЛОГИКА — РАСКРЫТИЕ ПЛАШЕК + КНОПКА КУПИТЬ (ДЕЛЕГИРОВАНИЕ)
         // ============================================================
         let salesCount = parseInt(localStorage.getItem('awangard_sales') || '342');
 
@@ -1481,7 +1481,7 @@
             if (container.children.length === 0) {
                 const items = products[type] || [];
                 container.innerHTML = items.map(p => `
-                    <div class="plashka-product-item">
+                    <div class="plashka-product-item" data-name="${p.name}" data-price="${p.price}">
                         <div class="plashka-product-info">
                             <img src="${p.icon}" alt="${p.name}" class="plashka-product-icon" onerror="this.style.display='none'">
                             <span class="plashka-product-name">${p.name}</span>
@@ -1489,18 +1489,22 @@
                         </div>
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <span class="plashka-product-price">${p.price} ₽</span>
-                            <button class="plashka-buy-btn" onclick="buyProduct(event, '${p.name}', ${p.price})">Купить</button>
+                            <button class="plashka-buy-btn" data-name="${p.name}" data-price="${p.price}">Купить</button>
                         </div>
                     </div>
                 `).join('');
             }
         }
 
-        function buyProduct(event, name, price) {
-            if (event) {
-                event.stopPropagation(); // не даём всплыть до плашки
-            }
-            console.log('✅ buyProduct вызван:', name, price);
+        // Делегирование — обрабатываем клики по кнопкам внутри .catalog-plashki
+        document.querySelector('.catalog-plashki').addEventListener('click', function(e) {
+            const btn = e.target.closest('.plashka-buy-btn');
+            if (!btn) return;
+            // Останавливаем всплытие, чтобы не закрылась плашка
+            e.stopPropagation();
+            const name = btn.dataset.name;
+            const price = parseInt(btn.dataset.price);
+            console.log('✅ buyProduct (делегирование):', name, price);
             showToast(`Товар "${name}" (${price} ₽) добавлен в заказ. Перейдите к оплате.`);
             const payBtn = document.querySelector('[data-page="payment"]');
             if (payBtn) {
@@ -1508,7 +1512,7 @@
             } else {
                 console.error('❌ Кнопка оплаты не найдена');
             }
-        }
+        });
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
