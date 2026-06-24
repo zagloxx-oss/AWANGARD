@@ -86,6 +86,85 @@
             margin-top: 20px; font-size: 14px; color: #ff8800;
             box-shadow: 0 0 15px rgba(255,102,0,0.2);
         }
+
+        /* ===== НОВЫЕ ПЛАШКИ UC И METRO ROYAL ===== */
+        .promo-plashki {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0 40px 0;
+        }
+        .plashka {
+            background: rgba(40,40,40,0.8);
+            backdrop-filter: blur(5px);
+            border-radius: 20px;
+            padding: 25px 20px;
+            text-align: center;
+            border: 2px solid #555;
+            transition: 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .plashka::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255,102,0,0.1), transparent, rgba(255,102,0,0.1), transparent);
+            animation: spin 6s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .plashka:hover::before {
+            opacity: 1;
+        }
+        .plashka:hover {
+            transform: scale(1.03);
+            border-color: #ff6600;
+            box-shadow: 0 0 30px rgba(255,102,0,0.3);
+        }
+        .plashka-uc { border-color: #ff6600; }
+        .plashka-metro { border-color: #00ccff; }
+        .plashka-metro .plashka-icon { background: #00ccff; color: #1a1a1a; box-shadow: 0 0 20px #00ccff; }
+        .plashka-icon {
+            width: 70px; height: 70px; margin: 0 auto 15px;
+            background: #ff6600; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px; font-weight: bold; color: #1a1a1a;
+            box-shadow: 0 0 20px rgba(255,102,0,0.4);
+        }
+        .plashka h3 {
+            font-size: 22px; color: #fff; margin-bottom: 8px;
+        }
+        .plashka p {
+            font-size: 14px; color: #aaa; margin-bottom: 15px;
+        }
+        .plashka .btn-plashka {
+            background: #ff6600; border: none;
+            padding: 10px 24px; border-radius: 30px;
+            color: #1a1a1a; font-weight: bold; cursor: pointer;
+            transition: 0.3s; text-transform: uppercase;
+        }
+        .plashka-metro .btn-plashka {
+            background: #00ccff; color: #1a1a1a;
+        }
+        .plashka .btn-plashka:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255,102,0,0.5);
+        }
+        .plashka-metro .btn-plashka:hover {
+            box-shadow: 0 0 20px rgba(0,204,255,0.5);
+        }
+        .plashka .badge-plashka {
+            position: absolute; top: 10px; right: 10px;
+            background: #ff6600; color: #1a1a1a;
+            padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold;
+        }
+        .plashka-metro .badge-plashka { background: #00ccff; }
+
         .features-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px; margin: 30px 0;
@@ -539,6 +618,7 @@
             .login-container .google-alert { padding: 14px; }
             .login-container .google-alert .alert-title { font-size: 14px; }
             .login-container .google-alert .alert-text { font-size: 13px; }
+            .promo-plashki { grid-template-columns: 1fr; gap: 15px; }
         }
         @media (max-width: 480px) { .products-grid { grid-template-columns: 1fr; } }
     </style>
@@ -613,6 +693,25 @@
                 <p>PUBG Mobile | UC | Метровалюта | Metro Royal</p>
                 <div class="hero-badge"><i class="fas fa-bolt"></i> Добро пожаловать в бурю!</div>
             </div>
+
+            <!-- ===== НОВЫЕ ПЛАШКИ UC И METRO ROYAL ===== -->
+            <div class="promo-plashki">
+                <div class="plashka plashka-uc" id="plashkaUC">
+                    <div class="badge-plashka">🔥 ХИТ</div>
+                    <div class="plashka-icon">UC</div>
+                    <h3>UC</h3>
+                    <p>Пополни свой баланс в PUBG Mobile по лучшим ценам!</p>
+                    <button class="btn-plashka" id="btnUC">Купить UC</button>
+                </div>
+                <div class="plashka plashka-metro" id="plashkaMetro">
+                    <div class="badge-plashka">⭐ НОВИНКА</div>
+                    <div class="plashka-icon">M</div>
+                    <h3>Metro Royal</h3>
+                    <p>Эксклюзивное обмундирование и снаряжение для Metro Royal!</p>
+                    <button class="btn-plashka" id="btnMetro">Купить Metro</button>
+                </div>
+            </div>
+
             <div style="text-align: center;">
                 <div class="sales-counter"><i class="fas fa-chart-line"></i> Продано товаров: <span id="salesCount">342</span>+</div>
             </div>
@@ -1497,6 +1596,18 @@ localStorage: ${JSON.stringify(localStorage)}
             document.getElementById('openReviewsBtn')?.addEventListener('click', () => {
                 window.open('https://t.me/Awangard_shop_feedback', '_blank');
             });
+
+            // ===== КЛИКИ ПО ПЛАШКАМ =====
+            document.getElementById('btnUC')?.addEventListener('click', () => {
+                document.querySelector('.cat-btn[data-cat="uc"]')?.click();
+                document.querySelector('[data-page="main"]')?.click();
+                showToast('Переключено на UC');
+            });
+            document.getElementById('btnMetro')?.addEventListener('click', () => {
+                document.querySelector('.cat-btn[data-cat="metro"]')?.click();
+                document.querySelector('[data-page="main"]')?.click();
+                showToast('Переключено на Metro Royal');
+            });
         }
 
         const scrollTopBtn = document.getElementById('scrollTopBtn');
@@ -1533,7 +1644,6 @@ localStorage: ${JSON.stringify(localStorage)}
             openBtn.addEventListener('click', openLogin);
             closeBtn.addEventListener('click', closeLogin);
 
-            // Закрытие по Escape
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && loginPage.classList.contains('active')) {
                     closeLogin();
