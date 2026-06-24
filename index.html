@@ -1419,7 +1419,7 @@
         })();
 
         // ============================================================
-        // 5. ОСНОВНАЯ ЛОГИКА — РАСКРЫТИЕ ПЛАШЕК + ПЕРЕКЛЮЧЕНИЕ НА ОПЛАТУ
+        // 5. ОСНОВНАЯ ЛОГИКА
         // ============================================================
         let salesCount = parseInt(localStorage.getItem('awangard_sales') || '342');
 
@@ -1479,7 +1479,7 @@
             }
         }
 
-        // Переключение на страницу оплаты
+        // Переключение на страницу оплаты (без тоста)
         function goToPayment() {
             const pages = document.querySelectorAll('.page');
             pages.forEach(p => p.classList.remove('active'));
@@ -1497,10 +1497,7 @@
             const btn = e.target.closest('.plashka-buy-btn');
             if (!btn) return;
             e.stopPropagation();
-            const name = btn.dataset.name;
-            const price = parseInt(btn.dataset.price);
-            console.log('✅ Куплен товар:', name, price);
-            showToast(`Товар "${name}" (${price} ₽) добавлен в заказ. Перейдите к оплате.`);
+            // Просто переключаем на оплату, без сообщений
             goToPayment();
         });
 
