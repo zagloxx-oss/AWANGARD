@@ -90,8 +90,8 @@
         /* ===== ПЛАШКИ-КАТАЛОГИ ===== */
         .catalog-plashki {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
             margin: 30px 0 40px 0;
         }
         .plashka-catalog {
@@ -105,7 +105,7 @@
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            min-height: 180px;
+            min-height: 200px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -136,7 +136,7 @@
 
         .plashka-catalog img {
             width: 100%;
-            max-width: 120px;
+            max-width: 130px;
             height: auto;
             border-radius: 16px;
             margin-bottom: 15px;
@@ -171,7 +171,7 @@
         }
         .plashka-catalog-metro .badge { background: #00ccff; }
 
-        /* ===== КАТАЛОГ ТОВАРОВ (появляется при клике) ===== */
+        /* ===== КАТАЛОГ ТОВАРОВ ===== */
         .catalog-section {
             display: none;
             animation: fadeInUp 0.4s ease;
@@ -238,9 +238,13 @@
             box-shadow: 0 0 25px rgba(255,102,0,0.2);
         }
         .catalog-product .prod-icon {
-            font-size: 40px;
-            margin-bottom: 10px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 10px;
             display: block;
+            border: 2px solid #555;
         }
         .catalog-product .prod-name {
             font-size: 15px;
@@ -682,8 +686,8 @@
             .catalog-plashki { grid-template-columns: 1fr 1fr; gap: 15px; }
             .catalog-products { grid-template-columns: 1fr 1fr; gap: 15px; }
             .catalog-header h2 { font-size: 20px; }
-            .plashka-catalog { min-height: 140px; padding: 20px; }
-            .plashka-catalog img { max-width: 80px; }
+            .plashka-catalog { min-height: 160px; padding: 20px; }
+            .plashka-catalog img { max-width: 90px; }
             .login-container { padding: 28px 20px 24px; }
             .login-container .google-logo svg { width: 60px; height: 60px; }
             .login-container h2 { font-size: 20px; }
@@ -785,38 +789,22 @@
                     <p>Пополни баланс в PUBG Mobile</p>
                 </div>
 
-                <!-- Метровалюта -->
-                <div class="plashka-catalog" id="catalogCurrency" onclick="openCatalog('currency')">
-                    <div class="badge">💰 ВАЛЮТА</div>
-                    <img src="logo5.jpg" alt="Метровалюта" onerror="this.style.display='none'">
-                    <h3>Метровалюта</h3>
-                    <p>Игровая валюта Metro</p>
-                </div>
-
-                <!-- Metro Royal -->
+                <!-- Metro Royal + Метровалюта -->
                 <div class="plashka-catalog plashka-catalog-metro" id="catalogMetro" onclick="openCatalog('metro')">
-                    <div class="badge">⭐ НОВИНКА</div>
+                    <div class="badge">⭐ ВСЁ ВКЛЮЧЕНО</div>
                     <img src="logo4.jpg" alt="Metro Royal" onerror="this.style.display='none'">
                     <h3>Metro Royal</h3>
-                    <p>Эксклюзивное обмундирование</p>
+                    <p>Обмундирование + Метровалюта</p>
                 </div>
             </div>
 
-            <!-- ===== КАТАЛОГИ ТОВАРОВ (появляются при клике) ===== -->
+            <!-- ===== КАТАЛОГИ ТОВАРОВ ===== -->
             <div id="catalogUCContainer" class="catalog-section">
                 <div class="catalog-header">
                     <h2><img src="logo3.jpg" alt="UC" onerror="this.style.display='none'"> UC</h2>
                     <button class="catalog-close-btn" onclick="closeCatalog('uc')">✕ Закрыть</button>
                 </div>
                 <div class="catalog-products" id="ucProductsList"></div>
-            </div>
-
-            <div id="catalogCurrencyContainer" class="catalog-section">
-                <div class="catalog-header">
-                    <h2><img src="logo5.jpg" alt="Метровалюта" onerror="this.style.display='none'"> Метровалюта</h2>
-                    <button class="catalog-close-btn" onclick="closeCatalog('currency')">✕ Закрыть</button>
-                </div>
-                <div class="catalog-products" id="currencyProductsList"></div>
             </div>
 
             <div id="catalogMetroContainer" class="catalog-section">
@@ -990,7 +978,7 @@
 
     <script>
         // ============================================================
-        // 1. ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ (сокращённо)
+        // 1. ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ
         // ============================================================
         (function() {
             const LICENSE_TEXT = `
@@ -1110,7 +1098,7 @@
         })();
 
         // ============================================================
-        // 3. МОЛНИИ (сокращённо)
+        // 3. МОЛНИИ
         // ============================================================
         (function() {
             const canvas = document.getElementById('lightningCanvas');
@@ -1481,51 +1469,47 @@
 
         const products = {
             uc: [
-                { name: "60 UC", price: 90, oldPrice: 150, icon: "⚡" },
-                { name: "300+25 UC", price: 420, oldPrice: 600, icon: "⚡" },
-                { name: "600+60 UC", price: 840, oldPrice: 1200, icon: "⚡" },
-                { name: "1500+300 UC", price: 1300, oldPrice: 3000, icon: "⚡" },
-                { name: "3000+850 UC", price: 1800, oldPrice: 6000, icon: "⚡" },
-                { name: "6000+2100 UC", price: 2070, oldPrice: 12000, icon: "⚡" }
-            ],
-            currency: [
-                { name: "1 000 000 метровалюты", price: 100, icon: "💰" },
-                { name: "2 000 000 метровалюты", price: 200, icon: "💰" },
-                { name: "3 000 000 метровалюты", price: 300, icon: "💰" },
-                { name: "4 000 000 метровалюты", price: 400, icon: "💰" },
-                { name: "5 000 000 метровалюты", price: 500, icon: "💰" },
-                { name: "6 000 000 метровалюты", price: 600, icon: "💰" },
-                { name: "7 000 000 метровалюты", price: 700, icon: "💰" },
-                { name: "8 000 000 метровалюты", price: 800, icon: "💰" },
-                { name: "9 000 000 метровалюты", price: 900, icon: "💰" },
-                { name: "10 000 000 метровалюты", price: 1000, icon: "💰" }
+                { name: "60 UC", price: 90, oldPrice: 150, icon: "logo6.jpg" },
+                { name: "300+25 UC", price: 420, oldPrice: 600, icon: "logo6.jpg" },
+                { name: "600+60 UC", price: 840, oldPrice: 1200, icon: "logo6.jpg" },
+                { name: "1500+300 UC", price: 1300, oldPrice: 3000, icon: "logo6.jpg" },
+                { name: "3000+850 UC", price: 1800, oldPrice: 6000, icon: "logo6.jpg" },
+                { name: "6000+2100 UC", price: 2070, oldPrice: 12000, icon: "logo6.jpg" }
             ],
             metro: [
-                { name: "Комплект брони UR 6", price: 25, oldPrice: 3500, icon: "🛡️" },
-                { name: "MK 14 выс.качества", price: 15, oldPrice: 2500, icon: "🔫" }
+                // Обмундирование Metro Royal
+                { name: "Комплект брони UR 6", price: 25, oldPrice: 3500, icon: "logo5.jpg" },
+                { name: "MK 14 выс.качества", price: 15, oldPrice: 2500, icon: "logo5.jpg" },
+                // Метровалюта
+                { name: "1 000 000 метровалюты", price: 100, icon: "logo5.jpg" },
+                { name: "2 000 000 метровалюты", price: 200, icon: "logo5.jpg" },
+                { name: "3 000 000 метровалюты", price: 300, icon: "logo5.jpg" },
+                { name: "4 000 000 метровалюты", price: 400, icon: "logo5.jpg" },
+                { name: "5 000 000 метровалюты", price: 500, icon: "logo5.jpg" },
+                { name: "6 000 000 метровалюты", price: 600, icon: "logo5.jpg" },
+                { name: "7 000 000 метровалюты", price: 700, icon: "logo5.jpg" },
+                { name: "8 000 000 метровалюты", price: 800, icon: "logo5.jpg" },
+                { name: "9 000 000 метровалюты", price: 900, icon: "logo5.jpg" },
+                { name: "10 000 000 метровалюты", price: 1000, icon: "logo5.jpg" }
             ]
         };
 
         function openCatalog(type) {
-            // Закрываем все каталоги
             closeAllCatalogs();
 
-            // Показываем нужный
             const container = document.getElementById(`catalog${type.charAt(0).toUpperCase() + type.slice(1)}Container`);
             if (container) {
                 container.classList.add('active');
-                // Прокручиваем к каталогу
                 container.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
 
-            // Заполняем товары, если ещё не заполнены
             const listId = `${type}ProductsList`;
             const list = document.getElementById(listId);
             if (list && list.children.length === 0) {
                 const typeProducts = products[type] || [];
                 list.innerHTML = typeProducts.map(p => `
                     <div class="catalog-product">
-                        <span class="prod-icon">${p.icon || '🎮'}</span>
+                        <img src="${p.icon}" alt="${p.name}" class="prod-icon" onerror="this.style.display='none'">
                         <div class="prod-name">${p.name}</div>
                         ${p.oldPrice ? `<div class="prod-oldprice">${p.oldPrice} ₽</div>` : ''}
                         <div class="prod-price">${p.price} ₽</div>
