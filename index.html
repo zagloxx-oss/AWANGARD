@@ -126,7 +126,6 @@
         .plashka-catalog-metro { border-color: #00ccff; }
         .plashka-catalog-metro:hover { border-color: #00ccff; box-shadow: 0 0 40px rgba(0,204,255,0.25); }
 
-        /* Шапка плашки */
         .plashka-header {
             display: flex;
             align-items: center;
@@ -134,7 +133,7 @@
             padding-bottom: 15px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
             margin-bottom: 15px;
-            pointer-events: none; /* чтобы клик шёл на всю плашку */
+            pointer-events: none;
         }
         .plashka-header img {
             width: 60px;
@@ -168,7 +167,6 @@
         }
         .plashka-metro .plashka-badge { background: #00ccff; }
 
-        /* Список товаров (скрыт по умолчанию) */
         .plashka-products {
             display: none;
             flex-direction: column;
@@ -1438,7 +1436,7 @@
         })();
 
         // ============================================================
-        // 5. ОСНОВНАЯ ЛОГИКА — РАСКРЫТИЕ ПЛАШЕК
+        // 5. ОСНОВНАЯ ЛОГИКА — РАСКРЫТИЕ ПЛАШЕК + КНОПКА КУПИТЬ (FIX)
         // ============================================================
         let salesCount = parseInt(localStorage.getItem('awangard_sales') || '342');
 
@@ -1467,25 +1465,19 @@
             ]
         };
 
-        // Функция для переключения видимости товаров внутри плашки
         function toggleCatalog(type) {
             const containerId = (type === 'uc') ? 'ucProducts' : 'metroProducts';
             const container = document.getElementById(containerId);
             if (!container) return;
 
-            // Если уже открыто — закрываем
             if (container.classList.contains('open')) {
                 container.classList.remove('open');
                 return;
             }
 
-            // Закрываем все другие
             document.querySelectorAll('.plashka-products').forEach(el => el.classList.remove('open'));
-
-            // Открываем нужный
             container.classList.add('open');
 
-            // Если товары ещё не загружены — заполняем
             if (container.children.length === 0) {
                 const items = products[type] || [];
                 container.innerHTML = items.map(p => `
@@ -1497,16 +1489,25 @@
                         </div>
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <span class="plashka-product-price">${p.price} ₽</span>
-                            <button class="plashka-buy-btn" onclick="buyProduct('${p.name}', ${p.price})">Купить</button>
+                            <button class="plashka-buy-btn" onclick="buyProduct(event, '${p.name}', ${p.price})">Купить</button>
                         </div>
                     </div>
                 `).join('');
             }
         }
 
-        function buyProduct(name, price) {
+        function buyProduct(event, name, price) {
+            if (event) {
+                event.stopPropagation(); // не даём всплыть до плашки
+            }
+            console.log('✅ buyProduct вызван:', name, price);
             showToast(`Товар "${name}" (${price} ₽) добавлен в заказ. Перейдите к оплате.`);
-            document.querySelector('[data-page="payment"]').click();
+            const payBtn = document.querySelector('[data-page="payment"]');
+            if (payBtn) {
+                payBtn.click();
+            } else {
+                console.error('❌ Кнопка оплаты не найдена');
+            }
         }
 
         function showToast(msg) {
