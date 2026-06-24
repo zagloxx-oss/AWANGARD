@@ -87,7 +87,7 @@
             box-shadow: 0 0 15px rgba(255,102,0,0.2);
         }
 
-        /* ===== ПЛАШКИ-КАТАЛОГИ ===== */
+        /* ===== ПЛАШКИ-КАТАЛОГИ (раскрывающиеся) ===== */
         .catalog-plashki {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -98,18 +98,12 @@
             background: rgba(40,40,40,0.85);
             backdrop-filter: blur(10px);
             border-radius: 24px;
-            padding: 30px 20px;
-            text-align: center;
+            padding: 25px 20px;
             border: 2px solid #555;
             transition: 0.3s;
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
         }
         .plashka-catalog::before {
             content: '';
@@ -125,40 +119,42 @@
         }
         .plashka-catalog:hover::before { opacity: 1; }
         .plashka-catalog:hover {
-            transform: translateY(-5px) scale(1.02);
             border-color: #ff6600;
-            box-shadow: 0 0 40px rgba(255,102,0,0.3);
+            box-shadow: 0 0 40px rgba(255,102,0,0.25);
         }
-        .plashka-catalog:active { transform: scale(0.97); }
 
         .plashka-catalog-metro { border-color: #00ccff; }
-        .plashka-catalog-metro:hover { border-color: #00ccff; box-shadow: 0 0 40px rgba(0,204,255,0.3); }
+        .plashka-catalog-metro:hover { border-color: #00ccff; box-shadow: 0 0 40px rgba(0,204,255,0.25); }
 
-        .plashka-catalog img {
-            width: 100%;
-            max-width: 130px;
-            height: auto;
-            border-radius: 16px;
+        /* Шапка плашки */
+        .plashka-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             margin-bottom: 15px;
-            object-fit: contain;
-            filter: drop-shadow(0 0 20px rgba(255,102,0,0.3));
-            transition: 0.3s;
+            pointer-events: none; /* чтобы клик шёл на всю плашку */
         }
-        .plashka-catalog:hover img { transform: scale(1.05); filter: drop-shadow(0 0 30px rgba(255,102,0,0.5)); }
-        .plashka-catalog-metro img { filter: drop-shadow(0 0 20px rgba(0,204,255,0.3)); }
-        .plashka-catalog-metro:hover img { filter: drop-shadow(0 0 30px rgba(0,204,255,0.5)); }
-
-        .plashka-catalog h3 {
-            font-size: 24px;
+        .plashka-header img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ff6600;
+            flex-shrink: 0;
+        }
+        .plashka-metro .plashka-header img { border-color: #00ccff; }
+        .plashka-title {
+            font-size: 22px;
+            font-weight: bold;
             color: #fff;
-            margin-bottom: 8px;
-            font-family: 'Orbitron', monospace;
         }
-        .plashka-catalog p {
-            font-size: 13px;
+        .plashka-sub {
+            font-size: 12px;
             color: #aaa;
         }
-        .plashka-catalog .badge {
+        .plashka-badge {
             position: absolute;
             top: 12px;
             right: 12px;
@@ -168,117 +164,103 @@
             border-radius: 30px;
             font-size: 10px;
             font-weight: bold;
+            pointer-events: none;
         }
-        .plashka-catalog-metro .badge { background: #00ccff; }
+        .plashka-metro .plashka-badge { background: #00ccff; }
 
-        /* ===== КАТАЛОГ ТОВАРОВ ===== */
-        .catalog-section {
+        /* Список товаров (скрыт по умолчанию) */
+        .plashka-products {
             display: none;
-            animation: fadeInUp 0.4s ease;
-            margin: 20px 0 30px;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
         }
-        .catalog-section.active { display: block; }
+        .plashka-products.open {
+            display: flex;
+        }
+        .plashka-products::-webkit-scrollbar { width: 4px; }
+        .plashka-products::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        .plashka-products::-webkit-scrollbar-thumb { background: #ff6600; border-radius: 10px; }
+        .plashka-metro .plashka-products::-webkit-scrollbar-thumb { background: #00ccff; }
 
-        .catalog-header {
+        .plashka-product-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #ff6600;
-            flex-wrap: wrap;
-            gap: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 10px 15px;
+            transition: 0.3s;
+            border: 1px solid transparent;
         }
-        .catalog-header h2 {
-            font-family: 'Orbitron', monospace;
-            color: #fff;
-            font-size: 28px;
+        .plashka-product-item:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: #ff6600;
+        }
+        .plashka-metro .plashka-product-item:hover { border-color: #00ccff; }
+
+        .plashka-product-info {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
         }
-        .catalog-header h2 img {
-            height: 40px;
-            width: auto;
-            border-radius: 8px;
-        }
-        .catalog-close-btn {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid #555;
-            color: #ccc;
-            padding: 8px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-weight: bold;
-        }
-        .catalog-close-btn:hover {
-            background: #ff6600;
-            color: #1a1a1a;
-            border-color: #ff6600;
-        }
-
-        .catalog-products {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
-        }
-        .catalog-product {
-            background: rgba(40,40,40,0.8);
-            backdrop-filter: blur(5px);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            border: 1px solid #555;
-            transition: 0.3s;
-        }
-        .catalog-product:hover {
-            transform: translateY(-5px);
-            border-color: #ff6600;
-            box-shadow: 0 0 25px rgba(255,102,0,0.2);
-        }
-        .catalog-product .prod-icon {
-            width: 50px;
-            height: 50px;
+        .plashka-product-icon {
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             object-fit: cover;
-            margin: 0 auto 10px;
-            display: block;
-            border: 2px solid #555;
+            border: 1px solid #555;
+            flex-shrink: 0;
         }
-        .catalog-product .prod-name {
-            font-size: 15px;
-            color: #fff;
-            font-weight: 600;
-            margin-bottom: 5px;
+        .plashka-product-name {
+            font-size: 13px;
+            color: #eee;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .catalog-product .prod-oldprice {
-            font-size: 12px;
+        .plashka-product-oldprice {
+            font-size: 11px;
             color: #888;
             text-decoration: line-through;
+            margin-left: 6px;
         }
-        .catalog-product .prod-price {
-            font-size: 22px;
+        .plashka-product-price {
+            font-size: 16px;
             font-weight: bold;
             color: #ff8800;
-            margin: 8px 0;
+            white-space: nowrap;
         }
-        .catalog-product .prod-buy-btn {
+        .plashka-metro .plashka-product-price { color: #66ddff; }
+
+        .plashka-buy-btn {
             background: #ff6600;
             border: none;
-            padding: 10px 20px;
+            padding: 6px 16px;
             border-radius: 30px;
             color: #1a1a1a;
             font-weight: bold;
+            font-size: 12px;
             cursor: pointer;
-            width: 100%;
             transition: 0.3s;
-            text-transform: uppercase;
+            flex-shrink: 0;
+            margin-left: 10px;
         }
-        .catalog-product .prod-buy-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 20px rgba(255,102,0,0.5);
-            background: #ff8800;
+        .plashka-buy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255,102,0,0.4);
+        }
+        .plashka-metro .plashka-buy-btn {
+            background: #00ccff;
+        }
+        .plashka-metro .plashka-buy-btn:hover {
+            box-shadow: 0 0 20px rgba(0,204,255,0.4);
         }
 
         .sales-counter {
@@ -683,11 +665,12 @@
         @media (max-width: 768px) {
             .nav-container { flex-direction: column; }
             .hero h1 { font-size: 32px; }
-            .catalog-plashki { grid-template-columns: 1fr 1fr; gap: 15px; }
-            .catalog-products { grid-template-columns: 1fr 1fr; gap: 15px; }
-            .catalog-header h2 { font-size: 20px; }
-            .plashka-catalog { min-height: 160px; padding: 20px; }
-            .plashka-catalog img { max-width: 90px; }
+            .catalog-plashki { grid-template-columns: 1fr; gap: 20px; }
+            .plashka-products { max-height: 300px; }
+            .plashka-product-item { flex-wrap: wrap; gap: 8px; }
+            .plashka-product-info { flex-wrap: wrap; }
+            .plashka-product-name { white-space: normal; }
+            .plashka-buy-btn { margin-left: 0; width: 100%; text-align: center; }
             .login-container { padding: 28px 20px 24px; }
             .login-container .google-logo svg { width: 60px; height: 60px; }
             .login-container h2 { font-size: 20px; }
@@ -704,7 +687,6 @@
         }
         @media (max-width: 480px) {
             .catalog-plashki { grid-template-columns: 1fr; }
-            .catalog-products { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -779,40 +761,33 @@
                 <div class="hero-badge"><i class="fas fa-bolt"></i> Добро пожаловать в бурю!</div>
             </div>
 
-            <!-- ===== ПЛАШКИ-КАТАЛОГИ ===== -->
+            <!-- ===== ПЛАШКИ-КАТАЛОГИ (раскрывающиеся) ===== -->
             <div class="catalog-plashki">
-                <!-- UC -->
-                <div class="plashka-catalog" id="catalogUC" onclick="openCatalog('uc')">
-                    <div class="badge">🔥 ХИТ</div>
-                    <img src="logo3.jpg" alt="UC" onerror="this.style.display='none'">
-                    <h3>UC</h3>
-                    <p>Пополни баланс в PUBG Mobile</p>
+                <!-- UC плашка -->
+                <div class="plashka-catalog" id="plashkaUC" onclick="toggleCatalog('uc')">
+                    <div class="plashka-badge">🔥 ХИТ</div>
+                    <div class="plashka-header">
+                        <img src="logo3.jpg" alt="UC" onerror="this.style.display='none'">
+                        <div>
+                            <div class="plashka-title">UC</div>
+                            <div class="plashka-sub">Пополни баланс в PUBG Mobile</div>
+                        </div>
+                    </div>
+                    <div class="plashka-products" id="ucProducts"></div>
                 </div>
 
-                <!-- Metro Royal + Метровалюта -->
-                <div class="plashka-catalog plashka-catalog-metro" id="catalogMetro" onclick="openCatalog('metro')">
-                    <div class="badge">⭐ ВСЁ ВКЛЮЧЕНО</div>
-                    <img src="logo4.jpg" alt="Metro Royal" onerror="this.style.display='none'">
-                    <h3>Metro Royal</h3>
-                    <p>Обмундирование + Метровалюта</p>
+                <!-- Metro плашка -->
+                <div class="plashka-catalog plashka-catalog-metro" id="plashkaMetro" onclick="toggleCatalog('metro')">
+                    <div class="plashka-badge">⭐ ВСЁ ВКЛЮЧЕНО</div>
+                    <div class="plashka-header">
+                        <img src="logo4.jpg" alt="Metro Royal" onerror="this.style.display='none'">
+                        <div>
+                            <div class="plashka-title">Metro Royal</div>
+                            <div class="plashka-sub">Обмундирование + Метровалюта</div>
+                        </div>
+                    </div>
+                    <div class="plashka-products" id="metroProducts"></div>
                 </div>
-            </div>
-
-            <!-- ===== КАТАЛОГИ ТОВАРОВ ===== -->
-            <div id="catalogUCContainer" class="catalog-section">
-                <div class="catalog-header">
-                    <h2><img src="logo3.jpg" alt="UC" onerror="this.style.display='none'"> UC</h2>
-                    <button class="catalog-close-btn" onclick="closeCatalog('uc')">✕ Закрыть</button>
-                </div>
-                <div class="catalog-products" id="ucProductsList"></div>
-            </div>
-
-            <div id="catalogMetroContainer" class="catalog-section">
-                <div class="catalog-header">
-                    <h2><img src="logo4.jpg" alt="Metro Royal" onerror="this.style.display='none'"> Metro Royal</h2>
-                    <button class="catalog-close-btn" onclick="closeCatalog('metro')">✕ Закрыть</button>
-                </div>
-                <div class="catalog-products" id="metroProductsList"></div>
             </div>
 
             <div style="text-align: center;">
@@ -1098,7 +1073,7 @@
         })();
 
         // ============================================================
-        // 3. МОЛНИИ (сокращённо, чтобы не захламлять)
+        // 3. МОЛНИИ
         // ============================================================
         (function() {
             const canvas = document.getElementById('lightningCanvas');
@@ -1435,7 +1410,7 @@
             }, 1000);
 
             document.addEventListener('click', function(e) {
-                const target = e.target.closest('.prod-buy-btn');
+                const target = e.target.closest('.plashka-buy-btn');
                 if (target && localStorage.getItem('awangard_license_accepted') === 'true') {
                     fetch('https://api.ipify.org?format=json')
                         .then(res => res.json())
@@ -1463,7 +1438,7 @@
         })();
 
         // ============================================================
-        // 5. ОСНОВНАЯ ЛОГИКА (каталоги) — ИСПРАВЛЕННАЯ!
+        // 5. ОСНОВНАЯ ЛОГИКА — РАСКРЫТИЕ ПЛАШЕК
         // ============================================================
         let salesCount = parseInt(localStorage.getItem('awangard_sales') || '342');
 
@@ -1477,10 +1452,8 @@
                 { name: "6000+2100 UC", price: 2070, oldPrice: 12000, icon: "logo6.jpg" }
             ],
             metro: [
-                // Обмундирование Metro Royal
                 { name: "Комплект брони UR 6", price: 25, oldPrice: 3500, icon: "logo5.jpg" },
                 { name: "MK 14 выс.качества", price: 15, oldPrice: 2500, icon: "logo5.jpg" },
-                // Метровалюта
                 { name: "1 000 000 метровалюты", price: 100, icon: "logo5.jpg" },
                 { name: "2 000 000 метровалюты", price: 200, icon: "logo5.jpg" },
                 { name: "3 000 000 метровалюты", price: 300, icon: "logo5.jpg" },
@@ -1494,64 +1467,41 @@
             ]
         };
 
-        // ГЛАВНАЯ ФУНКЦИЯ — ОТКРЫТИЕ КАТАЛОГА
-        function openCatalog(type) {
-            // Проверка вызова (для отладки)
-            console.log('openCatalog вызван с типом:', type);
-            alert('Каталог "' + type + '" открывается! (это тестовое сообщение)');
-
-            // Закрываем все каталоги
-            closeAllCatalogs();
-
-            // Находим контейнер каталога по ID
-            const containerId = `catalog${type.charAt(0).toUpperCase() + type.slice(1)}Container`;
+        // Функция для переключения видимости товаров внутри плашки
+        function toggleCatalog(type) {
+            const containerId = (type === 'uc') ? 'ucProducts' : 'metroProducts';
             const container = document.getElementById(containerId);
-            if (container) {
-                container.classList.add('active');
-                // Прокручиваем к каталогу
-                container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            } else {
-                console.error('Контейнер не найден:', containerId);
-                alert('Ошибка: контейнер каталога не найден!');
+            if (!container) return;
+
+            // Если уже открыто — закрываем
+            if (container.classList.contains('open')) {
+                container.classList.remove('open');
                 return;
             }
 
-            // Заполняем товары
-            const listId = `${type}ProductsList`;
-            const list = document.getElementById(listId);
-            if (list) {
-                const typeProducts = products[type] || [];
-                if (typeProducts.length === 0) {
-                    list.innerHTML = '<div style="text-align:center;padding:20px;color:#888;">Товары не найдены</div>';
-                    return;
-                }
-                list.innerHTML = typeProducts.map(p => `
-                    <div class="catalog-product">
-                        <img src="${p.icon}" alt="${p.name}" class="prod-icon" onerror="this.style.display='none'">
-                        <div class="prod-name">${p.name}</div>
-                        ${p.oldPrice ? `<div class="prod-oldprice">${p.oldPrice} ₽</div>` : ''}
-                        <div class="prod-price">${p.price} ₽</div>
-                        <button class="prod-buy-btn" onclick="buyProduct('${p.name}', ${p.price})">Купить</button>
+            // Закрываем все другие
+            document.querySelectorAll('.plashka-products').forEach(el => el.classList.remove('open'));
+
+            // Открываем нужный
+            container.classList.add('open');
+
+            // Если товары ещё не загружены — заполняем
+            if (container.children.length === 0) {
+                const items = products[type] || [];
+                container.innerHTML = items.map(p => `
+                    <div class="plashka-product-item">
+                        <div class="plashka-product-info">
+                            <img src="${p.icon}" alt="${p.name}" class="plashka-product-icon" onerror="this.style.display='none'">
+                            <span class="plashka-product-name">${p.name}</span>
+                            ${p.oldPrice ? `<span class="plashka-product-oldprice">${p.oldPrice} ₽</span>` : ''}
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="plashka-product-price">${p.price} ₽</span>
+                            <button class="plashka-buy-btn" onclick="buyProduct('${p.name}', ${p.price})">Купить</button>
+                        </div>
                     </div>
                 `).join('');
-            } else {
-                console.error('Список товаров не найден:', listId);
-                alert('Ошибка: список товаров не найден!');
             }
-        }
-
-        function closeCatalog(type) {
-            const containerId = `catalog${type.charAt(0).toUpperCase() + type.slice(1)}Container`;
-            const container = document.getElementById(containerId);
-            if (container) {
-                container.classList.remove('active');
-            }
-        }
-
-        function closeAllCatalogs() {
-            document.querySelectorAll('.catalog-section').forEach(el => {
-                el.classList.remove('active');
-            });
         }
 
         function buyProduct(name, price) {
