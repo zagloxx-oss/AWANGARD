@@ -1505,7 +1505,7 @@
 
             const listId = `${type}ProductsList`;
             const list = document.getElementById(listId);
-            if (list && list.children.length === 0) {
+            if (list) {
                 const typeProducts = products[type] || [];
                 list.innerHTML = typeProducts.map(p => `
                     <div class="catalog-product">
