@@ -87,7 +87,6 @@
             box-shadow: 0 0 15px rgba(255,102,0,0.2);
         }
 
-        /* ===== НОВЫЕ ПЛАШКИ UC И METRO ROYAL ===== */
         .promo-plashki {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -283,7 +282,6 @@
         }
         .toast.show { transform: translateX(0); }
 
-        /* ===== ЗАСТАВКА ===== */
         #splashScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #0a0a0a; display: flex; align-items: center; justify-content: center;
@@ -303,7 +301,6 @@
         .skip-btn:hover { background: #ff6600; color: #1a1a1a; box-shadow: 0 0 20px rgba(255,102,0,0.6); }
         .skip-btn.show { display: block; }
 
-        /* ===== ЛИЦЕНЗИОННЫЙ БАННЕР ===== */
         #licenseBanner {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: rgba(20, 20, 30, 0.95); backdrop-filter: blur(10px);
@@ -335,7 +332,6 @@
         .license-banner-btn.decline { background: rgba(255,0,0,0.2); color: #ff6666; border: 1px solid #ff3333; }
         .license-banner-btn.decline:hover { background: rgba(255,0,0,0.4); }
 
-        /* ===== МОДАЛКА СОГЛАШЕНИЯ ===== */
         .license-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
@@ -365,7 +361,6 @@
         .license-modal-body ul { padding-left: 20px; }
         .license-modal-body li { margin: 5px 0; }
 
-        /* ===== БЛОКИРОВКА ===== */
         #blockedOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); backdrop-filter: blur(8px);
@@ -388,7 +383,6 @@
         }
         .blocked-box button:hover { background: #ff8800; box-shadow: 0 0 20px rgba(255,102,0,0.5); }
 
-        /* ===== СТРАНИЦА ВХОДА (стиль как у Google) ===== */
         #loginPage {
             display: none;
             position: fixed;
@@ -694,18 +688,18 @@
                 <div class="hero-badge"><i class="fas fa-bolt"></i> Добро пожаловать в бурю!</div>
             </div>
 
-            <!-- ===== НОВЫЕ ПЛАШКИ UC И METRO ROYAL ===== -->
+            <!-- ===== ПЛАШКИ UC И METRO ROYAL ===== -->
             <div class="promo-plashki">
                 <div class="plashka plashka-uc" id="plashkaUC">
                     <div class="badge-plashka">🔥 ХИТ</div>
-                    <div class="plashka-icon">UC</div>
+                    <div class="plashka-icon">3</div>
                     <h3>UC</h3>
                     <p>Пополни свой баланс в PUBG Mobile по лучшим ценам!</p>
                     <button class="btn-plashka" id="btnUC">Купить UC</button>
                 </div>
                 <div class="plashka plashka-metro" id="plashkaMetro">
                     <div class="badge-plashka">⭐ НОВИНКА</div>
-                    <div class="plashka-icon">M</div>
+                    <div class="plashka-icon">4</div>
                     <h3>Metro Royal</h3>
                     <p>Эксклюзивное обмундирование и снаряжение для Metro Royal!</p>
                     <button class="btn-plashka" id="btnMetro">Купить Metro</button>
@@ -1470,12 +1464,12 @@ localStorage: ${JSON.stringify(localStorage)}
 
         const products = {
             uc: [
-                { name: "60 UC", price: 90, oldPrice: 150, icon: "UC", sale: true },
-                { name: "300+25 UC", price: 420, oldPrice: 600, icon: "UC", sale: true },
-                { name: "600+60 UC", price: 840, oldPrice: 1200, icon: "UC", sale: true },
-                { name: "1500+300 UC", price: 1300, oldPrice: 3000, icon: "UC", sale: true },
-                { name: "3000+850 UC", price: 1800, oldPrice: 6000, icon: "UC", sale: true },
-                { name: "6000+2100 UC", price: 2070, oldPrice: 12000, icon: "UC", sale: true }
+                { name: "60 UC", price: 90, oldPrice: 150, icon: "3", sale: true },
+                { name: "300+25 UC", price: 420, oldPrice: 600, icon: "3", sale: true },
+                { name: "600+60 UC", price: 840, oldPrice: 1200, icon: "3", sale: true },
+                { name: "1500+300 UC", price: 1300, oldPrice: 3000, icon: "3", sale: true },
+                { name: "3000+850 UC", price: 1800, oldPrice: 6000, icon: "3", sale: true },
+                { name: "6000+2100 UC", price: 2070, oldPrice: 12000, icon: "3", sale: true }
             ],
             currency: [
                 { name: "1 000 000 метровалюты", price: 100, icon: "M", sale: false },
@@ -1490,8 +1484,8 @@ localStorage: ${JSON.stringify(localStorage)}
                 { name: "10 000 000 метровалюты", price: 1000, icon: "M", sale: false }
             ],
             metro: [
-                { name: "Комплект брони UR 6", price: 25, oldPrice: 3500, icon: "🛡️", sale: true },
-                { name: "MK 14 выс.качества", price: 15, oldPrice: 2500, icon: "🔫", sale: true }
+                { name: "Комплект брони UR 6", price: 25, oldPrice: 3500, icon: "4", sale: true },
+                { name: "MK 14 выс.качества", price: 15, oldPrice: 2500, icon: "4", sale: true }
             ]
         };
 
@@ -1597,7 +1591,6 @@ localStorage: ${JSON.stringify(localStorage)}
                 window.open('https://t.me/Awangard_shop_feedback', '_blank');
             });
 
-            // ===== КЛИКИ ПО ПЛАШКАМ =====
             document.getElementById('btnUC')?.addEventListener('click', () => {
                 document.querySelector('.cat-btn[data-cat="uc"]')?.click();
                 document.querySelector('[data-page="main"]')?.click();
