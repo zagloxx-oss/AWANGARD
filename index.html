@@ -19,16 +19,8 @@
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            z-index: -2;
-            background: radial-gradient(ellipse at center, #2a2a2a 0%, #0f0f0f 100%);
-        }
-        #lightningCanvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
             z-index: -1;
-            pointer-events: none;
-            display: block;
+            background: radial-gradient(ellipse at center, #2a2a2a 0%, #0f0f0f 100%);
         }
         .neon-nav {
             position: sticky; top: 0; z-index: 100;
@@ -385,7 +377,6 @@
     </div>
 
     <div class="storm-bg"></div>
-    <canvas id="lightningCanvas"></canvas>
 
     <nav class="neon-nav" id="mainNav">
         <div class="nav-container">
@@ -549,189 +540,7 @@
         })();
 
         // ============================================================
-        // 2. МОЛНИИ (СТАТИЧНЫЕ)
-        // ============================================================
-        (function() {
-            const canvas = document.getElementById('lightningCanvas');
-            const ctx = canvas.getContext('2d');
-            let W, H;
-
-            function resizeCanvas() {
-                W = canvas.width = window.innerWidth;
-                H = canvas.height = window.innerHeight;
-            }
-
-            function generateLightning(startX, startY, endX, endY, maxDiff, roughness) {
-                let points = [{x: startX, y: startY}, {x: endX, y: endY}];
-                let diff = maxDiff;
-                let depth = 0;
-                const MAX_DEPTH = 8;
-                while (diff > 1 && depth < MAX_DEPTH) {
-                    let newPoints = [];
-                    for (let i = 0; i < points.length - 1; i++) {
-                        let p1 = points[i];
-                        let p2 = points[i+1];
-                        let midX = (p1.x + p2.x) / 2 + (Math.random() - 0.5) * diff;
-                        let midY = (p1.y + p2.y) / 2 + (Math.random() - 0.5) * diff;
-                        midX = Math.max(0, Math.min(W, midX));
-                        midY = Math.max(0, Math.min(H, midY));
-                        newPoints.push(p1, {x: midX, y: midY});
-                    }
-                    newPoints.push(points[points.length-1]);
-                    points = newPoints;
-                    diff *= roughness;
-                    depth++;
-                }
-                return points;
-            }
-
-            function generateBranches(parentPoints, maxDiff, roughness) {
-                let branches = [];
-                let startIdx = Math.floor(parentPoints.length * 0.15);
-                let endIdx = Math.floor(parentPoints.length * 0.75);
-                let count = 0;
-                const MAX_BRANCHES = 3;
-                for (let i = startIdx; i < endIdx && count < MAX_BRANCHES; i += 3) {
-                    if (Math.random() < 0.3) {
-                        let p = parentPoints[i];
-                        let angle = Math.atan2(
-                            parentPoints[Math.min(i+3, parentPoints.length-1)].y - p.y,
-                            parentPoints[Math.min(i+3, parentPoints.length-1)].x - p.x
-                        ) + (Math.random() - 0.5) * 1.6;
-                        let len = 30 + Math.random() * 120;
-                        let endX = p.x + Math.cos(angle) * len;
-                        let endY = p.y + Math.sin(angle) * len;
-                        endX = Math.max(0, Math.min(W, endX));
-                        endY = Math.max(0, Math.min(H, endY));
-                        let branchPoints = generateLightning(p.x, p.y, endX, endY, maxDiff * 0.5, roughness * 0.9);
-                        branches.push(branchPoints);
-                        count++;
-                    }
-                }
-                return branches;
-            }
-
-            function drawBolt(ctx, points, color, blur, opacity, lineWidth) {
-                if (points.length < 2 || opacity <= 0) return;
-
-                ctx.save();
-                ctx.shadowColor = color;
-                ctx.shadowBlur = blur;
-                ctx.globalAlpha = opacity * 0.6;
-                ctx.beginPath();
-                ctx.moveTo(points[0].x, points[0].y);
-                for (let i = 1; i < points.length; i++) {
-                    ctx.lineTo(points[i].x, points[i].y);
-                }
-                ctx.strokeStyle = color;
-                ctx.lineWidth = lineWidth * 1.5;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-                ctx.stroke();
-                ctx.restore();
-
-                ctx.save();
-                ctx.shadowBlur = 0;
-                ctx.globalAlpha = opacity * 0.9;
-                ctx.beginPath();
-                ctx.moveTo(points[0].x, points[0].y);
-                for (let i = 1; i < points.length; i++) {
-                    ctx.lineTo(points[i].x, points[i].y);
-                }
-                ctx.strokeStyle = '#ff8800';
-                ctx.lineWidth = lineWidth;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-                ctx.stroke();
-                ctx.restore();
-
-                ctx.save();
-                ctx.shadowBlur = 0;
-                ctx.globalAlpha = opacity * 0.8;
-                ctx.beginPath();
-                ctx.moveTo(points[0].x, points[0].y);
-                for (let i = 1; i < points.length; i++) {
-                    ctx.lineTo(points[i].x, points[i].y);
-                }
-                ctx.strokeStyle = '#fff';
-                ctx.lineWidth = lineWidth * 0.3;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-                ctx.stroke();
-                ctx.restore();
-            }
-
-            function createLightningBolt() {
-                let x1 = Math.random() * W * 0.7 + W * 0.15;
-                let y1 = Math.random() * H * 0.2;
-                let x2 = x1 + (Math.random() - 0.5) * W * 0.6;
-                let y2 = H * 0.5 + Math.random() * H * 0.3;
-                let maxDiff = Math.min(W, H) * (0.15 + Math.random() * 0.15);
-                let roughness = 0.65 + Math.random() * 0.15;
-                let points = generateLightning(x1, y1, x2, y2, maxDiff, roughness);
-                let branches = generateBranches(points, maxDiff * 0.6, roughness * 0.9);
-                let allSegments = [points, ...branches];
-                let hue = 25 + Math.random() * 20;
-                let color = `hsl(${hue}, 100%, 55%)`;
-                let blur = 15 + Math.random() * 25;
-                let lineWidth = 2 + Math.random() * 3;
-                return {
-                    segments: allSegments,
-                    color: color,
-                    blur: blur,
-                    lineWidth: lineWidth,
-                    opacity: 1.0
-                };
-            }
-
-            function initStaticSparks() {
-                let sparks = [];
-                for (let i = 0; i < 25; i++) {
-                    sparks.push({
-                        x: Math.random() * W,
-                        y: Math.random() * H,
-                        size: 1 + Math.random() * 2,
-                        brightness: 0.3 + Math.random() * 0.4
-                    });
-                }
-                return sparks;
-            }
-
-            function drawStaticScene() {
-                ctx.clearRect(0, 0, W, H);
-
-                for (let i = 0; i < 4; i++) {
-                    let bolt = createLightningBolt();
-                    for (let seg of bolt.segments) {
-                        drawBolt(ctx, seg, bolt.color, bolt.blur, bolt.opacity, bolt.lineWidth);
-                    }
-                }
-
-                let sparks = initStaticSparks();
-                ctx.shadowBlur = 0;
-                for (let s of sparks) {
-                    ctx.fillStyle = `rgba(255, 200, 100, ${s.brightness * 0.4})`;
-                    ctx.beginPath();
-                    ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            }
-
-            resizeCanvas();
-            drawStaticScene();
-
-            let resizeTimeout;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => {
-                    resizeCanvas();
-                    drawStaticScene();
-                }, 500);
-            });
-        })();
-
-        // ============================================================
-        // 3. ОСНОВНАЯ ЛОГИКА
+        // 2. ОСНОВНАЯ ЛОГИКА
         // ============================================================
         let salesCount = parseInt(localStorage.getItem('awangard_sales') || '342');
 
