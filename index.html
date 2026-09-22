@@ -80,12 +80,6 @@
         }
         @keyframes glitch { 0%,100% { transform: skew(0deg); } 95% { transform: skew(0deg); } 96% { transform: skew(2deg); } 97% { transform: skew(-2deg); } 98% { transform: skew(1deg); } }
         .hero p { color: #aaa; margin-top: 10px; letter-spacing: 2px; }
-        .hero-badge {
-            display: inline-block; background: rgba(255,102,0,0.2);
-            border: 1px solid #ff6600; padding: 8px 24px; border-radius: 30px;
-            margin-top: 20px; font-size: 14px; color: #ff8800;
-            box-shadow: 0 0 15px rgba(255,102,0,0.2);
-        }
 
         .catalog-plashki {
             display: grid;
@@ -368,88 +362,6 @@
         .skip-btn:hover { background: #ff6600; color: #1a1a1a; box-shadow: 0 0 20px rgba(255,102,0,0.6); }
         .skip-btn.show { display: block; }
 
-        #licenseBanner {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: rgba(20, 20, 30, 0.95); backdrop-filter: blur(10px);
-            border-top: 2px solid #ff6600; padding: 12px 20px;
-            z-index: 10001; display: none;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
-            transition: transform 0.3s ease;
-        }
-        #licenseBanner.show { display: block; }
-        .license-banner-content {
-            max-width: 1200px; margin: 0 auto;
-            display: flex; justify-content: space-between; align-items: center;
-            flex-wrap: wrap; gap: 15px;
-        }
-        .license-banner-text {
-            display: flex; align-items: center; gap: 10px;
-            color: #ccc; font-size: 16px;
-        }
-        .license-banner-text strong { color: #ff8800; }
-        .license-banner-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
-        .license-banner-btn {
-            padding: 8px 20px; border-radius: 30px; border: none;
-            font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s;
-        }
-        .license-banner-btn.view { background: rgba(255,255,255,0.1); color: #ccc; border: 1px solid #555; }
-        .license-banner-btn.view:hover { background: rgba(255,255,255,0.2); color: #fff; }
-        .license-banner-btn.accept { background: #ff6600; color: #1a1a1a; }
-        .license-banner-btn.accept:hover { background: #ff8800; box-shadow: 0 0 20px rgba(255,102,0,0.5); }
-        .license-banner-btn.decline { background: rgba(255,0,0,0.2); color: #ff6666; border: 1px solid #ff3333; }
-        .license-banner-btn.decline:hover { background: rgba(255,0,0,0.4); }
-
-        .license-modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
-            display: none; align-items: center; justify-content: center;
-            z-index: 10002; padding: 20px;
-        }
-        .license-modal-overlay.active { display: flex; }
-        .license-modal-content {
-            background: linear-gradient(135deg, #1a1a2a, #0f0f1a);
-            border: 1px solid #ff6600; border-radius: 20px;
-            max-width: 800px; width: 100%; max-height: 90vh;
-            display: flex; flex-direction: column;
-            box-shadow: 0 0 50px rgba(255,102,0,0.3);
-            animation: fadeInUp 0.4s ease;
-        }
-        .license-modal-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 25px; border-bottom: 1px solid #333;
-            flex-shrink: 0;
-        }
-        .license-modal-header h2 { font-family: 'Orbitron', monospace; color: #ff8800; font-size: 20px; }
-        .license-modal-close { background: none; border: none; font-size: 30px; color: #888; cursor: pointer; transition: 0.3s; }
-        .license-modal-close:hover { color: #fff; }
-        .license-modal-body { padding: 20px 25px; overflow-y: auto; flex: 1; color: #ccc; font-size: 14px; line-height: 1.6; }
-        .license-modal-body h3 { color: #ff8800; margin: 20px 0 10px; }
-        .license-modal-body p { margin: 10px 0; }
-        .license-modal-body ul { padding-left: 20px; }
-        .license-modal-body li { margin: 5px 0; }
-
-        #blockedOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); backdrop-filter: blur(8px);
-            display: none; align-items: center; justify-content: center;
-            z-index: 10003;
-        }
-        #blockedOverlay.active { display: flex; }
-        .blocked-box {
-            text-align: center; color: #ff3333; font-size: 24px;
-            font-family: 'Orbitron', monospace; padding: 40px;
-            border: 1px solid #ff3333; border-radius: 20px;
-            background: rgba(20,0,0,0.5); box-shadow: 0 0 40px rgba(255,0,0,0.2);
-            max-width: 500px;
-        }
-        .blocked-box i { font-size: 60px; margin-bottom: 20px; display: block; }
-        .blocked-box button {
-            background: #ff6600; border: none; padding: 10px 30px;
-            border-radius: 40px; color: #1a1a1a; font-weight: bold;
-            cursor: pointer; font-size: 16px; margin-top: 20px; transition: 0.3s;
-        }
-        .blocked-box button:hover { background: #ff8800; box-shadow: 0 0 20px rgba(255,102,0,0.5); }
-
         @media (max-width: 768px) {
             .nav-container { flex-direction: column; }
             .hero h1 { font-size: 32px; }
@@ -470,39 +382,6 @@
     <div id="splashScreen">
         <video id="splashVideo" muted autoplay playsinline></video>
         <button class="skip-btn" id="skipBtn">Пропустить →</button>
-    </div>
-
-    <div id="licenseBanner">
-        <div class="license-banner-content">
-            <div class="license-banner-text">
-                <i class="fas fa-shield-alt" style="color: #ff6600;"></i>
-                <span>Соглашаетесь с <strong>лицензионным соглашением</strong> AWANGARD TEAM?</span>
-            </div>
-            <div class="license-banner-buttons">
-                <button class="license-banner-btn view" id="viewLicenseBtn">Посмотреть</button>
-                <button class="license-banner-btn accept" id="acceptLicenseBtn">Да</button>
-                <button class="license-banner-btn decline" id="declineLicenseBtn">Нет</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="licenseModal" class="license-modal-overlay">
-        <div class="license-modal-content">
-            <div class="license-modal-header">
-                <h2>📄 Лицензионное соглашение</h2>
-                <button class="license-modal-close" id="closeLicenseModal">&times;</button>
-            </div>
-            <div class="license-modal-body" id="licenseModalBody"></div>
-        </div>
-    </div>
-
-    <div id="blockedOverlay">
-        <div class="blocked-box">
-            <i class="fas fa-ban"></i>
-            Доступ запрещён<br>
-            <span style="font-size: 16px; color: #aaa; font-family: 'Segoe UI', sans-serif;">Вы не приняли лицензионное соглашение</span>
-            <button id="retryLicenseBtn">Принять и продолжить</button>
-        </div>
     </div>
 
     <div class="storm-bg"></div>
@@ -526,7 +405,6 @@
             <div class="hero">
                 <h1>AWANGARD TEAM</h1>
                 <p>PUBG Mobile | UC | Сопровождение | Metro Royal</p>
-                <div class="hero-badge"><i class="fas fa-bolt"></i> Добро пожаловать в бурю!</div>
             </div>
 
             <div class="catalog-plashki">
@@ -645,101 +523,7 @@
 
     <script>
         // ============================================================
-        // 1. ЛИЦЕНЗИЯ
-        // ============================================================
-        (function() {
-            const LICENSE_TEXT = `
-            <h3>1. ОБЩИЕ ПОЛОЖЕНИЯ</h3>
-            <p>1.1. Настоящее Лицензионное соглашение является юридическим документом между Вами и владельцем интернет-магазина <strong>AWANGARD TEAM</strong>.</p>
-            <p>1.2. Использование Сайта означает полное и безоговорочное принятие условий.</p>
-            <h3>2. ПОРЯДОК ПРИОБРЕТЕНИЯ ТОВАРОВ</h3>
-            <p>При оплате ОБЯЗАТЕЛЬНО укажите игровой ID и название товара.</p>
-            <h3>3. СБОР ДАННЫХ</h3>
-            <p>Собираются IP, cookies, localStorage, данные браузера для защиты от мошенничества.</p>
-            <hr>
-            <p style="text-align: center; color: #888;">© 2026 AWANGARD TEAM. Все права защищены.</p>
-            `;
-
-            const banner = document.getElementById('licenseBanner');
-            const modal = document.getElementById('licenseModal');
-            const modalBody = document.getElementById('licenseModalBody');
-            const closeModalBtn = document.getElementById('closeLicenseModal');
-            const viewBtn = document.getElementById('viewLicenseBtn');
-            const acceptBtn = document.getElementById('acceptLicenseBtn');
-            const declineBtn = document.getElementById('declineLicenseBtn');
-            const retryBtn = document.getElementById('retryLicenseBtn');
-            const blocked = document.getElementById('blockedOverlay');
-            const splashScreen = document.getElementById('splashScreen');
-
-            const accepted = localStorage.getItem('awangard_license_accepted');
-
-            if (accepted === 'true') {
-                banner.classList.remove('show');
-                blocked.classList.remove('active');
-                return;
-            }
-
-            function showBanner() { banner.classList.add('show'); }
-
-            if (splashScreen.classList.contains('hidden')) {
-                showBanner();
-            } else {
-                const observer = new MutationObserver(() => {
-                    if (splashScreen.classList.contains('hidden')) {
-                        showBanner();
-                        observer.disconnect();
-                    }
-                });
-                observer.observe(splashScreen, { attributes: true, attributeFilter: ['class'] });
-                setTimeout(() => {
-                    if (!splashScreen.classList.contains('hidden')) {
-                        splashScreen.classList.add('hidden');
-                        showBanner();
-                    }
-                }, 6000);
-            }
-
-            modalBody.innerHTML = LICENSE_TEXT;
-
-            viewBtn.addEventListener('click', () => { modal.classList.add('active'); });
-            closeModalBtn.addEventListener('click', () => { modal.classList.remove('active'); });
-            modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
-
-            acceptBtn.addEventListener('click', () => {
-                localStorage.setItem('awangard_license_accepted', 'true');
-                banner.classList.remove('show');
-                blocked.classList.remove('active');
-                showToast('Соглашение принято. Добро пожаловать!');
-            });
-
-            declineBtn.addEventListener('click', () => {
-                blocked.classList.add('active');
-                banner.classList.remove('show');
-                document.querySelector('.neon-nav').style.display = 'none';
-                document.querySelector('.container').style.display = 'none';
-                document.querySelector('.footer').style.display = 'none';
-            });
-
-            retryBtn.addEventListener('click', () => {
-                blocked.classList.remove('active');
-                banner.classList.add('show');
-                document.querySelector('.neon-nav').style.display = 'flex';
-                document.querySelector('.container').style.display = 'block';
-                document.querySelector('.footer').style.display = 'block';
-            });
-
-            function showToast(msg) {
-                const toast = document.getElementById('toast');
-                if (toast) {
-                    toast.textContent = msg;
-                    toast.className = 'toast show';
-                    setTimeout(() => toast.classList.remove('show'), 3000);
-                }
-            }
-        })();
-
-        // ============================================================
-        // 2. ЗАСТАВКА
+        // 1. ЗАСТАВКА
         // ============================================================
         (function() {
             const splashScreen = document.getElementById('splashScreen');
@@ -765,7 +549,7 @@
         })();
 
         // ============================================================
-        // 3. МОЛНИИ
+        // 2. МОЛНИИ (СТАТИЧНЫЕ)
         // ============================================================
         (function() {
             const canvas = document.getElementById('lightningCanvas');
@@ -776,8 +560,6 @@
                 W = canvas.width = window.innerWidth;
                 H = canvas.height = window.innerHeight;
             }
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
 
             function generateLightning(startX, startY, endX, endY, maxDiff, roughness) {
                 let points = [{x: startX, y: startY}, {x: endX, y: endY}];
@@ -893,208 +675,63 @@
                 let color = `hsl(${hue}, 100%, 55%)`;
                 let blur = 15 + Math.random() * 25;
                 let lineWidth = 2 + Math.random() * 3;
-                const maxLife = 2.5;
                 return {
                     segments: allSegments,
                     color: color,
                     blur: blur,
                     lineWidth: lineWidth,
-                    opacity: 1.0,
-                    maxLife: maxLife,
-                    age: 0
+                    opacity: 1.0
                 };
-                
-// ============================================================
-// 3. МОЛНИИ (СТАТИЧНЫЕ)
-// ============================================================
-(function() {
-    const canvas = document.getElementById('lightningCanvas');
-    const ctx = canvas.getContext('2d');
-    let W, H;
-
-    function resizeCanvas() {
-        W = canvas.width = window.innerWidth;
-        H = canvas.height = window.innerHeight;
-    }
-
-    function generateLightning(startX, startY, endX, endY, maxDiff, roughness) {
-        let points = [{x: startX, y: startY}, {x: endX, y: endY}];
-        let diff = maxDiff;
-        let depth = 0;
-        const MAX_DEPTH = 8;
-        while (diff > 1 && depth < MAX_DEPTH) {
-            let newPoints = [];
-            for (let i = 0; i < points.length - 1; i++) {
-                let p1 = points[i];
-                let p2 = points[i+1];
-                let midX = (p1.x + p2.x) / 2 + (Math.random() - 0.5) * diff;
-                let midY = (p1.y + p2.y) / 2 + (Math.random() - 0.5) * diff;
-                midX = Math.max(0, Math.min(W, midX));
-                midY = Math.max(0, Math.min(H, midY));
-                newPoints.push(p1, {x: midX, y: midY});
             }
-            newPoints.push(points[points.length-1]);
-            points = newPoints;
-            diff *= roughness;
-            depth++;
-        }
-        return points;
-    }
 
-    function generateBranches(parentPoints, maxDiff, roughness) {
-        let branches = [];
-        let startIdx = Math.floor(parentPoints.length * 0.15);
-        let endIdx = Math.floor(parentPoints.length * 0.75);
-        let count = 0;
-        const MAX_BRANCHES = 3;
-        for (let i = startIdx; i < endIdx && count < MAX_BRANCHES; i += 3) {
-            if (Math.random() < 0.3) {
-                let p = parentPoints[i];
-                let angle = Math.atan2(
-                    parentPoints[Math.min(i+3, parentPoints.length-1)].y - p.y,
-                    parentPoints[Math.min(i+3, parentPoints.length-1)].x - p.x
-                ) + (Math.random() - 0.5) * 1.6;
-                let len = 30 + Math.random() * 120;
-                let endX = p.x + Math.cos(angle) * len;
-                let endY = p.y + Math.sin(angle) * len;
-                endX = Math.max(0, Math.min(W, endX));
-                endY = Math.max(0, Math.min(H, endY));
-                let branchPoints = generateLightning(p.x, p.y, endX, endY, maxDiff * 0.5, roughness * 0.9);
-                branches.push(branchPoints);
-                count++;
+            function initStaticSparks() {
+                let sparks = [];
+                for (let i = 0; i < 25; i++) {
+                    sparks.push({
+                        x: Math.random() * W,
+                        y: Math.random() * H,
+                        size: 1 + Math.random() * 2,
+                        brightness: 0.3 + Math.random() * 0.4
+                    });
+                }
+                return sparks;
             }
-        }
-        return branches;
-    }
 
-    function drawBolt(ctx, points, color, blur, opacity, lineWidth) {
-        if (points.length < 2 || opacity <= 0) return;
+            function drawStaticScene() {
+                ctx.clearRect(0, 0, W, H);
 
-        // Свечение
-        ctx.save();
-        ctx.shadowColor = color;
-        ctx.shadowBlur = blur;
-        ctx.globalAlpha = opacity * 0.6;
-        ctx.beginPath();
-        ctx.moveTo(points[0].x, points[0].y);
-        for (let i = 1; i < points.length; i++) {
-            ctx.lineTo(points[i].x, points[i].y);
-        }
-        ctx.strokeStyle = color;
-        ctx.lineWidth = lineWidth * 1.5;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.stroke();
-        ctx.restore();
+                for (let i = 0; i < 4; i++) {
+                    let bolt = createLightningBolt();
+                    for (let seg of bolt.segments) {
+                        drawBolt(ctx, seg, bolt.color, bolt.blur, bolt.opacity, bolt.lineWidth);
+                    }
+                }
 
-        // Основная линия
-        ctx.save();
-        ctx.shadowBlur = 0;
-        ctx.globalAlpha = opacity * 0.9;
-        ctx.beginPath();
-        ctx.moveTo(points[0].x, points[0].y);
-        for (let i = 1; i < points.length; i++) {
-            ctx.lineTo(points[i].x, points[i].y);
-        }
-        ctx.strokeStyle = '#ff8800';
-        ctx.lineWidth = lineWidth;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.stroke();
-        ctx.restore();
-
-        // Ядро
-        ctx.save();
-        ctx.shadowBlur = 0;
-        ctx.globalAlpha = opacity * 0.8;
-        ctx.beginPath();
-        ctx.moveTo(points[0].x, points[0].y);
-        for (let i = 1; i < points.length; i++) {
-            ctx.lineTo(points[i].x, points[i].y);
-        }
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = lineWidth * 0.3;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.stroke();
-        ctx.restore();
-    }
-
-    function createLightningBolt() {
-        let x1 = Math.random() * W * 0.7 + W * 0.15;
-        let y1 = Math.random() * H * 0.2;
-        let x2 = x1 + (Math.random() - 0.5) * W * 0.6;
-        let y2 = H * 0.5 + Math.random() * H * 0.3;
-        let maxDiff = Math.min(W, H) * (0.15 + Math.random() * 0.15);
-        let roughness = 0.65 + Math.random() * 0.15;
-        let points = generateLightning(x1, y1, x2, y2, maxDiff, roughness);
-        let branches = generateBranches(points, maxDiff * 0.6, roughness * 0.9);
-        let allSegments = [points, ...branches];
-        let hue = 25 + Math.random() * 20;
-        let color = `hsl(${hue}, 100%, 55%)`;
-        let blur = 15 + Math.random() * 25;
-        let lineWidth = 2 + Math.random() * 3;
-        return {
-            segments: allSegments,
-            color: color,
-            blur: blur,
-            lineWidth: lineWidth,
-            opacity: 1.0
-        };
-    }
-
-    function initStaticSparks() {
-        let sparks = [];
-        for (let i = 0; i < 25; i++) {
-            sparks.push({
-                x: Math.random() * W,
-                y: Math.random() * H,
-                size: 1 + Math.random() * 2,
-                brightness: 0.3 + Math.random() * 0.4
-            });
-        }
-        return sparks;
-    }
-
-    function drawStaticScene() {
-        ctx.clearRect(0, 0, W, H);
-
-        // 4 статичные молнии
-        for (let i = 0; i < 4; i++) {
-            let bolt = createLightningBolt();
-            for (let seg of bolt.segments) {
-                drawBolt(ctx, seg, bolt.color, bolt.blur, bolt.opacity, bolt.lineWidth);
+                let sparks = initStaticSparks();
+                ctx.shadowBlur = 0;
+                for (let s of sparks) {
+                    ctx.fillStyle = `rgba(255, 200, 100, ${s.brightness * 0.4})`;
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
             }
-        }
 
-        // Статичные искры
-        let sparks = initStaticSparks();
-        ctx.shadowBlur = 0;
-        for (let s of sparks) {
-            ctx.fillStyle = `rgba(255, 200, 100, ${s.brightness * 0.4})`;
-            ctx.beginPath();
-            ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-            ctx.fill();
-        }
-    }
-
-    // Первый рендер
-    resizeCanvas();
-    drawStaticScene();
-
-    // При ресайзе — перегенерация сцены с новыми размерами
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
             resizeCanvas();
             drawStaticScene();
-        }, 500);
-    });
-})();
+
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    resizeCanvas();
+                    drawStaticScene();
+                }, 500);
+            });
+        })();
 
         // ============================================================
-        // 4. ОСНОВНАЯ ЛОГИКА
+        // 3. ОСНОВНАЯ ЛОГИКА
         // ============================================================
         let salesCount = parseInt(localStorage.getItem('awangard_sales') || '342');
 
@@ -1178,7 +815,6 @@
                 </div>
             `).join('');
 
-            // Навешиваем обработчики на кнопки "Купить"
             container.querySelectorAll('.plashka-buy-btn').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
