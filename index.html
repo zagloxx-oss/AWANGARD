@@ -75,9 +75,12 @@
 
         .catalog-plashki {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 25px;
             margin: 30px 0 40px 0;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
         }
         .plashka-catalog {
             background: rgba(40,40,40,0.85);
@@ -125,10 +128,9 @@
             height: 60px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #ff6600;
+            border: 2px solid #00ccff;
             flex-shrink: 0;
         }
-        .plashka-metro .plashka-header img { border-color: #00ccff; }
         .plashka-title {
             font-size: 22px;
             font-weight: bold;
@@ -142,7 +144,7 @@
             position: absolute;
             top: 12px;
             right: 12px;
-            background: #ff6600;
+            background: #00ccff;
             color: #1a1a1a;
             padding: 4px 14px;
             border-radius: 30px;
@@ -150,24 +152,17 @@
             font-weight: bold;
             pointer-events: none;
         }
-        .plashka-metro .plashka-badge { background: #00ccff; }
 
         .plashka-products {
             display: none;
             flex-direction: column;
             gap: 10px;
             margin-top: 10px;
-            max-height: 400px;
-            overflow-y: auto;
             padding-right: 5px;
         }
         .plashka-products.open {
             display: flex;
         }
-        .plashka-products::-webkit-scrollbar { width: 4px; }
-        .plashka-products::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
-        .plashka-products::-webkit-scrollbar-thumb { background: #ff6600; border-radius: 10px; }
-        .plashka-metro .plashka-products::-webkit-scrollbar-thumb { background: #00ccff; }
 
         .plashka-product-item {
             display: flex;
@@ -175,15 +170,14 @@
             align-items: center;
             background: rgba(255,255,255,0.05);
             border-radius: 12px;
-            padding: 10px 15px;
+            padding: 12px 15px;
             transition: 0.3s;
             border: 1px solid transparent;
         }
         .plashka-product-item:hover {
             background: rgba(255,255,255,0.1);
-            border-color: #ff6600;
+            border-color: #00ccff;
         }
-        .plashka-metro .plashka-product-item:hover { border-color: #00ccff; }
 
         .plashka-product-info {
             display: flex;
@@ -201,29 +195,20 @@
             flex-shrink: 0;
         }
         .plashka-product-name {
-            font-size: 13px;
+            font-size: 14px;
             color: #eee;
             font-weight: 500;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .plashka-product-oldprice {
-            font-size: 11px;
-            color: #888;
-            text-decoration: line-through;
-            margin-left: 6px;
+            line-height: 1.3;
         }
         .plashka-product-price {
             font-size: 16px;
             font-weight: bold;
-            color: #ff8800;
+            color: #66ddff;
             white-space: nowrap;
         }
-        .plashka-metro .plashka-product-price { color: #66ddff; }
 
         .plashka-buy-btn {
-            background: #ff6600;
+            background: #00ccff;
             border: none;
             padding: 6px 16px;
             border-radius: 30px;
@@ -237,12 +222,6 @@
         }
         .plashka-buy-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(255,102,0,0.4);
-        }
-        .plashka-metro .plashka-buy-btn {
-            background: #00ccff;
-        }
-        .plashka-metro .plashka-buy-btn:hover {
             box-shadow: 0 0 20px rgba(0,204,255,0.4);
         }
 
@@ -298,6 +277,72 @@
             transition: 0.3s;
         }
         .telegram-subscribe button:hover { background: #ff8800; box-shadow: 0 0 20px rgba(255,102,0,0.5); }
+
+        /* ====== Кнопка скачивания CFG ====== */
+        .cfg-download {
+            background: linear-gradient(135deg, rgba(255,102,0,0.15), rgba(0,204,255,0.1));
+            border: 2px solid #ff6600;
+            border-radius: 20px;
+            padding: 30px 25px;
+            margin: 20px 0;
+            text-align: center;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .cfg-download:hover {
+            border-color: #ff8800;
+            box-shadow: 0 0 40px rgba(255,102,0,0.4);
+            transform: translateY(-3px);
+        }
+        .cfg-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+            display: block;
+            animation: giftShake 2s ease-in-out infinite;
+        }
+        @keyframes giftShake {
+            0%, 100% { transform: rotate(0deg); }
+            10%, 30% { transform: rotate(-8deg); }
+            20%, 40% { transform: rotate(8deg); }
+            50% { transform: rotate(0deg); }
+        }
+        .cfg-download h3 {
+            color: #fff;
+            font-size: 22px;
+            margin-bottom: 8px;
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 1px;
+        }
+        .cfg-download p {
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .cfg-download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #ff6600;
+            color: #1a1a1a;
+            text-decoration: none;
+            padding: 14px 40px;
+            border-radius: 40px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: 0.3s;
+            box-shadow: 0 0 20px rgba(255,102,0,0.4);
+        }
+        .cfg-download-btn:hover {
+            background: #ff8800;
+            box-shadow: 0 0 30px rgba(255,102,0,0.7);
+            transform: scale(1.05);
+            color: #1a1a1a;
+        }
+        .cfg-download-btn i {
+            font-size: 18px;
+        }
+        /* =================================== */
 
         .payment-info, .reviews-card, .about-card, .howtobuy-card {
             background: rgba(40,40,40,0.8); backdrop-filter: blur(10px);
@@ -357,15 +402,13 @@
         @media (max-width: 768px) {
             .nav-container { flex-direction: column; }
             .hero h1 { font-size: 32px; }
-            .catalog-plashki { grid-template-columns: 1fr; gap: 20px; }
-            .plashka-products { max-height: 300px; }
+            .catalog-plashki { gap: 20px; }
             .plashka-product-item { flex-wrap: wrap; gap: 8px; }
             .plashka-product-info { flex-wrap: wrap; }
-            .plashka-product-name { white-space: normal; }
             .plashka-buy-btn { margin-left: 0; width: 100%; text-align: center; }
-        }
-        @media (max-width: 480px) {
-            .catalog-plashki { grid-template-columns: 1fr; }
+            .cfg-icon { font-size: 50px; }
+            .cfg-download h3 { font-size: 18px; }
+            .cfg-download-btn { padding: 12px 30px; font-size: 15px; }
         }
     </style>
 </head>
@@ -395,29 +438,17 @@
         <div id="mainPage" class="page active">
             <div class="hero">
                 <h1>AWANGARD TEAM</h1>
-                <p>PUBG Mobile | UC | Сопровождение | Metro Royal</p>
+                <p>PUBG Mobile | Сопровождение | Metro Royal</p>
             </div>
 
             <div class="catalog-plashki">
-                <div class="plashka-catalog" id="plashkaUC" onclick="toggleCatalog('uc')">
-                    <div class="plashka-badge">🔥 ХИТ</div>
-                    <div class="plashka-header">
-                        <img src="logo3.jpg" alt="UC" onerror="this.style.display='none'">
-                        <div>
-                            <div class="plashka-title">UC</div>
-                            <div class="plashka-sub">Пополни баланс в PUBG Mobile</div>
-                        </div>
-                    </div>
-                    <div class="plashka-products" id="ucProducts"></div>
-                </div>
-
                 <div class="plashka-catalog plashka-catalog-metro" id="plashkaMetro" onclick="toggleCatalog('metro')">
                     <div class="plashka-badge">⭐ ВСЁ ВКЛЮЧЕНО</div>
                     <div class="plashka-header">
                         <img src="logo4.jpg" alt="Metro Royal" onerror="this.style.display='none'">
                         <div>
                             <div class="plashka-title">Metro Royal</div>
-                            <div class="plashka-sub">Обмундирование + Сопровождение</div>
+                            <div class="plashka-sub">Сопровождение на 7 карту + вещи</div>
                         </div>
                     </div>
                     <div class="plashka-products" id="metroProducts"></div>
@@ -427,6 +458,17 @@
             <div style="text-align: center;">
                 <div class="sales-counter"><i class="fas fa-chart-line"></i> Продано товаров: <span id="salesCount">342</span>+</div>
             </div>
+
+            <!-- ====== Блок скачивания CFG ====== -->
+            <div class="cfg-download">
+                <div class="cfg-icon">🎁</div>
+                <h3>Скачать конфиг бесплатно</h3>
+                <p>Демо-версия CFG для PUBG Mobile</p>
+                <a href="aw-cfg_free.zip" download class="cfg-download-btn">
+                    <i class="fas fa-download"></i> Скачать CFG
+                </a>
+            </div>
+            <!-- ================================== -->
 
             <div class="features-grid">
                 <div class="feature-card"><i class="fas fa-bolt"></i><h3>Моментальная доставка</h3><p>5-15 минут после оплаты</p></div>
@@ -545,68 +587,17 @@
         let salesCount = parseInt(localStorage.getItem('awangard_sales') || '342');
 
         const products = {
-            uc: [
-                { name: "60 UC", price: 90, oldPrice: 150, icon: "logo6.jpg" },
-                { name: "300+25 UC", price: 420, oldPrice: 600, icon: "logo6.jpg" },
-                { name: "600+60 UC", price: 840, oldPrice: 1200, icon: "logo6.jpg" },
-                { name: "1500+300 UC", price: 1300, oldPrice: 3000, icon: "logo6.jpg" },
-                { name: "3000+850 UC", price: 1800, oldPrice: 6000, icon: "logo6.jpg" },
-                { name: "6000+2100 UC", price: 2070, oldPrice: 12000, icon: "logo6.jpg" }
-            ],
             metro: [
-                { name: "Сопровождение 3 млн", price: 30, icon: "logo5.jpg" },
-                { name: "Сопровождение 4 млн", price: 40, icon: "logo5.jpg" },
-                { name: "Сопровождение 5 млн", price: 50, icon: "logo5.jpg" },
-                { name: "Сопровождение 6 млн", price: 60, icon: "logo5.jpg" },
-                { name: "Сопровождение 7 млн", price: 70, icon: "logo5.jpg" },
-                { name: "Сопровождение 8 млн", price: 80, icon: "logo5.jpg" },
-                { name: "Сопровождение 9 млн", price: 90, icon: "logo5.jpg" },
-                { name: "Сопровождение 10 млн", price: 100, icon: "logo5.jpg" },
-                { name: "Сопровождение 11 млн", price: 110, icon: "logo5.jpg" },
-                { name: "Сопровождение 12 млн", price: 120, icon: "logo5.jpg" },
-                { name: "Сопровождение 13 млн", price: 130, icon: "logo5.jpg" },
-                { name: "Сопровождение 14 млн", price: 140, icon: "logo5.jpg" },
-                { name: "Сопровождение 15 млн", price: 150, icon: "logo5.jpg" },
-                { name: "Сопровождение 16 млн", price: 160, icon: "logo5.jpg" },
-                { name: "Сопровождение 17 млн", price: 170, icon: "logo5.jpg" },
-                { name: "Сопровождение 18 млн", price: 180, icon: "logo5.jpg" },
-                { name: "Сопровождение 19 млн", price: 190, icon: "logo5.jpg" },
-                { name: "Сопровождение 20 млн", price: 200, icon: "logo5.jpg" },
-                { name: "Сопровождение 21 млн", price: 210, icon: "logo5.jpg" },
-                { name: "Сопровождение 22 млн", price: 220, icon: "logo5.jpg" },
-                { name: "Сопровождение 23 млн", price: 230, icon: "logo5.jpg" },
-                { name: "Сопровождение 24 млн", price: 240, icon: "logo5.jpg" },
-                { name: "Сопровождение 25 млн", price: 250, icon: "logo5.jpg" },
-                { name: "Сопровождение 26 млн", price: 260, icon: "logo5.jpg" },
-                { name: "Сопровождение 27 млн", price: 270, icon: "logo5.jpg" },
-                { name: "Сопровождение 28 млн", price: 280, icon: "logo5.jpg" },
-                { name: "Сопровождение 29 млн", price: 290, icon: "logo5.jpg" },
-                { name: "Сопровождение 30 млн", price: 300, icon: "logo5.jpg" },
-                { name: "Сопровождение 31 млн", price: 310, icon: "logo5.jpg" },
-                { name: "Сопровождение 32 млн", price: 320, icon: "logo5.jpg" },
-                { name: "Сопровождение 33 млн", price: 330, icon: "logo5.jpg" },
-                { name: "Сопровождение 34 млн", price: 340, icon: "logo5.jpg" },
-                { name: "Сопровождение 35 млн", price: 350, icon: "logo5.jpg" },
-                { name: "Сопровождение 36 млн", price: 360, icon: "logo5.jpg" },
-                { name: "Сопровождение 37 млн", price: 370, icon: "logo5.jpg" },
-                { name: "Сопровождение 38 млн", price: 380, icon: "logo5.jpg" },
-                { name: "Сопровождение 39 млн", price: 390, icon: "logo5.jpg" },
-                { name: "Сопровождение 40 млн", price: 400, icon: "logo5.jpg" },
-                { name: "Сопровождение 41 млн", price: 410, icon: "logo5.jpg" },
-                { name: "Сопровождение 42 млн", price: 420, icon: "logo5.jpg" },
-                { name: "Сопровождение 43 млн", price: 430, icon: "logo5.jpg" },
-                { name: "Сопровождение 44 млн", price: 440, icon: "logo5.jpg" },
-                { name: "Сопровождение 45 млн", price: 450, icon: "logo5.jpg" },
-                { name: "Сопровождение 46 млн", price: 460, icon: "logo5.jpg" },
-                { name: "Сопровождение 47 млн", price: 470, icon: "logo5.jpg" },
-                { name: "Сопровождение 48 млн", price: 480, icon: "logo5.jpg" },
-                { name: "Сопровождение 49 млн", price: 490, icon: "logo5.jpg" },
-                { name: "Сопровождение 50 млн", price: 500, icon: "logo5.jpg" }
+                { name: "Сопровождение на 7 карту 30кк + вещи", price: 400, icon: "logo5.jpg" },
+                { name: "Сопровождение на 7 карту 15кк + вещи", price: 300, icon: "logo5.jpg" },
+                { name: "Сопровождение на 7 карту 10кк + вещи", price: 200, icon: "logo5.jpg" },
+                { name: "Сопровождение на 7 карту 6кк + вещи", price: 150, icon: "logo5.jpg" }
             ]
         };
 
         function renderProducts(type) {
-            const containerId = (type === 'uc') ? 'ucProducts' : 'metroProducts';
+            const containerId = (type === 'metro') ? 'metroProducts' : null;
+            if (!containerId) return;
             const container = document.getElementById(containerId);
             if (!container) return;
             const items = products[type] || [];
@@ -615,7 +606,6 @@
                     <div class="plashka-product-info">
                         <img src="${p.icon}" alt="${p.name}" class="plashka-product-icon" onerror="this.style.display='none'">
                         <span class="plashka-product-name">${p.name}</span>
-                        ${p.oldPrice ? `<span class="plashka-product-oldprice">${p.oldPrice} ₽</span>` : ''}
                     </div>
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <span class="plashka-product-price">${p.price} ₽</span>
@@ -634,7 +624,8 @@
         }
 
         function toggleCatalog(type) {
-            const containerId = (type === 'uc') ? 'ucProducts' : 'metroProducts';
+            const containerId = (type === 'metro') ? 'metroProducts' : null;
+            if (!containerId) return;
             const container = document.getElementById(containerId);
             if (!container) return;
 
@@ -699,6 +690,11 @@
 
             document.getElementById('openReviewsBtn')?.addEventListener('click', () => {
                 window.open('https://t.me/Awangard_shop_feedback', '_blank');
+            });
+
+            // Клик по кнопке скачивания CFG — показываем тост
+            document.querySelector('.cfg-download-btn')?.addEventListener('click', () => {
+                showToast('🎁 Скачивание конфига началось!');
             });
         }
 
